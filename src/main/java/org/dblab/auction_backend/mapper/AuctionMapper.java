@@ -40,14 +40,17 @@ public interface AuctionMapper {
 
     // #################################################### 리뷰 CRUD #####################################################
 
-    public int registAuctionReview(AuctionReviewDTO auctionReview);
+    public int registConsumerAuctionReview(AuctionReviewDTO auctionReview);
 
-    // public List<AuctionReviewDTO> getConsumerAuctionReview(@Param("consumer_id") int consumer_id);
+    public int registFarmAuctionReview(AuctionReviewDTO auctionReview);
+
     public List<Map<String, Object>> getConsumerAuctionReview(@Param("consumer_id") int consumer_id);
 
     public List<Map<String, Object>> getFarmAuctionReview(@Param("farm_id") int farm_id);
 
-    public int updateAuctionReview(AuctionReviewDTO auctionReview);
+    public int updateConsumerAuctionReview(AuctionReviewDTO auctionReview);
+
+    public int updateFarmAuctionReview(AuctionReviewDTO auctionReview);
 
     public int deleteAuctionReview(@Param("auction_Id") int auction_Id);
 
@@ -56,7 +59,11 @@ public interface AuctionMapper {
 
     public AlertDTO registAlert(AlertDTO alertDTO);
 
-    public List<AlertDTO> getConsumerAlert(@Param("consumer_id") int consumer_id);
+    public String getAlertTime(@Param("alert_id") int alert_id);
+
+    public List<Map<String, Object>> getConsumerAlert(@Param("consumer_id") int consumer_id);
+    
+    public List<Map<String, Object>> getFarmAlert(@Param("farm_id") int farm_id);
 
     public int updateCheckedAlert(@Param("alert_id") int alert_id);
 
@@ -83,4 +90,8 @@ public interface AuctionMapper {
     public int updateBidStatus(@Param("auction_Id") int auction_Id);
 
     public Bidding getClosedBidding(@Param("auction_Id") int auction_Id);
+
+    public int plusFarmPachiPoint(@Param("farm_id") int farm_id);
+
+    public int plusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
 }

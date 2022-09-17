@@ -3,7 +3,7 @@
 <mapper namespace="org.dblab.auction_backend.mapper.AuctionMapper">
 
     <!-- ############################################## 경매 CRUD #################################################### -->
-    <select id="registAuction" parameterType="org.dblab.auction_backend.domain.AuctionDTO" resultType="org.dblab.auction_backend.domain.AuctionDTO">
+    <select id="registAuction" parameterType="org.dblab.auction_backend.domain.AuctionDTO" resultType="org.dblab.auction_backend.domain.BidClosingDTO">
         INSERT INTO auction
         (auction_name, start_date, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id) VALUES
         (#{auction_name}, #{start_date}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id})
@@ -84,7 +84,7 @@
     <insert id="registProduct" parameterType="org.dblab.auction_backend.domain.ProductDTO" useGeneratedKeys="true" keyProperty="product_id">
         INSERT INTO product
         (product, product_kg, p_drop_date, size, p_status, p_explanation, product_img_name, farm_id) VALUES
-        (#{product}, #{product_kg}, #{p_drop_date_str}, #{size}, #{p_status}, #{p_explanation}, #{product_img_name}, #{farm_id})
+        (#{product}, #{product_kg}, #{p_drop_date}, #{size}, #{p_status}, #{p_explanation}, #{product_img_name}, #{farm_id})
     </insert>
 
     <select id="getProduct" resultType="org.dblab.auction_backend.domain.ProductDTO">
@@ -111,33 +111,42 @@
 
     <!-- ############################################## 리뷰 CRUD #################################################### -->
     
-    <insert id="registAuctionReview">  
-        <![CDATA[
-        insert into auction_review
-        (auction_Id, grade_point, review) 
-        values
-        (#{auction_Id}, #{grade_point}, #{review})
-        ]]>
+    <insert id="registConsumerAuctionReview">  
+        INSERT INTO auction_review
+        (auction_Id, grade_point, consumer_review) VALUES
+        (#{auction_Id}, #{grade_point}, #{consumer_review})
     </insert>
 
+    <update id="registFarmAuctionReview">
+		UPDATE auction_review
+		SET farm_review = #{farm_review}
+		WHERE auction_Id = #{auction_Id}
+	</update>
+
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.review, f.f_name, f.f_phonenum
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
     <select id="getFarmAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.review, f.f_name, f.f_phonenum
-        FROM auction_review a_r, auction a, product p, farm_member f
-        WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.farm_id = #{farm_id}
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name
+        FROM auction_review a_r, auction a, product p, consumer_member c
+        WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.consumer_id = c.consumer_id and a.farm_id = #{farm_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
-    <update id="updateAuctionReview">
+    <update id="updateConsumerAuctionReview">
 		UPDATE auction_review
 		SET grade_point= #{grade_point},
-		review = #{review}
+		consumer_review = #{consumer_review}
+		WHERE auction_Id = #{auction_Id}
+	</update>
+
+    <update id="updateFarmAuctionReview">
+		UPDATE auction_review
+		SET farm_review= #{farm_review}
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
@@ -154,10 +163,15 @@
         (d_status, auction_Id, consumer_id, auction_name)
         VALUES
         (#{d_status}, #{auction_Id}, #{consumer_id}, #{auction_name})
-        RETURNING alert_id, d_status, time, auction_Id, consumer_id, auction_name
+        RETURNING alert_id, d_status, auction_Id, consumer_id, auction_name
     </select>
 
-    <select id="getConsumerAlert" resultType="org.dblab.auction_backend.domain.AlertDTO">
+    <select id="getAlertTime" resultType="String">
+        SELECT time FROM alert 
+        WHERE alert_id = #{alert_id}
+    </select>
+
+    <select id="getConsumerAlert" resultType="map">
         SELECT * FROM alert 
         WHERE consumer_id = #{consumer_id}
     </select>
@@ -189,6 +203,7 @@
         (#{keyword}, INET_ATON(#{ip}), #{consumer_id}, #{farm_id});
     </insert>
 
+    <!-- 키워드 중복 추가 방지를 위한 ip, id 확인 코드 -->
     <insert id="registConsumerKeyword">
         INSERT INTO search_word (keyword, ip, consumer_id)
         SELECT #{keyword}, INET_ATON(#{ip}), #{consumer_id} 
@@ -234,6 +249,20 @@
         FROM auction
         WHERE auction_Id = #{auction_Id};
     </select>
+
+        <!-- 마감된 경매 농가 경매 점수 추가 -->
+    <update id="plusFarmPachiPoint" >
+        UPDATE farm_member
+        SET pachi_point = pachi_point+5 
+        WHERE farm_id= #{farm_id}
+    </update>
+
+    <!-- 마감된 경매 낙찰자, 리뷰후기 경매 점수 추가 -->
+    <update id="plusConsumerPachiPoint" >
+        UPDATE consumer_member 
+        SET pachi_point = pachi_point+5 
+        WHERE consumer_id= #{consumer_id}
+    </update>
 
 </mapper>
 

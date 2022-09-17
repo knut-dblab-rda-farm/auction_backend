@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class AuctionReviewDTO {
-
-    private int auction_Id;
-    private int grade_point;
-    private String review;
+    private String checkUser;
+    private Integer auction_Id;
+    private Integer grade_point;
+    private String consumer_review;
+    private String farm_review;
 }

@@ -51,13 +51,6 @@ public class MemberController {
 		return memberService.getConsumerMember(email);
 	}
 
-	// @PatchMapping(value = "/updateConsumerMember", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	// public int updateConsumerMember(@RequestBody ConsumerMemberDTO consumerMemberDTO) {
-	// 	return memberService.updateConsumerMember(consumerMemberDTO);
-	// }
-
-	// ----------
-
 	@PatchMapping(value = "/updateConsumerMember/passwd")
 	public int updateConsumerMemberPassword(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
@@ -104,13 +97,6 @@ public class MemberController {
 		System.out.println(farmMemberDTO.toString());
 		return memberService.signupFarmMember(farmMemberDTO);
 	}
-
-	// @PatchMapping(value = "/updateFarmMember", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	// public int updateFarmMember(@RequestBody FarmMemberDTO farmMemberDTO) {
-	// 	return memberService.updateFarmMember(farmMemberDTO);
-	// }
-
-	// ----------
 
 	@PatchMapping(value = "/updateFarmMember/passwd")
 	public int updateFarmMemberPassword(@RequestBody Map<String, String> map) {
@@ -214,16 +200,6 @@ public class MemberController {
 		System.out.println(phoneNumber.toString());
 
 		return memberService.checkPhoneNumber(phoneNumber.get("phoneNumber"));
-	}
-
-
-
-
-	// #################################################### 테스트용 ####################################################
-	
-	@GetMapping(value = "/getAllConsumerMember", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public List<ConsumerMemberDTO> getAllConsumerMember() {
-		return memberService.getAllConsumerMember();
 	}
 
 }
