@@ -12,5 +12,5 @@ public class AuctionReviewDTO {
     private Integer farm_id;
     private Integer consumer_id;
     private String auction_name;
-    //
+    
 }
