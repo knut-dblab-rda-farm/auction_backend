@@ -250,7 +250,7 @@
         WHERE auction_Id = #{auction_Id};
     </select>
 
-        <!-- 마감된 경매 농가 경매 점수 추가 -->
+    <!-- 마감된 경매 농가 경매 점수 추가 -->
     <update id="plusFarmPachiPoint" >
         UPDATE farm_member
         SET pachi_point = pachi_point+5 
