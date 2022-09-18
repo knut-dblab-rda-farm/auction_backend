@@ -41,8 +41,7 @@ public interface AuctionService {
 
     public int updateAuctionReview(AuctionReviewDTO auctionReview);
 
-    public int deleteAuctionReview(int auction_Id);
-
+    public int deleteAuctionReview(AuctionReviewDTO auctionReview);
 
     // #################################################### 알림 #####################################################
 
@@ -65,5 +64,10 @@ public interface AuctionService {
     public List<BidClosingDTO> getRecentlyBid();
 
     public void closeBidding(int auction_Id);
+
+    // ############################################## 마이페이지 ####################################################
+    
+    // 소비자, 농가 경매내역 가져오기
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int limit);
     
 }

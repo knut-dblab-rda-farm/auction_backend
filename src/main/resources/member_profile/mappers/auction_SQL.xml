@@ -124,14 +124,14 @@
 	</update>
 
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, farm_id
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
     <select id="getFarmAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name, consumer_id
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name
         FROM auction_review a_r, auction a, product p, consumer_member c
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.consumer_id = c.consumer_id and a.farm_id = #{farm_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
@@ -152,8 +152,15 @@
 
     <delete id="deleteAuctionReview">
 		DELETE FROM auction_review 
-        WHERE auction_Id = #{auction_Id}
+        WHERE auction_Id = #{auction_Id}, consumer_id = #{consumer_Id}
 	</delete> 
+
+    <!-- 리뷰삭제 시 구매자 점수 삭제 -->
+    <update id="minusConsumerPachiPoint" >
+        UPDATE consumer_member 
+        SET pachi_point = pachi_point-5 
+        WHERE consumer_id= #{consumer_id}
+    </update>
 
 
     <!-- ############################################## 알림 CRUD #################################################### -->
@@ -263,29 +270,6 @@
         SET pachi_point = pachi_point+5 
         WHERE consumer_id= #{consumer_id}
     </update>
-
-    <!-- ############################################## 마이페이지 #################################################### -->
-    
-    <!-- 소비자, 농가 경매내역 가져오기 -->
-    <select id="getMypageConsumerAuctionDetails" resultMap="map">
-        SELECT * 
-        FROM auction AS a
-        INNER JOIN product AS p ON a.product_id = p.product_id
-        LEFT JOIN auction_review AS a_r ON a.auction_id = a_r.auction_id
-        WHERE a.consumer_id = #{consumer_id}
-        ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
-        LIMIT #{startLimit}, 5
-    </select>
-
-    <select id="getMypageFarmAuctionDetails" resultMap="map">
-        SELECT * 
-        FROM auction AS a
-        INNER JOIN product AS p ON a.product_id = p.product_id
-        LEFT JOIN auction_review AS a_r ON a.auction_id = a_r.auction_id
-        WHERE a.farm_id = #{farm_id}
-        ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
-        LIMIT #{startLimit}, 5
-    </select>
 
 </mapper>
 

@@ -51,8 +51,15 @@ public interface AuctionMapper {
     public int updateConsumerAuctionReview(AuctionReviewDTO auctionReview);
 
     public int updateFarmAuctionReview(AuctionReviewDTO auctionReview);
+    //{"auction_Id" : 1, "consumer_id": 5}
 
-    public int deleteAuctionReview(@Param("auction_Id") int auction_Id);
+    //public int deleteAuctionReview(@Param("auction_Id") int auction_Id);
+
+    public int minusFarmPachiPoint(@Param("farm_id") int farm_id);
+
+    public int minusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
+
+    public int deleteAuctionReview(AuctionReviewDTO auctionReview);
 
     
     // #################################################### 알림 CRUD #####################################################
@@ -94,4 +101,13 @@ public interface AuctionMapper {
     public int plusFarmPachiPoint(@Param("farm_id") int farm_id);
 
     public int plusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
+
+    // ############################################## 마이페이지 ####################################################
+    
+    // 소비자, 농가 경매내역 가져오기
+    
+    public List<Map<String, Object>> getMypageConsumerAuctionDetails(@Param("startLimit") int startLimit);
+
+    public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("startLimit") int startLimit);
+    
 }

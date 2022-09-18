@@ -31,6 +31,10 @@ public class AuctionServiceImpl implements AuctionService{
     private String PRODUCT_IMG_PATH = "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/product_images/";
     private HashMap<Integer,SseEmitter> consumerEmitters = new HashMap<Integer, SseEmitter>();
     private HashMap<Integer,SseEmitter> farmEmitters = new HashMap<Integer, SseEmitter>();
+    private int FIRST_BID_ALERT = 0;    // 열거형 
+    private int BID_ALERT = 1;
+    private int END_AUCTION_ALERT = 2;
+    private int REIVEW_ALERT = 3;
 
     // #################################################### 경매 CURD #####################################################
 
@@ -97,12 +101,12 @@ public class AuctionServiceImpl implements AuctionService{
     public int updateBidding(Bidding bidding) {
 
         int mapperResult = auctionMapper.updateBidding(bidding);
-        int d_status = 1;
+        int d_status = FIRST_BID_ALERT;
         int alertResult = 0;
 
         if(mapperResult == 1) {
             if (bidding.getAuction_consumer_id() != null){
-                d_status = 2;
+                d_status = BID_ALERT;
             }
             alertResult = registAlert(bidding, d_status);
         }
@@ -137,7 +141,15 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int registAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("registAuctionReview.........." + auctionReview.toString());
-        return auctionReview.getCheckUser().equals("consumer") ? auctionMapper.registConsumerAuctionReview(auctionReview) : auctionMapper.registFarmAuctionReview(auctionReview); 
+
+        if(auctionReview.getCheckUser().equals("consumer")){
+            auctionMapper.plusConsumerPachiPoint(auctionReview.getConsumer_id());
+            auctionMapper.registConsumerAuctionReview(auctionReview);
+        } else {
+            auctionMapper.plusFarmPachiPoint(auctionReview.getFarm_id());
+            auctionMapper.registFarmAuctionReview(auctionReview);
+        }
+        return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getConsumer_id()), REIVEW_ALERT);
     }
 
     @Override
@@ -153,10 +165,10 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public int deleteAuctionReview(int auction_Id) {
+    public int deleteAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("deleteAuctionReview..........");
-
-        return auctionMapper.deleteAuctionReview(auction_Id);
+        auctionMapper.minusConsumerPachiPoint(auctionReview.getConsumer_id());
+        return auctionMapper.deleteAuctionReview(auctionReview);
     }
 
     
@@ -192,11 +204,12 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int registAlert(Bidding bidding, int d_status) {
         /*
-         * d_status = 1, 첫 입찰인 경우
-         * d_status = 2, 이전 입찰자가 있는 경우
-         * d_status = 3, ???
-         * d_status = 4, 경매 종료 후 알림
+         * d_status = 0 = FIRST_BID_ALERT, 첫 입찰인 경우
+         * d_status = 1 =  BID_ALERT, 이전 입찰자가 있는 경우
+         * d_status = 2 = END_AUCTION_ALERT, 경매 종료 후 알림
+         * d_status = 3 = REIVEW_ALERT, 경매 리뷰 생성 후 알림
          */
+
         AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getConsumer_id(), d_status);
 
         SseEmitter farmEmitter = farmEmitters.get(bidding.getFarm_id());
@@ -212,7 +225,7 @@ public class AuctionServiceImpl implements AuctionService{
         System.out.println("---------------");
         System.out.println(alertDto.toString());
 
-        if (d_status == 2) {                             // 이전 입찰자가 있는 경우
+        if (d_status == BID_ALERT) {                             // 이전 입찰자가 있는 경우
             SseEmitter auctionConsumerEmitter = consumerEmitters.get(bidding.getAuction_consumer_id());
             if(auctionConsumerEmitter != null){
                 // 이전 입찰자에게 알림
@@ -308,7 +321,14 @@ public class AuctionServiceImpl implements AuctionService{
         Bidding closedBidding = auctionMapper.getClosedBidding(auction_Id);
         auctionMapper.plusFarmPachiPoint(closedBidding.getFarm_id());
         auctionMapper.plusConsumerPachiPoint(closedBidding.getConsumer_id());
-        registAlert(closedBidding, 4);
+        registAlert(closedBidding, END_AUCTION_ALERT);
+    }
+
+    // ############################################## 마이페이지 ####################################################
+    
+    // 소비자, 농가 경매내역 가져오기
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int limit){
+        return checkUser.equals("consumer") ? auctionMapper.getMypageConsumerAuctionDetails(limit) : auctionMapper.getMypageFarmAuctionDetails(limit); 
     }
 
 }

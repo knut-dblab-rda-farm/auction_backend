@@ -9,4 +9,7 @@ public class AuctionReviewDTO {
     private Integer grade_point;
     private String consumer_review;
     private String farm_review;
+    private Integer farm_id;
+    private Integer consumer_id;
+    private String auction_name;
 }

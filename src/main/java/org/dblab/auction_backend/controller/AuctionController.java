@@ -41,25 +41,21 @@ public class AuctionController {
 
     @PostMapping(value = "/registAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public int registAuction(@ModelAttribute AuctionDTO auctionDTO) {
-
         System.out.println(auctionDTO.toString());
-
         return auctionService.registAuction(auctionDTO);
     }
 
     // 경매 가져오기(limit부터 2개)
     @GetMapping(value = "/getAuction/{limit}")
     public List<AuctionDTO> getAuction(@PathVariable("limit") int limit) {
-        
         log.info("limit: " + limit);
         return auctionService.getAuction(limit);
     }
-
+    
     @PatchMapping(value = "/updateAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public int updateAuction(@ModelAttribute AuctionDTO auctionDTO) {
 
         // 이미지 변경했는지 여부, 이전 이미지 이름
-        
         System.out.println(auctionDTO.toString());
 
         return auctionService.updateAuction(auctionDTO);
@@ -119,10 +115,10 @@ public class AuctionController {
         return auctionService.updateAuctionReview(auctionReviewDTO);
     }
 
-    @DeleteMapping(value = "/deleteAuctionReview/{auction_Id}")
-    public int deleteAuctionReview(@PathVariable("auction_Id") int auction_Id) {
+    @DeleteMapping(value = "/deleteAuctionReview")
+    public int deleteAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
 
-        return auctionService.deleteAuctionReview(auction_Id);
+        return auctionService.deleteAuctionReview(auctionReviewDTO);
     }
 
 
@@ -141,8 +137,15 @@ public class AuctionController {
     // 인기 검색어 5개 가져오기
     @GetMapping(value = "/popularKeyword")
     public List<String> getPopularKeyword() {
-        
         return auctionService.getPopularKeyword();
-        
+    }
+
+    // ############################################## 마이페이지 ####################################################
+    
+    // 소비자, 농가 경매내역 가져오기
+    @GetMapping(value = "/getMypageAuctionDetails/{checkUser}/{limit}")
+    public List<Map<String, Object>> getMypageAuctionDetails(@PathVariable("checkUser") String checkUser, @PathVariable("limit") int limit) {
+        log.info("limit: " + limit);
+        return auctionService.getMypageAuctionDetails(checkUser, limit);
     }
 }
