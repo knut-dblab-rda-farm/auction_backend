@@ -36,8 +36,44 @@ public class MemberController {
 	private final MemberService memberService;
 	private Logger log = LoggerFactory.getLogger(MemberController.class);
 
+	// #################################################### 소비자, 농가 공통 Updatem, Delete 기능 ####################################################
+	@PatchMapping(value = "/memberPassword")
+	public int updateMemberPassword(@RequestBody Map<String, String> map) {
+		System.out.println(map.toString());
+		return memberService.updateMemberPassword(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("passwd"));
+	}
 
-	// #################################################### 소비자 CRUD ####################################################
+	@PatchMapping(value = "/memberPhoneNumber")
+	public int updateMemberPhoneNumber(@RequestBody Map<String, String> map) {
+		System.out.println(map.toString());
+		return memberService.updateMemberPhoneNumber(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("phonenum"));
+	}
+
+	@PatchMapping(value = "/memberName")
+	public int updateMemberName(@RequestBody Map<String, String> map) {
+		System.out.println(map.toString());
+		return memberService.updateMemberName(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("name"));
+	}
+
+	@PatchMapping(value = "/memberAddress")
+	public int updateMemberAddress(@RequestBody Map<String, String> map) {
+		System.out.println(map.toString());
+		return memberService.updateMemberAddress(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("zipcode"), map.get("location"));
+	}
+
+	@PatchMapping(value = "/memberProfileImage")
+	public int updateMemberProfileImage(@ModelAttribute MemberProfileDTO memberProfileDTO) {
+		System.out.println(memberProfileDTO.toString());
+		return memberService.updateMemberProfileImage(memberProfileDTO);
+	}
+
+	@DeleteMapping(value = "/member", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public int deleteConsumerMember(@RequestBody Map<String, String> map) {
+		System.out.println("deleteMember: " + map.get("consumer_id"));
+		return memberService.deleteMember(map.get("checkUser"), Integer.parseInt(map.get("consumer_id")));
+	}
+
+	// #################################################### 소비자 C ####################################################
 
 	@PostMapping(value = "/signupConsumer", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public HashMap<String, Object> signupConsumer(@RequestBody ConsumerMemberDTO consumerMemberDTO) {
@@ -45,133 +81,49 @@ public class MemberController {
 		return memberService.signupConsumer(consumerMemberDTO);
 	}
 
-	@GetMapping(value = "/getConsumer", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public ConsumerMemberDTO getConsumer(@RequestParam(value = "email") String email) {
-		System.out.println(email);
-		return memberService.getConsumerMember(email);
-	}
-
-	@PatchMapping(value = "/updateConsumerMember/passwd")
-	public int updateConsumerMemberPassword(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberPassword("consumer", Integer.parseInt(map.get("consumer_id")), map.get("c_passwd"));
-	}
-
-	@PatchMapping(value = "/updateConsumerMember/phonenum")
-	public int updateConsumerMemberPhoneNumber(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberPhoneNumber("consumer", Integer.parseInt(map.get("consumer_id")), map.get("c_phonenum"));
-	}
-
-	@PatchMapping(value = "/updateConsumerMember/name")
-	public int updateConsumerMemberName(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberName("consumer", Integer.parseInt(map.get("consumer_id")), map.get("c_name"));
-	}
-
-	@PatchMapping(value = "/updateConsumerMember/address")
-	public int updateConsumerMemberZipcode(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberAddress("consumer", Integer.parseInt(map.get("consumer_id")), map.get("c_zipcode"), map.get("c_location"));
-	}
-
-	@PatchMapping(value = "/updateConsumerMember/profileImg")
-	public int updateConsumerMemberProfileImg(@ModelAttribute MemberProfileDTO memberProfileDTO) {
-		System.out.println(memberProfileDTO.toString());
-		return memberService.updateMemberProfileImage("consumer", memberProfileDTO);
-	}
-
-	// ----------
-
-	@DeleteMapping(value = "/deleteConsumerMember/{consumer_id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public int deleteConsumerMember(@PathVariable("consumer_id") int consumer_id) {
-		System.out.println("deleteConsumerMember: " + consumer_id);
-		return memberService.deleteConsumerMember(consumer_id);
-	}
-
-
-	// #################################################### 농가 CRUD ####################################################
+	// #################################################### 농가 CUD ####################################################
 
 	@PostMapping(value = "/signupFarmMember", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public HashMap<String, Object> signupFarmMember(@RequestBody FarmMemberDTO farmMemberDTO) {
 		System.out.println(farmMemberDTO.toString());
 		return memberService.signupFarmMember(farmMemberDTO);
 	}
-
-	@PatchMapping(value = "/updateFarmMember/passwd")
-	public int updateFarmMemberPassword(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberPassword("farm", Integer.parseInt(map.get("farm_id")), map.get("f_passwd"));
-	}
-
-	@PatchMapping(value = "/updateFarmMember/phonenum")
-	public int updateFarmMemberPhoneNumber(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberPhoneNumber("farm", Integer.parseInt(map.get("farm_id")), map.get("f_phonenum"));
-	}
-
-	@PatchMapping(value = "/updateFarmMember/name")
-	public int updateFarmMemberName(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberName("farm", Integer.parseInt(map.get("farm_id")), map.get("f_name"));
-	}
-
-	@PatchMapping(value = "/updateFarmMember/zipcode")
-	public int updateFarmMemberZipcode(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateMemberAddress("farm", Integer.parseInt(map.get("farm_id")), map.get("f_zipcode"), map.get("f_location"));
-	}
-
-	@PatchMapping(value = "/updateFarmMember/profileImg")
-	public int updateFarmMemberProfileImg(@ModelAttribute MemberProfileDTO memberProfileDTO) {
-		System.out.println(memberProfileDTO.toString());
-		return memberService.updateMemberProfileImage("farm", memberProfileDTO);
-	}
-
-	@PatchMapping(value = "/updateFarmMember/bank")
+	
+	@PatchMapping(value = "/farmMemberBank")
 	public int updateFarmMemberBank(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberBank(Integer.parseInt(map.get("farm_id")), map.get("f_bank"), map.get("f_bank_name"), Integer.parseInt(map.get("f_bank_num")));
 	}
 
-	@PatchMapping(value = "/updateFarmMember/num")
-	public int updateFarmMemberNum(@RequestBody Map<String, String> map) {
+	@PatchMapping(value = "/farmMemberNumber")
+	public int updateFarmMemberNumber(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
-		return memberService.updateFarmMemberNum(Integer.parseInt(map.get("farm_id")), map.get("f_num"));
+		return memberService.updateFarmMemberNumber(Integer.parseInt(map.get("farm_id")), map.get("f_num"));
 	}
 	
-	@PatchMapping(value = "/updateFarmMember/farmName")
+	@PatchMapping(value = "/farmMemberFarmName")
 	public int updateFarmMemberFarmName(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberFarmName(Integer.parseInt(map.get("farm_id")), map.get("f_farm_name"));
 	}
 
-	@PatchMapping(value = "/updateFarmMember/explanation")
+	@PatchMapping(value = "/farmMemberExplanation")
 	public int updateFarmMemberExplanation(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberExplanation(Integer.parseInt(map.get("farm_id")), map.get("f_explanation"));
 	}
 
-	@PatchMapping(value = "/updateFarmMember/majorCrop")
+	@PatchMapping(value = "/farmMemberMajorCrop")
 	public int updateFarmMemberMajorCrop(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberMajorCrop(Integer.parseInt(map.get("farm_id")), map.get("f_major_crop"));
 	}
 	
-	@PatchMapping(value = "/updateFarmMember/img")
+	@PatchMapping(value = "/farmMemberFarmImage")
 	public int updateFarmMemberFarmImage(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberFarmImage(Integer.parseInt(map.get("farm_id")), map.get("img"));
 	}
-
-	// ----------
-
-	@DeleteMapping(value = "/deleteFarmMember/{farm_id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public int deleteFarmMember(@PathVariable("farm_id") int farm_id) {
-		System.out.println("deleteFarmMember: " + farm_id);
-		return memberService.deleteFarmMember(farm_id);
-	}
-
 
 	// #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################
 
@@ -195,11 +147,12 @@ public class MemberController {
 		return memberService.existEmail(email);
 	}
 
-	@PostMapping(value = "/checkPhoneNumber")
-	public String checkPhoneNumber(@RequestBody Map<String, String> phoneNumber) {
-		System.out.println(phoneNumber.toString());
+	// 실제로 사용할 때 주석 풀기!!
+	// @PostMapping(value = "/checkPhoneNumber")
+	// public String checkPhoneNumber(@RequestBody Map<String, String> phoneNumber) {
+	// 	System.out.println(phoneNumber.toString());
 
-		return memberService.checkPhoneNumber(phoneNumber.get("phoneNumber"));
-	}
+	// 	return memberService.checkPhoneNumber(phoneNumber.get("phoneNumber"));
+	// }
 
 }

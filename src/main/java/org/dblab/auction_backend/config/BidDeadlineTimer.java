@@ -61,6 +61,7 @@ public class BidDeadlineTimer extends Thread {
                 System.out.println("sleep time : " + sleepTime);
                 Thread.sleep(sleepTime);    // 헤당 시간 만큼 sleep
             } catch (Exception e) {
+                System.out.println(e.toString());
                 System.out.println("마감경매 추가!!");
             } 
         }

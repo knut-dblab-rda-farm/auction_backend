@@ -33,6 +33,12 @@ public interface AuctionService {
 
     public int deleteProduct(int product_id);
 
+    // public int selectWish(int auction_id, int consumer_id);
+
+    public int registWish(int auction_id, int consumer_id);
+
+    public int deleteWish(int auction_id, int consumer_id);
+
     // #################################################### 리뷰 CRUD #####################################################
 
     public int registAuctionReview(AuctionReviewDTO auctionReview);
@@ -68,6 +74,6 @@ public interface AuctionService {
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
-    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int limit);
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit);
     
 }

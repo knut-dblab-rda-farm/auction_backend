@@ -17,17 +17,6 @@
         SELECT * FROM consumer_member WHERE c_email = #{c_email}
     </select>
 
-    <update id="updateConsumerMember">
-		UPDATE consumer_member
-		SET c_passwd= #{c_passwd},
-		c_name = #{c_name},
-        c_phonenum = #{c_phonenum},
-		c_zipcode = #{c_zipcode},
-        c_location = #{c_location},
-		c_profile_img = #{c_profile_img}
-		WHERE c_email = #{c_email}
-	</update>
-
     <update id="updateConsumerMemberPassword">
 		UPDATE consumer_member
 		SET c_passwd= #{c_passwd}
@@ -80,29 +69,6 @@
     <select id="getFarmMember" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
         SELECT * FROM farm_member WHERE f_email = #{f_email}
     </select>
-
-    <update id="updateFarmMember">
-		UPDATE farm_member
-		SET f_passwd= #{f_passwd},
-            f_email = #{f_email},
-            f_phonenum = #{f_phonenum},
-            f_name = #{f_name},
-            f_RRN = #{f_RRN},
-            f_BRN = #{f_BRN},
-            f_zipcode = #{f_zipcode},
-            f_location = #{f_location},
-            f_farm_name = #{f_farm_name},
-            f_num = #{f_num},
-            f_explanation = #{f_explanation},
-            f_major_crop = #{f_major_crop},
-            f_profile_img = #{f_profile_img},
-            f_img = #{f_img},
-            f_bank = #{f_bank},
-            f_bank_name = #{f_bank_name},
-            f_bank_num = #{f_bank_num},
-            f_bank_img = #{f_bank_img}
-		WHERE farm_id = #{farm_id}
-	</update>
 
     <update id="updateFarmMemberPassword">
 		UPDATE farm_member
@@ -218,12 +184,4 @@
     <select id="existEmail" resultType="int">
         SELECT EXISTS (SELECT * FROM consumer_member CROSS JOIN farm_member WHERE c_email = #{email} OR f_email = #{email})
     </select>
-
-
-    <!--  #################################################### 테스트용 ####################################################  --> 
-
-    <select id="getAllConsumerMember" resultType="org.dblab.auction_backend.domain.ConsumerMemberDTO">
-        SELECT * FROM consumer_member
-    </select>
-
 </mapper>

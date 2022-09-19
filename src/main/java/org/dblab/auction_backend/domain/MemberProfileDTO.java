@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class MemberProfileDTO {
-
+    private String checkUser;
     private int id;
     private String profile_img;
     private MultipartFile new_profile_img;

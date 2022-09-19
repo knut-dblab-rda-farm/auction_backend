@@ -14,6 +14,7 @@ import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.SearchWordDTO;
+import org.dblab.auction_backend.domain.WishDTO;
 import org.dblab.auction_backend.mapper.AuctionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,6 +135,31 @@ public class AuctionServiceImpl implements AuctionService{
 
         return auctionMapper.deleteProduct(product_id);
     }
+
+
+
+    // @Override
+    // public int selectWish(int auction_id, int consumer_id){
+    //     return auctionMapper.selectWish(auction_id, consumer_id);
+    // }
+
+    @Override
+    public int registWish(int auction_id, int consumer_id){
+        
+        if(auctionMapper.checkWish(auction_id, consumer_id)==0){
+            return auctionMapper.registWish(auction_id, consumer_id);
+        } else {
+            return auctionMapper.deleteWish(auction_id, consumer_id);
+        }
+
+    }
+
+    @Override
+    public int deleteWish(int auction_id, int consumer_id){
+        return auctionMapper.deleteWish(auction_id, consumer_id);
+    }
+
+
 
 
     // #################################################### 리뷰 CRUD #####################################################
@@ -327,8 +353,8 @@ public class AuctionServiceImpl implements AuctionService{
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
-    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int limit){
-        return checkUser.equals("consumer") ? auctionMapper.getMypageConsumerAuctionDetails(limit) : auctionMapper.getMypageFarmAuctionDetails(limit); 
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit){
+        return checkUser.equals("consumer") ? auctionMapper.getMypageConsumerAuctionDetails(id, limit) : auctionMapper.getMypageFarmAuctionDetails(id, limit); 
     }
 
 }

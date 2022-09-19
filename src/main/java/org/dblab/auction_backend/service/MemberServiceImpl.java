@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService{
         }
     }
 
-    public int updateMemberProfileImage(String checkUser, MemberProfileDTO memberProfileDTO) {
+    public int updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
         log.info("updateMemberPassword..........");
         
         // 이전 이미지 삭제
@@ -96,7 +96,7 @@ public class MemberServiceImpl implements MemberService{
     	}
 
         // 새로운 프로필 이미지 생성
-        String profile_img = checkUser + "_" +memberProfileDTO.getId() + ".png";
+        String profile_img = memberProfileDTO.getCheckUser() + "_" +memberProfileDTO.getId() + ".png";
 
         try {
             memberProfileDTO.getNew_profile_img().transferTo(new File(MEMBER_PROFILE_FOLDER_PATH + profile_img));
@@ -108,14 +108,19 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // 이미지 path DB에 저장
-        if (checkUser.equals("consumer")) {
+        if (memberProfileDTO.getCheckUser().equals("consumer")) {
             return memberMapper.updateConsumerMemberProfileImage(memberProfileDTO.getId(), profile_img);
         } else {
             return memberMapper.updateFarmMemberProfileImage(memberProfileDTO.getId(), profile_img);
         }
     }
 
-    // #################################################### 소비자 CRUD ####################################################
+    public int deleteMember(String checkUser, int id){
+        // 관련 경매 및 프로필 삭제 코드
+        return checkUser.equals("consumer") ?  memberMapper.deleteConsumerMember(id) : memberMapper.deleteFarmMember(id);
+    }
+
+    // #################################################### 소비자 C ####################################################
 
     public HashMap<String, Object> signupConsumer(ConsumerMemberDTO consumerMember) {
         log.info("signupConsumer..........");
@@ -134,25 +139,6 @@ public class MemberServiceImpl implements MemberService{
         }
         return token;
     }
-
-	public ConsumerMemberDTO getConsumerMember(String c_email) {
-        log.info("getConsumerMember..........");
-        return memberMapper.getConsumerMember(c_email);
-	}
-
-    public int updateConsumerMember(ConsumerMemberDTO consumerMember) {
-        log.info("updateConsumerMember..........");
-
-        consumerMember.setC_passwd(passwordEncoder.encode(consumerMember.getC_passwd()));
-
-        return memberMapper.updateConsumerMember(consumerMember);
-    }
-
-    public int deleteConsumerMember(int consumer_id) {
-        log.info("deleteConsumerMember..........");
-        return memberMapper.deleteConsumerMember(consumer_id);
-    }
-
 
     // #################################################### 농가 CRUD ####################################################
 
@@ -174,21 +160,13 @@ public class MemberServiceImpl implements MemberService{
         return token;
     }
 
-    public int updateFarmMember(FarmMemberDTO farmMemberDTO){
-        log.info("updateFarmMember..........");
-
-        farmMemberDTO.setF_passwd(passwordEncoder.encode(farmMemberDTO.getF_passwd()));
-
-        return memberMapper.updateFarmMember(farmMemberDTO);
-    }
-
     public int updateFarmMemberBank(int farm_id, String f_bank, String f_bank_name, int f_bank_num) {
         log.info("updateFarmMemberBank..........");
 
         return memberMapper.updateFarmMemberBank(farm_id, f_bank, f_bank_name, f_bank_num);
     }
 
-    public int updateFarmMemberNum(int farm_id, String f_num) {
+    public int updateFarmMemberNumber(int farm_id, String f_num) {
         log.info("updateFarmMemberNum..........");
 
         return memberMapper.updateFarmMemberNum(farm_id, f_num);
@@ -217,12 +195,6 @@ public class MemberServiceImpl implements MemberService{
 
         return memberMapper.updateFarmMemberFarmImage(farm_id, f_img);
     }
-
-    public int deleteFarmMember(int farm_id) {
-        log.info("deleteFarmMember..........");
-        return memberMapper.deleteFarmMember(farm_id);
-    }
-
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인 ####################################################
 
@@ -308,6 +280,8 @@ public class MemberServiceImpl implements MemberService{
         return result;
     }
 
+    // 실제로 사용할 때 주석 풀기!!
+    /*
     public String checkPhoneNumber(String phoneNumber) {
 
         String api_key = "NCS0EL4LZSW359YQ";
@@ -320,7 +294,7 @@ public class MemberServiceImpl implements MemberService{
 
         for(int i=0; i<4; i++) certificationNumber += Integer.toString(rand.nextInt(10));
 
-        params.put("to", phoneNumber);    // 수신전화번호
+        params.put("to", phoneNumber);          // 수신전화번호
         params.put("from", sentPhoneNumber);    // 발신전화번호
         params.put("type", "SMS");
         params.put("text", "Pachi 못난이 농산물 경매 플랫폼 휴대폰 인증 메시지 : 인증번호는" + "["+certificationNumber+"]" + "입니다.");
@@ -337,15 +311,5 @@ public class MemberServiceImpl implements MemberService{
 
         return certificationNumber;
     }
-    
-    
-
-
-    // #################################################### 테스트용! ####################################################
-
-    public List<ConsumerMemberDTO> getAllConsumerMember() {
-        log.info("getAllList..........");
-        return memberMapper.getAllConsumerMember();
-    }
-    
+    */
 }

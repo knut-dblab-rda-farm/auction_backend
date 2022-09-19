@@ -94,6 +94,20 @@ public class AuctionController {
         return auctionService.deleteProduct(product_id);
     }
 
+    @GetMapping(value = "/registWish")
+    public int registWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+        return auctionService.registWish(auction_id, consumer_id);
+
+    }
+
+    @DeleteMapping(value = "/deleteWish")
+    public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+        return auctionService.deleteWish(auction_id, consumer_id);
+    }
+
+    // @PostMapping(value = "/Wish")
+    // public int registWish
+
 
     // #################################################### 리뷰 CRUD #####################################################
     
@@ -143,9 +157,9 @@ public class AuctionController {
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
-    @GetMapping(value = "/getMypageAuctionDetails/{checkUser}/{limit}")
-    public List<Map<String, Object>> getMypageAuctionDetails(@PathVariable("checkUser") String checkUser, @PathVariable("limit") int limit) {
+    @GetMapping(value = "/getMypageAuctionDetails/{checkUser}/{id}/{limit}")
+    public List<Map<String, Object>> getMypageAuctionDetails(@PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("limit") int limit) {
         log.info("limit: " + limit);
-        return auctionService.getMypageAuctionDetails(checkUser, limit);
+        return auctionService.getMypageAuctionDetails(checkUser, id, limit);
     }
 }

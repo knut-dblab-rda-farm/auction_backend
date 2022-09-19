@@ -14,10 +14,6 @@ public interface MemberMapper {
 
     public ConsumerMemberDTO getConsumerMember(@Param("c_email") String c_email);
 
-    public int updateConsumerMember(ConsumerMemberDTO consumerMember);
-    
-    // -------------------
-
     public int updateConsumerMemberPassword(@Param("consumer_id") int consumer_id, @Param("c_passwd") String c_passwd);
 
     public int updateConsumerMemberPhoneNumber(@Param("consumer_id") int consumer_id, @Param("c_phonenum") String c_phonenum);
@@ -27,8 +23,6 @@ public interface MemberMapper {
     public int updateConsumerMemberAddress(@Param("consumer_id") int consumer_id, @Param("c_zipcode") String c_zipcode, @Param("c_location") String c_location);
 
     public int updateConsumerMemberProfileImage(@Param("consumer_id") int consumer_id, @Param("c_profile_img") String c_profile_img);
-
-    // -------------------
 
     public int deleteConsumerMember(@Param("consumer_id") int consumer_id);
 
@@ -42,10 +36,6 @@ public interface MemberMapper {
     public int signupFarmMember(FarmMemberDTO farmMemberDTO);
 
     public FarmMemberDTO getFarmMember(@Param("f_email") String f_email);
-
-    public int updateFarmMember(FarmMemberDTO farmMemberDTO);
-
-    // -------------------
 
     public int updateFarmMemberPassword(@Param("farm_id") int farm_id, @Param("f_passwd") String f_passwd);
 
@@ -72,8 +62,6 @@ public interface MemberMapper {
     // -------------------
 
     public int deleteFarmMember(@Param("farm_id") int farm_id);
-
-    public List<ConsumerMemberDTO> getAllConsumerMember();
 
     public int setFarmToken(@Param("f_email") String f_email, @Param("token") String token);
 

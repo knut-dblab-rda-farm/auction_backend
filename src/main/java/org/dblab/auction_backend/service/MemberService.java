@@ -20,29 +20,21 @@ public interface MemberService {
 
     public int updateMemberAddress(String checkUser, int id, String zipcode, String location);
 
-    public int updateMemberProfileImage(String checkUser, MemberProfileDTO userProfileDTO);
+    public int updateMemberProfileImage(MemberProfileDTO userProfileDTO);
 
-    
-    // #################################################### 소비자 CRUD ####################################################
+    public int deleteMember(String checkUser, int id);
+
+    // #################################################### 소비자 C ####################################################
 
     public HashMap<String, Object> signupConsumer(ConsumerMemberDTO consumerMember);
-
-	public ConsumerMemberDTO getConsumerMember(String c_email);
-
-    public int updateConsumerMember(ConsumerMemberDTO consumerMember);
-
-    public int deleteConsumerMember(int consumer_id);
-
 
     // #################################################### 농가 CRUD ####################################################
 
     public HashMap<String, Object> signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmMember(FarmMemberDTO farmMemberDTO);
-
     public int updateFarmMemberBank(int farm_id, String f_bank, String f_bank_name, int f_bank_num);
 
-    public int updateFarmMemberNum(int farm_id, String f_num);
+    public int updateFarmMemberNumber(int farm_id, String f_num);
 
     public int updateFarmMemberFarmName(int farm_id, String f_farm_name);
 
@@ -51,10 +43,6 @@ public interface MemberService {
     public int updateFarmMemberMajorCrop(int farm_id, String f_major_crop);
     
     public int updateFarmMemberFarmImage(int farm_id, String f_img);
-    
-    public int deleteFarmMember(int farm_id);
-
-    public List<ConsumerMemberDTO> getAllConsumerMember();
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################
 
@@ -64,6 +52,8 @@ public interface MemberService {
 
     public int existEmail(String email);
 
+    // 실제로 사용할 때 주석 풀기!!
+    /*
     public String checkPhoneNumber(String phoneNumber);
-
+    */
 }
