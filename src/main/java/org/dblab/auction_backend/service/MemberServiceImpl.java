@@ -169,7 +169,7 @@ public class MemberServiceImpl implements MemberService{
     public int updateFarmMemberNumber(int farm_id, String f_num) {
         log.info("updateFarmMemberNum..........");
 
-        return memberMapper.updateFarmMemberNum(farm_id, f_num);
+        return memberMapper.updateFarmMemberNumber(farm_id, f_num);
     }
 
     public int updateFarmMemberFarmName(int farm_id, String f_farm_name) {

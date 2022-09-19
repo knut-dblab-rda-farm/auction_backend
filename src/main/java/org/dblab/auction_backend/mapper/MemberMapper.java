@@ -49,7 +49,7 @@ public interface MemberMapper {
 
     public int updateFarmMemberBank(@Param("farm_id") int farm_id, @Param("f_bank") String f_bank, @Param("f_bank_name") String f_bank_name, @Param("f_bank_num") int f_bank_num);
 
-    public int updateFarmMemberNum(@Param("farm_id") int farm_id, @Param("f_num") String f_num);
+    public int updateFarmMemberNumber(@Param("farm_id") int farm_id, @Param("f_num") String f_num);
 
     public int updateFarmMemberFarmName(@Param("farm_id") int farm_id, @Param("f_farm_name") String f_farm_name);
 

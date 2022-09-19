@@ -96,13 +96,16 @@ public class AuctionController {
 
     @GetMapping(value = "/registWish")
     public int registWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+
         return auctionService.registWish(auction_id, consumer_id);
 
     }
 
     @DeleteMapping(value = "/deleteWish")
     public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+        
         return auctionService.deleteWish(auction_id, consumer_id);
+
     }
 
     // @PostMapping(value = "/Wish")

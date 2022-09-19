@@ -109,7 +109,7 @@
 		WHERE farm_id = #{farm_id}
 	</update>
 
-    <update id="updateFarmMemberNum">
+    <update id="updateFarmMemberNumber">
 		UPDATE farm_member
 		SET f_num= #{f_num}
 		WHERE farm_id = #{farm_id}
