@@ -118,6 +118,7 @@ public class AuctionServiceImpl implements AuctionService{
 
 
     // #################################################### 상품 U #####################################################
+    
     @Override
     public int updateProduct(ProductDTO productDTO) {
 
@@ -125,22 +126,13 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.updateProduct(productDTO);
     }
 
-    // @Override
-    // public int selectWish(int auction_id, int consumer_id){
-    //     return auctionMapper.selectWish(auction_id, consumer_id);
-    // }
-
     @Override
     public int registWish(int auction_id, int consumer_id){
-        
         if(auctionMapper.checkWish(auction_id, consumer_id)==0){
-            
             return auctionMapper.registWish(auction_id, consumer_id);
-            
         } else {
             return auctionMapper.deleteWish(auction_id, consumer_id);
         }
-
     }
 
     @Override
@@ -152,16 +144,10 @@ public class AuctionServiceImpl implements AuctionService{
         }
     }
 
-    
-
-
     @Override
     public int deleteWish(int auction_id, int consumer_id){
         return auctionMapper.deleteWish(auction_id, consumer_id);
     }
-
-
-
 
     // #################################################### 리뷰 CRUD #####################################################
 

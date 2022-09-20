@@ -37,8 +37,6 @@ public interface AuctionMapper {
 
     public int checkWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
 
-    // //public int selectWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
-
     public int registWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
     
     public int deleteWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
