@@ -32,7 +32,9 @@ public interface MemberService {
 
     public HashMap<String, Object> signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmMemberBank(int farm_id, String f_bank, String f_bank_name, int f_bank_num);
+    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
+
+    public int updateFarmImages(FarmMemberDTO farmMemberDTO);
 
     public int updateFarmMemberNumber(int farm_id, String f_num);
 

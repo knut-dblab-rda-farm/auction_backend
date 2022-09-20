@@ -47,7 +47,9 @@ public interface MemberMapper {
 
     public int updateFarmMemberProfileImage(@Param("farm_id") int farm_id, @Param("f_profile_img") String f_profile_img);
 
-    public int updateFarmMemberBank(@Param("farm_id") int farm_id, @Param("f_bank") String f_bank, @Param("f_bank_name") String f_bank_name, @Param("f_bank_num") int f_bank_num);
+    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
+
+    public int updateFarmImages(FarmMemberDTO farmMemberDTO);
 
     public int updateFarmMemberNumber(@Param("farm_id") int farm_id, @Param("f_num") String f_num);
 

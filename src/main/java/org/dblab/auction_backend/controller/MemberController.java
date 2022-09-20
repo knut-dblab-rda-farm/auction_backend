@@ -90,9 +90,9 @@ public class MemberController {
 	}
 	
 	@PatchMapping(value = "/farmMemberBank")
-	public int updateFarmMemberBank(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateFarmMemberBank(Integer.parseInt(map.get("farm_id")), map.get("f_bank"), map.get("f_bank_name"), Integer.parseInt(map.get("f_bank_num")));
+	public int updateFarmMemberBank(@ModelAttribute FarmMemberDTO farmMemberDTO) {
+		System.out.println(farmMemberDTO.toString());
+		return memberService.updateFarmMemberBank(farmMemberDTO);
 	}
 
 	@PatchMapping(value = "/farmMemberNumber")

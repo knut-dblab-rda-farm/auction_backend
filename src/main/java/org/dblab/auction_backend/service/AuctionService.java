@@ -20,24 +20,22 @@ public interface AuctionService {
 
     public int updateAuction(AuctionDTO auctionDTO);
 
-    public int deleteAuction(int auction_Id);
+    public int deleteAuction(int auction_Id, int product_id);
 
     public int updateBidding(Bidding bidding);
 
 
-    // #################################################### 상품 URD #####################################################
-
-    public List<ProductDTO> getProduct();
+    // #################################################### 상품 U #####################################################
 
     public int updateProduct(ProductDTO productDTO);
-
-    public int deleteProduct(int product_id);
 
     // public int selectWish(int auction_id, int consumer_id);
 
     public int registWish(int auction_id, int consumer_id);
 
     public int deleteWish(int auction_id, int consumer_id);
+
+    public boolean checkWish(int auction_id, int consumer_id);
 
     // #################################################### 리뷰 CRUD #####################################################
 
@@ -75,5 +73,8 @@ public interface AuctionService {
     
     // 소비자, 농가 경매내역 가져오기
     public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit);
+
+    //마이페이지 나의 찜 목록 가져오기
+    public List<Map<String, Object>> getWishList(int consumer_id, int limit);
     
 }

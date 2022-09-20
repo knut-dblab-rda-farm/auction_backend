@@ -30,8 +30,6 @@ public interface AuctionMapper {
     // #################################################### 상품 CURD #####################################################
 
     public int registProduct(ProductDTO product);
-    
-    public List<ProductDTO> getProduct();
 
     public int updateProduct(ProductDTO productDTO);
 
@@ -117,5 +115,7 @@ public interface AuctionMapper {
     public List<Map<String, Object>> getMypageConsumerAuctionDetails(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
 
     public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("farm_id") int farm_id, @Param("startLimit") int startLimit);
+
+    public List<Map<String, Object>> getWishList(@Param("consumer_id") int farm_id, @Param("startLimit") int startLimit);
     
 }

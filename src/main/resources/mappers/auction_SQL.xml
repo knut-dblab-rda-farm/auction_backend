@@ -10,12 +10,6 @@
         RETURNING auction_Id, deadline_date
     </select>
 
-    <!-- <insert id="registAuction">
-        INSERT INTO auction
-        (auction_name, start_date, deadline_date, a_starting_price, a_max_price, product_id, farm_id) VALUES
-        (#{auction_name}, #{start_date}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{productDTO.product_id}, #{farm_id})
-    </insert> -->
-
     <resultMap type="org.dblab.auction_backend.domain.ProductDTO" id="ProductDTO">
         <id property="product_id" column="product_id" />
         <id property="p_name" column="p_name" />
@@ -86,10 +80,6 @@
         (product, product_kg, p_drop_date, size, p_status, p_explanation, product_img_name, farm_id) VALUES
         (#{product}, #{product_kg}, #{p_drop_date}, #{size}, #{p_status}, #{p_explanation}, #{product_img_name}, #{farm_id})
     </insert>
-
-    <select id="getProduct" resultType="org.dblab.auction_backend.domain.ProductDTO">
-        SELECT * FROM product
-    </select>
 
     <update id="updateProduct">
 		UPDATE auction
@@ -315,9 +305,9 @@
     </select>
 
     <!-- ############################################## 찜 #################################################### -->
-    <select id="getWishAuction" resultMap="AuctionDTO">
+    <select id="getWishList" resultType="map">
         SELECT * FROM auction a, product p, wish w
-        WHERE a.product_id = p.product_id and a.farm_id = f.farm_id
+        WHERE a.product_id = p.product_id and a.auction_id = w.auction_id and a.consumer_id and #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 5
     </select>

@@ -89,13 +89,15 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int updateAuction(AuctionDTO auctionDTO) {
         log.info("updateAuction..........");
+        // 이미지 변경했는지 여부 확인하기, 이전 이미지 이름
         return auctionMapper.updateAuction(auctionDTO);
     }
 
     @Override
-    public int deleteAuction(int auction_Id) {
+    public int deleteAuction(int auction_Id, int product_id) {
         log.info("deleteAuction..........");
-        return auctionMapper.deleteAuction(auction_Id);
+        auctionMapper.deleteAuction(auction_Id);
+        return auctionMapper.deleteProduct(product_id);
     }
 
     @Override
@@ -115,28 +117,13 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
 
-    // #################################################### 상품 CURD #####################################################
-
-    @Override
-    public List<ProductDTO> getProduct() {
-        log.info("getProduct..........");
-        return auctionMapper.getProduct();
-    }
-
+    // #################################################### 상품 U #####################################################
     @Override
     public int updateProduct(ProductDTO productDTO) {
 
         // 이미지 변경 시 처리 코드 
         return auctionMapper.updateProduct(productDTO);
     }
-
-    @Override
-    public int deleteProduct(int product_id) {
-
-        return auctionMapper.deleteProduct(product_id);
-    }
-
-
 
     // @Override
     // public int selectWish(int auction_id, int consumer_id){
@@ -147,12 +134,26 @@ public class AuctionServiceImpl implements AuctionService{
     public int registWish(int auction_id, int consumer_id){
         
         if(auctionMapper.checkWish(auction_id, consumer_id)==0){
+            
             return auctionMapper.registWish(auction_id, consumer_id);
+            
         } else {
             return auctionMapper.deleteWish(auction_id, consumer_id);
         }
 
     }
+
+    @Override
+    public boolean checkWish(int auction_id, int consumer_id){
+        if(auctionMapper.checkWish(auction_id, consumer_id)==0){
+            return false;
+        } else{
+            return true;
+        }
+    }
+
+    
+
 
     @Override
     public int deleteWish(int auction_id, int consumer_id){
@@ -355,6 +356,13 @@ public class AuctionServiceImpl implements AuctionService{
     // 소비자, 농가 경매내역 가져오기
     public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit){
         return checkUser.equals("consumer") ? auctionMapper.getMypageConsumerAuctionDetails(id, limit) : auctionMapper.getMypageFarmAuctionDetails(id, limit); 
+    }
+
+    //마이페이지 나의 찜 목록 가져오기
+    public List<Map<String, Object>> getWishList(int consumer_id, int limit){
+        return auctionMapper.getWishList(consumer_id, limit);
+
+
     }
 
 }

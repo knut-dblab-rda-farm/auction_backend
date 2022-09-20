@@ -3,6 +3,7 @@ package org.dblab.auction_backend.domain;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +34,8 @@ public class FarmMemberDTO implements UserDetails {
     private String f_bank_img;
     private String authority;
     private String token;
+    private MultipartFile new_bank_img;
+    private MultipartFile new_farm_img;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

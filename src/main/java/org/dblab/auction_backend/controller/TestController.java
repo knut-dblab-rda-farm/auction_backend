@@ -4,7 +4,6 @@ package org.dblab.auction_backend.controller;
 import java.sql.Date;
 
 import org.dblab.auction_backend.config.BidDeadlineTimer;
-import org.dblab.auction_backend.domain.Post;
 import org.dblab.auction_backend.mapper.TestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,11 +61,6 @@ public class TestController {
 		return "안녕하세요 " + user;
 	}
 
-	@GetMapping(value = "/post", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Post post() {
-		return new Post("abc", "123");
-	}
-
 	// 이미지 가져오기 TEST
     @PostMapping(value = "/productImage", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public String productImage(@RequestParam("productImage") MultipartFile img) {
@@ -83,6 +77,5 @@ public class TestController {
 	
 	// 	return img.getOriginalFilename();
 	// }
-
 	
 }

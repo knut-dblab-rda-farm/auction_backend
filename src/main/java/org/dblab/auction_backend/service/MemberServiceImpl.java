@@ -31,7 +31,9 @@ public class MemberServiceImpl implements MemberService{
     private PasswordEncoder passwordEncoder;
     private final MemberMapper memberMapper;
     private final JwtTokenProvider jwtTokenProvider;
-    String MEMBER_PROFILE_FOLDER_PATH= "../../../../resources/static/member_profile/";
+    String MEMBER_PROFILE_IMAGES_FOLDER_PATH= "../../../../resources/static/member_profile_images/";
+    String BANK_IMAGES_FOLDER_PATH= "../../../../resources/static/bank_images/";
+    String FARM_IMAGES_FOLDER_PATH= "../../../../resources/static/farm_images/";
     
     private Logger log = LoggerFactory.getLogger(MemberServiceImpl.class);
 
@@ -83,7 +85,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("updateMemberPassword..........");
         
         // 이전 이미지 삭제
-        File profileImageFile = new File(MEMBER_PROFILE_FOLDER_PATH+memberProfileDTO.getProfile_img());
+        File profileImageFile = new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + memberProfileDTO.getProfile_img());
 
         if (profileImageFile.exists()){
             if (profileImageFile.delete()){
@@ -99,7 +101,7 @@ public class MemberServiceImpl implements MemberService{
         String profile_img = memberProfileDTO.getCheckUser() + "_" +memberProfileDTO.getId() + ".png";
 
         try {
-            memberProfileDTO.getNew_profile_img().transferTo(new File(MEMBER_PROFILE_FOLDER_PATH + profile_img));
+            memberProfileDTO.getNew_profile_img().transferTo(new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + profile_img));
             System.out.println(profile_img + "새로운 프로필 이미지 저장 완료");
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -107,7 +109,7 @@ public class MemberServiceImpl implements MemberService{
             e.printStackTrace();
         }
 
-        // 이미지 path DB에 저장
+        // 이미지 이름 DB에 저장
         if (memberProfileDTO.getCheckUser().equals("consumer")) {
             return memberMapper.updateConsumerMemberProfileImage(memberProfileDTO.getId(), profile_img);
         } else {
@@ -159,11 +161,67 @@ public class MemberServiceImpl implements MemberService{
         }
         return token;
     }
-
-    public int updateFarmMemberBank(int farm_id, String f_bank, String f_bank_name, int f_bank_num) {
+    
+    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
         log.info("updateFarmMemberBank..........");
 
-        return memberMapper.updateFarmMemberBank(farm_id, f_bank, f_bank_name, f_bank_num);
+        // 이전 통장사본 이미지 삭제
+        File farmBankImageFile = new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img());
+
+        if (farmBankImageFile.exists()){
+            if (farmBankImageFile.delete()){
+                System.out.println(farmMemberDTO.getF_bank_img() + " 통장사본 이미지 삭제 성공");
+            } else {
+                System.out.println(farmMemberDTO.getF_bank_img() + " 통장사본 이미지 삭제 실패...");
+            }
+        } else{
+    		System.out.println("회원 프로필 파일이 존재하지 않습니다.");
+    	}
+        
+        // 새로운 통장사본 이미지 생성
+        farmMemberDTO.setF_bank_img(farmMemberDTO.getFarm_id() + "_" + farmMemberDTO.getF_bank_name() + ".png");
+        try {
+            farmMemberDTO.getNew_bank_img().transferTo(new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img()));
+            System.out.println(farmMemberDTO.getF_bank_img() + " 새로운 통장사본 이미지 저장 완료");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 이미지 이름 DB에 저장
+        return memberMapper.updateFarmImages(farmMemberDTO);
+    }
+
+    public int updateFarmImages(FarmMemberDTO farmMemberDTO) {
+        log.info("updateFarmImages..........");
+
+        // 이전 농가업체 이미지 삭제
+        File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + farmMemberDTO.getF_img());
+
+        if (farmImageFile.exists()){
+            if (farmImageFile.delete()){
+                System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
+            } else {
+                System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 실패...");
+            }
+        } else{
+    		System.out.println("농가업체 이미지 파일이 존재하지 않습니다.");
+    	}
+        
+        // 새로운 농가업체 이미지 생성
+        farmMemberDTO.setF_img(farmMemberDTO.getFarm_id() + "_" + farmMemberDTO.getF_img() + ".png");
+        try {
+            farmMemberDTO.getNew_farm_img().transferTo(new File(FARM_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img()));
+            System.out.println(farmMemberDTO.getF_img() + " 새로운 농가업체 이미지 저장 완료");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 이미지 이름 DB에 저장
+        return memberMapper.updateFarmImages(farmMemberDTO);
     }
 
     public int updateFarmMemberNumber(int farm_id, String f_num) {
@@ -192,7 +250,7 @@ public class MemberServiceImpl implements MemberService{
 
     public int updateFarmMemberFarmImage(int farm_id, String f_img) {
         log.info("updateFarmMemberFarmImage..........");
-
+        // 이미지 처리 코드 추가!!
         return memberMapper.updateFarmMemberFarmImage(farm_id, f_img);
     }
 
