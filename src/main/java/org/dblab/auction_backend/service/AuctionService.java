@@ -8,6 +8,7 @@ import org.dblab.auction_backend.domain.AuctionReviewDTO;
 import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
 import org.dblab.auction_backend.domain.ProductDTO;
+import org.dblab.auction_backend.domain.WishDTO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface AuctionService {
@@ -24,16 +25,18 @@ public interface AuctionService {
 
     public int updateBidding(Bidding bidding);
 
+    public List<AuctionDTO> auctionInfo(int auction_Id);
+
 
     // #################################################### 상품 U #####################################################
 
     public int updateProduct(ProductDTO productDTO);
 
-    // public int selectWish(int auction_id, int consumer_id);
+    // public int registWish(int auction_id, int consumer_id);
 
-    public int registWish(int auction_id, int consumer_id);
+    public List<WishDTO> registWish(WishDTO wishDTO);
 
-    public int deleteWish(int auction_id, int consumer_id);
+    public List<WishDTO> deleteWish(WishDTO wishDTO);
 
     public int checkWish(int auction_id, int consumer_id);
 
@@ -75,6 +78,6 @@ public interface AuctionService {
     public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit);
 
     //마이페이지 나의 찜 목록 가져오기
-    public List<Map<String, Object>> getWishList(int consumer_id, int limit);
+    public List<WishDTO> getWishList(int consumer_id, int limit);
     
 }

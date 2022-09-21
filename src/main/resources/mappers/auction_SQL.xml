@@ -73,6 +73,13 @@
 	</update>
 
 
+    <select id="auctionInfo" resultType="map">
+        SELECT *
+        FROM auction
+        WHERE auction_Id = #{auction_Id}
+    </select>
+
+
     <!-- ############################################## 상품 CRUD #################################################### -->
     
     <insert id="registProduct" parameterType="org.dblab.auction_backend.domain.ProductDTO" useGeneratedKeys="true" keyProperty="product_id">
@@ -303,11 +310,11 @@
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 5
     </select>
-
+    <!--a.product_id = p.product_id and     , product p-->
     <!-- ############################################## 찜 #################################################### -->
     <select id="getWishList" resultType="map">
-        SELECT * FROM auction a, product p, wish w
-        WHERE a.product_id = p.product_id and a.auction_id = w.auction_id and a.consumer_id and #{consumer_id}
+        SELECT * FROM auction a, wish w
+        WHERE a.auction_id = w.auction_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 5
     </select>

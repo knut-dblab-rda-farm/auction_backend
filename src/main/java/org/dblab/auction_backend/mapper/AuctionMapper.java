@@ -11,6 +11,7 @@ import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.SearchWordDTO;
+import org.dblab.auction_backend.domain.WishDTO;
 
 public interface AuctionMapper {
 
@@ -26,7 +27,7 @@ public interface AuctionMapper {
 
     public int updateBidding(Bidding bidding);
 
-
+    public List<AuctionDTO> auctionInfo(@Param("auction_Id") int auction_Id);
     // #################################################### 상품 CURD #####################################################
 
     public int registProduct(ProductDTO product);
@@ -37,9 +38,9 @@ public interface AuctionMapper {
 
     public int checkWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
-    public int registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public List<WishDTO> registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
     
-    public int deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public List<WishDTO> deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
 
     // #################################################### 리뷰 CRUD #####################################################
@@ -114,6 +115,6 @@ public interface AuctionMapper {
 
     public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("farm_id") int farm_id, @Param("startLimit") int startLimit);
 
-    public List<Map<String, Object>> getWishList(@Param("consumer_id") int farm_id, @Param("startLimit") int startLimit);
+    public List<WishDTO> getWishList(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
     
 }

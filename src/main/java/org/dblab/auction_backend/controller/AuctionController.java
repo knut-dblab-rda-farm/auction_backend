@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.dblab.auction_backend.domain.AuctionDTO;
 import org.dblab.auction_backend.domain.AuctionReviewDTO;
 import org.dblab.auction_backend.domain.ProductDTO;
+import org.dblab.auction_backend.domain.WishDTO;
 import org.dblab.auction_backend.service.AuctionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +45,11 @@ public class AuctionController {
     public int registAuction(@ModelAttribute AuctionDTO auctionDTO) {
         System.out.println(auctionDTO.toString());
         return auctionService.registAuction(auctionDTO);
+    }
+
+    @GetMapping(value = "/auctionInfo/{Auction_Id}")
+    public List<AuctionDTO> getAuctionInfo(@PathVariable("Auction_Id") int Auction_Id){
+        return auctionService.auctionInfo(Auction_Id);
     }
     
     @PatchMapping(value = "/updateAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
@@ -73,19 +80,35 @@ public class AuctionController {
         return auctionService.updateProduct(productDTO);
     }
 
-    @PatchMapping(value = "/registWish")
-    public int registWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+    // @PostMapping(value = "/registWish")
+    // public int registWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
 
-        return auctionService.registWish(auction_id, consumer_id);
+    //     return auctionService.registWish(auction_id, consumer_id);
+
+    // }
+    
+    @PostMapping(value = "/registWish")
+    public List<WishDTO> registWish(@ModelAttribute WishDTO WishDTO){
+
+        return auctionService.registWish(WishDTO);
 
     }
+
+    // @DeleteMapping(value = "/deleteWish")
+    // public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+        
+    //     return auctionService.deleteWish(auction_id, consumer_id);
+
+    // }
 
     @DeleteMapping(value = "/deleteWish")
-    public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+    public List<WishDTO> deleteWish(@ModelAttribute WishDTO WishDTO){
         
-        return auctionService.deleteWish(auction_id, consumer_id);
+        return auctionService.deleteWish(WishDTO);
 
     }
+
+
     @GetMapping(value = "/checkWish/{auction_id}/{consumer_id}")
     public int checkWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
         log.info(" ddafsdfasdfasdfasdfasdfasdfd"+auctionService.checkWish(auction_id, consumer_id));
@@ -151,8 +174,9 @@ public class AuctionController {
     }
 
     @GetMapping(value ="/getWishList/{consumer_id}/{limit}")
-    public List<Map<String, Object>> getWishList(@PathVariable("consumer_id") int consumer_id, @PathVariable("limit") int limit){
+    public List<WishDTO> getWishList(@PathVariable("consumer_id") int consumer_id, @PathVariable("limit") int limit){
         log.info("limit"+limit);
+        log.info("consumer"+consumer_id);
         return auctionService.getWishList(consumer_id, limit);
     }
 
