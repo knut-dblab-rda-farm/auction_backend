@@ -35,7 +35,7 @@ public interface AuctionService {
 
     public int deleteWish(int auction_id, int consumer_id);
 
-    public boolean checkWish(int auction_id, int consumer_id);
+    public int checkWish(int auction_id, int consumer_id);
 
     // #################################################### 리뷰 CRUD #####################################################
 

@@ -69,6 +69,8 @@ public interface MemberMapper {
 
     public int setNullFarmToken(@Param("f_email") String f_email);
 
+    public int findFarmId(@Param("f_phonenum") int f_phonenum);
+
 
     // #################################################### 로그인, 이메일 중복 확인 #################################################### 
 

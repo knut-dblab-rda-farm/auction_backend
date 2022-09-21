@@ -29,10 +29,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         
         System.out.println("token : " + token);
         try {
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                // validateToken : Jwt 토큰의 유효성 + 만료일자 확인
-                Authentication auth = jwtTokenProvider.getAuthentication(token);
-                // getAuthentication : Jwt 토큰으로 인증 정보 조회
+            if (token != null && jwtTokenProvider.validateToken(token)) {   // validateToken : Jwt 토큰의 유효성 + 만료일자 확인
+                Authentication auth = jwtTokenProvider.getAuthentication(token);   // getAuthentication : Jwt 토큰으로 인증 정보 조회
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch(UsernameNotFoundException e){

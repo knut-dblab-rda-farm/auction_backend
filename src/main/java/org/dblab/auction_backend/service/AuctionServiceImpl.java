@@ -136,12 +136,10 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public boolean checkWish(int auction_id, int consumer_id){
-        if(auctionMapper.checkWish(auction_id, consumer_id)==0){
-            return false;
-        } else{
-            return true;
-        }
+    public int checkWish(int auction_id, int consumer_id){
+        System.out.println(auction_id+" "+consumer_id);
+
+        return auctionMapper.checkWish(auction_id, consumer_id);
     }
 
     @Override

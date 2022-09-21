@@ -73,18 +73,27 @@ public class AuctionController {
         return auctionService.updateProduct(productDTO);
     }
 
-    @GetMapping(value = "/wish")
+    @PatchMapping(value = "/registWish")
     public int registWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
 
         return auctionService.registWish(auction_id, consumer_id);
 
     }
 
-    @DeleteMapping(value = "/wish")
+    @DeleteMapping(value = "/deleteWish")
     public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
         
         return auctionService.deleteWish(auction_id, consumer_id);
 
+    }
+    @GetMapping(value = "/checkWish/{auction_id}/{consumer_id}")
+    public int checkWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+        log.info(" ddafsdfasdfasdfasdfasdfasdfd"+auctionService.checkWish(auction_id, consumer_id));
+        //log.info(" auction_id ,consumer_id "+auction_id+" "+consumer_id);
+        System.out.println(" auction_id ,consumer_id "+auction_id+" "+consumer_id);
+        //System.out.println(" auction_id ,consumer_id "+auctionService.checkWish(auction_id, consumer_id));
+        
+        return auctionService.checkWish(auction_id, consumer_id);
     }
 
     // #################################################### 리뷰 CRUD #####################################################

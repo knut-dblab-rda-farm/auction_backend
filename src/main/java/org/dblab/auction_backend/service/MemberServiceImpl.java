@@ -254,6 +254,13 @@ public class MemberServiceImpl implements MemberService{
         return memberMapper.updateFarmMemberFarmImage(farm_id, f_img);
     }
 
+    // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
+    
+    public int findFarmId(int f_phonenum){
+        log.info("findFarmid................");
+        return memberMapper.findFarmId(f_phonenum);
+    }
+
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인 ####################################################
 
     public UserDetails login(String checkUser ,String email, String password) {
@@ -339,7 +346,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     // 실제로 사용할 때 주석 풀기!!
-    /*
+    /* 
     public String checkPhoneNumber(String phoneNumber) {
 
         String api_key = "NCS0EL4LZSW359YQ";
@@ -370,4 +377,5 @@ public class MemberServiceImpl implements MemberService{
         return certificationNumber;
     }
     */
+    
 }

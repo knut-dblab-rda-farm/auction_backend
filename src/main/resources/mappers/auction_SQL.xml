@@ -100,8 +100,8 @@
 
 
 
-    <select id="checkWish">
-        SELECT COUNT(*) FROM wish WHERE auction_Id=#{auction_id}, consumer_Id=#{conusmer_id}
+    <select id="checkWish" resultType="int">
+        SELECT EXISTS (SELECT * FROM wish WHERE auction_id=#{auction_id} and consumer_Id=#{consumer_id})
     </select>
 
     <!-- <select id="deleteWish">
@@ -116,7 +116,7 @@
     </insert>
 
     <delete id="deleteWish">
-		DELETE FROM wish WHERE consumer_id = #{consumer_id}, auction_Id = #{auction_id}
+		DELETE FROM wish WHERE consumer_id = #{consumer_id} and auction_Id = #{auction_id}
 	</delete>
 
     <!-- ############################################## 리뷰 CRUD #################################################### -->

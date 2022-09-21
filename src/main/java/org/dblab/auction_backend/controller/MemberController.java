@@ -124,6 +124,21 @@ public class MemberController {
 		System.out.println(map.toString());
 		return memberService.updateFarmMemberFarmImage(Integer.parseInt(map.get("farm_id")), map.get("img"));
 	}
+	// #################################################### 소비자, 농가 아이디, 비번 찾기 ####################################################
+
+	@GetMapping(value = "findFarmId")
+	public int findFarmId(@PathVariable("f_phonenum") int f_phonenum){
+		return memberService.findFarmId(f_phonenum);
+	}
+
+	// @PatchMapping(value = "changeFarmPw")
+	// public int changePw(@PathVariable("f_email") String f_email){
+		//return memberService.changeFarmPw(f_email);
+
+	// }
+
+
+
 
 	// #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################
 

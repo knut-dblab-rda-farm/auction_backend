@@ -35,11 +35,11 @@ public interface AuctionMapper {
 
     public int deleteProduct(@Param("product_id") int product_id);
 
-    public int checkWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
+    public int checkWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
-    public int registWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
+    public int registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
     
-    public int deleteWish(@Param("auction_Id") int auction_Id, @Param("consumer_id") int consumer_id);
+    public int deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
 
     // #################################################### 리뷰 CRUD #####################################################
