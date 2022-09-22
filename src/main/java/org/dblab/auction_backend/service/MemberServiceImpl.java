@@ -256,9 +256,9 @@ public class MemberServiceImpl implements MemberService{
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
-    public int findFarmId(int f_phonenum){
+    public int findFarmId(int farm_name, int f_phonenum){
         log.info("findFarmid................");
-        return memberMapper.findFarmId(f_phonenum);
+        return memberMapper.findFarmId(f_name, f_phonenum);
     }
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인 ####################################################

@@ -127,8 +127,8 @@ public class MemberController {
 	// #################################################### 소비자, 농가 아이디, 비번 찾기 ####################################################
 
 	@GetMapping(value = "findFarmId")
-	public int findFarmId(@PathVariable("f_phonenum") int f_phonenum){
-		return memberService.findFarmId(f_phonenum);
+	public int findFarmId(@PathVariable("f_name") int f_name, @PathVariable("f_phonenum") int f_phonenum){
+		return memberService.findFarmId(f_name, f_phonenum);
 	}
 
 	// @PatchMapping(value = "changeFarmPw")
