@@ -61,7 +61,7 @@ public interface MemberMapper {
     
     public int updateFarmMemberFarmImage(@Param("farm_id") int farm_id, @Param("f_img") String f_img);
 
-    // -------------------
+    // ------------------------
 
     public int deleteFarmMember(@Param("farm_id") int farm_id);
 
