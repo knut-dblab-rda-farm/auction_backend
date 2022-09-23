@@ -52,6 +52,8 @@ public interface MemberService {
     
     public int findFarmId(int f_name, int f_phonenum);
 
+    public int findConsumerId(int c_name, int c_phonenum);
+
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################
 

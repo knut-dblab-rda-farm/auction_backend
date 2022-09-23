@@ -316,6 +316,26 @@
         LIMIT #{startLimit}, 5
     </select>
 
+
+    <!--마이페이지에서 소비자 파치포인트 조회하는 부분인데 어제 sql문때문에 서버가 꺼지는 에러가있어서 혹시 또 에러 발생하면 이부분 지워주세요!-->
+    <!-- <select id = "consumerPachiPoint">
+        SELECT pachi_point
+        FROM consumer_member
+        WHERE consumer_id=#{consumer_id}
+    </select>
+
+    <select id = "farmPachiPoint">
+        SELECT pachi_point
+        FROM farm_member
+        WHERE farm_id=#{farm_id}
+    </select> -->
+
+
+
+
+
+
+
 </mapper>
 
 

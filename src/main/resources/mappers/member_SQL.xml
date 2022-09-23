@@ -67,7 +67,7 @@
     </insert>
 
     <select id="getFarmMember" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
-        SELECT f_email, f_phonenum, f_name, f_BRN, f_zipcode, f_location, f_farm_name, f_num, f_explanation, f_major_crop, f_profile_img, f_img  
+        SELECT f_email, f_phonenum, f_name, f_BRN, f_zipcode, f_location, f_farm_name, f_num, f_explanation, f_major_crop, f_profile_img, f_img, pachi_point  
 		FROM farm_member 
 		WHERE farm_id = #{farm_id}
     </select>
