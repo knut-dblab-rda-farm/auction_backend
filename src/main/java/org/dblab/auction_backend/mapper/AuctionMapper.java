@@ -38,9 +38,9 @@ public interface AuctionMapper {
 
     public int checkWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
-    public List<WishDTO> registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public int registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
     
-    public List<WishDTO> deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public int deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
 
 
     // #################################################### 리뷰 CRUD #####################################################
@@ -115,6 +115,10 @@ public interface AuctionMapper {
 
     public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("farm_id") int farm_id, @Param("startLimit") int startLimit);
 
-    public List<WishDTO> getWishList(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
+    public List<Map<String, Object>> getWishList(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
+
+    public int consumerPachiPoint(@Param("consumer_id") int consumer_id);
+
+    public int farmPachiPoint(@Param("farm_id") int farm_id);
     
 }

@@ -18,7 +18,8 @@ public class AuctionDTO {
     private Date bid_time;
     private Integer product_id;
     private Integer farm_id;
-
+    private Integer consumer_id;
+    
     private String f_farm_name;
     private String f_name;
     private Integer f_num;

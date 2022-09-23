@@ -44,7 +44,7 @@
 
     <select id="getAuction" resultMap="AuctionDTO">
         SELECT * FROM auction a, product p, farm_member f 
-        WHERE a.product_id = p.product_id and a.farm_id = f.farm_id
+        WHERE a.product_id = p.product_id and a.farm_id = f.farm_id and a.deadline_date > NOW()
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 2
     </select>
@@ -103,27 +103,6 @@
 
     <delete id="deleteProduct">
 		DELETE FROM product WHERE product_id = #{product_id}
-	</delete>
-
-
-
-    <select id="checkWish" resultType="int">
-        SELECT EXISTS (SELECT * FROM wish WHERE auction_id=#{auction_id} and consumer_Id=#{consumer_id})
-    </select>
-
-    <!-- <select id="deleteWish">
-        SELECT * FROM wish WHERE auction_Id=#{auction_id}, consumer_Id=#{conusmer_id}
-    </select> -->
-
-    <!-- 찜하기 추가-->
-    <insert id="registWish">
-        INSERT INTO wish
-        (auction_Id, consumer_Id) VALUES
-        (#{auction_Id}, #{consumer_Id})
-    </insert>
-
-    <delete id="deleteWish">
-		DELETE FROM wish WHERE consumer_id = #{consumer_id} and auction_Id = #{auction_id}
 	</delete>
 
     <!-- ############################################## 리뷰 CRUD #################################################### -->
@@ -310,11 +289,29 @@
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 5
     </select>
+
+    
     <!--a.product_id = p.product_id and     , product p-->
     <!-- ############################################## 찜 #################################################### -->
+
+    <select id="checkWish" resultType="int">
+        SELECT EXISTS (SELECT * FROM wish WHERE auction_id=#{auction_id} and consumer_Id=#{consumer_id})
+    </select>
+
+    <!-- 찜하기 추가-->
+    <insert id="registWish">
+        INSERT INTO wish
+        (auction_Id, consumer_Id) VALUES
+        (#{auction_id}, #{consumer_id})
+    </insert>
+
+    <delete id="deleteWish">
+		DELETE FROM wish WHERE consumer_id = #{consumer_id} and auction_id = #{auction_id}
+	</delete>
+
     <select id="getWishList" resultType="map">
-        SELECT * FROM auction a, wish w
-        WHERE a.auction_id = w.auction_id and a.consumer_id = #{consumer_id}
+        SELECT * FROM auction a, product p, wish w
+        WHERE a.auction_id = w.auction_id and a.product_id = p.product_id and w.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
         LIMIT #{startLimit}, 5
     </select>

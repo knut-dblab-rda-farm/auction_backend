@@ -24,7 +24,7 @@ public class SocketController {
     public List<AuctionDTO> getAuction(int limit){
 
         System.out.println("limit: " + limit);
-
+        
         return auctionService.getAuction(limit);
     }
 

@@ -131,22 +131,22 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.updateProduct(productDTO);
     }
 
-    // @Override
-    // public int registWish(int auction_id, int consumer_id){
-    //     if(auctionMapper.checkWish(auction_id, consumer_id)==0){
-    //         return auctionMapper.registWish(auction_id, consumer_id);
-    //     } else {
-    //         return auctionMapper.deleteWish(auction_id, consumer_id);
-    //     }
-    // }
     @Override
-    public List<WishDTO> registWish(WishDTO WishDTO){
-        if(auctionMapper.checkWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id())==0){
-            return auctionMapper.registWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
+    public int registWish(WishDTO wishDTO){
+        if(auctionMapper.checkWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id())==0){
+            return auctionMapper.registWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id());
         } else {
-            return auctionMapper.deleteWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
+            return auctionMapper.deleteWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id());
         }
     }
+    // @Override
+    // public List<WishDTO> registWish(WishDTO WishDTO){
+    //     if(auctionMapper.checkWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id())==0){
+    //         return auctionMapper.registWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
+    //     } else {
+    //         return auctionMapper.deleteWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
+    //     }
+    // }
 
     @Override
     public int checkWish(int auction_id, int consumer_id){
@@ -160,8 +160,8 @@ public class AuctionServiceImpl implements AuctionService{
     //     return auctionMapper.deleteWish(auction_id, consumer_id);
     // }
     @Override
-    public List<WishDTO> deleteWish(WishDTO WishDTO){
-        return auctionMapper.deleteWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
+    public int deleteWish(int auction_id, int consumer_id){
+        return auctionMapper.deleteWish(auction_id, consumer_id);
     }
 
     // #################################################### 리뷰 CRUD #####################################################
@@ -360,7 +360,7 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     //마이페이지 나의 찜 목록 가져오기
-    public List<WishDTO> getWishList(int consumer_id, int limit){
+    public List<Map<String, Object>> getWishList(int consumer_id, int limit){
         log.info("limit22---"+limit);
         log.info("consumer22---"+consumer_id);
         log.info("리스트"+auctionMapper.getWishList(consumer_id, limit));
@@ -368,7 +368,14 @@ public class AuctionServiceImpl implements AuctionService{
 
         return auctionMapper.getWishList(consumer_id, limit);
 
+    }
 
+    public int consumerPachiPoint(int consumer_id){
+        return auctionMapper.consumerPachiPoint(consumer_id);
+    }
+
+    public int farmPachiPoint(int farm_id){
+        return auctionMapper.farmPachiPoint(farm_id);
     }
 
 }

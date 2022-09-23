@@ -34,9 +34,9 @@ public interface AuctionService {
 
     // public int registWish(int auction_id, int consumer_id);
 
-    public List<WishDTO> registWish(WishDTO wishDTO);
+    public int registWish(WishDTO wishDTO);
 
-    public List<WishDTO> deleteWish(WishDTO wishDTO);
+    public int deleteWish(int auction_id, int consumer_id);
 
     public int checkWish(int auction_id, int consumer_id);
 
@@ -78,6 +78,10 @@ public interface AuctionService {
     public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit);
 
     //마이페이지 나의 찜 목록 가져오기
-    public List<WishDTO> getWishList(int consumer_id, int limit);
+    public List<Map<String, Object>> getWishList(int consumer_id, int limit);
+
+    public int consumerPachiPoint(int consumer_id);
+
+    public int farmPachiPoint(int farm_id);
     
 }

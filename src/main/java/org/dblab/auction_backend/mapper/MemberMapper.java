@@ -35,7 +35,9 @@ public interface MemberMapper {
     
     public int signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public FarmMemberDTO getFarmMember(@Param("f_email") String f_email);
+    public FarmMemberDTO getFarmMember(@Param("farm_id") int farm_id);
+
+    public FarmMemberDTO getFarmMemberAuth(@Param("f_email") String f_email);
 
     public int updateFarmMemberPassword(@Param("farm_id") int farm_id, @Param("f_passwd") String f_passwd);
 

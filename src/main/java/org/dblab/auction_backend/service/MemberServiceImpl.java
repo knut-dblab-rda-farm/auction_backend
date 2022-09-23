@@ -161,6 +161,10 @@ public class MemberServiceImpl implements MemberService{
         }
         return token;
     }
+
+    public FarmMemberDTO getFarmMember(int farm_id){
+        return memberMapper.getFarmMember(farm_id);
+    }
     
     public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
         log.info("updateFarmMemberBank..........");
@@ -258,7 +262,7 @@ public class MemberServiceImpl implements MemberService{
     
     public int findFarmId(int farm_name, int f_phonenum){
         log.info("findFarmid................");
-        return memberMapper.findFarmId(f_name, f_phonenum);
+        return memberMapper.findFarmId(farm_name, f_phonenum);
     }
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인 ####################################################
@@ -301,7 +305,7 @@ public class MemberServiceImpl implements MemberService{
             return consumerMember;
         }
 
-        farmMember = memberMapper.getFarmMember(email);
+        farmMember = memberMapper.getFarmMemberAuth(email);
 
         if(farmMember == null && !passwordEncoder.matches(password, farmMember.getF_passwd())) {
             System.out.println("널입니다!");

@@ -67,8 +67,16 @@
     </insert>
 
     <select id="getFarmMember" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
-        SELECT * FROM farm_member WHERE f_email = #{f_email}
+        SELECT f_email, f_phonenum, f_name, f_BRN, f_zipcode, f_location, f_farm_name, f_num, f_explanation, f_major_crop, f_profile_img, f_img  
+		FROM farm_member 
+		WHERE farm_id = #{farm_id}
     </select>
+
+	<select id="getFarmMemberAuth" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
+        SELECT * FROM farm_member 
+		WHERE f_email = #{f_email}
+    </select>
+	
 
     <update id="updateFarmMemberPassword">
 		UPDATE farm_member

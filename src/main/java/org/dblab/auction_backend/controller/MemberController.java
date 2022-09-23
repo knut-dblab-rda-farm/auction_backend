@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.dblab.auction_backend.domain.ConsumerMemberDTO;
 import org.dblab.auction_backend.domain.FarmMemberDTO;
 import org.dblab.auction_backend.domain.LoginObj;
@@ -87,6 +88,12 @@ public class MemberController {
 	public HashMap<String, Object> signupFarmMember(@RequestBody FarmMemberDTO farmMemberDTO) {
 		System.out.println(farmMemberDTO.toString());
 		return memberService.signupFarmMember(farmMemberDTO);
+	}
+
+	@GetMapping(value = "/farmMember/{farm_id}")
+	public FarmMemberDTO getFarmMember(@PathVariable("farm_id") int farm_id) {
+		System.out.println(farm_id);
+		return memberService.getFarmMember(farm_id);
 	}
 	
 	@PatchMapping(value = "/farmMemberBank")

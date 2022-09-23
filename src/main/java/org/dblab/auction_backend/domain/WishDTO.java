@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class WishDTO {
 
-    private Integer auction_Id;
-    private Integer consumer_Id;
+    private Integer auction_id;
+    private Integer consumer_id;
     private Integer startLimit;
 
 }

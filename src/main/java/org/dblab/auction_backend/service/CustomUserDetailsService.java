@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public FarmMemberDTO loadFarmByEmail(String email, String token) throws UsernameNotFoundException {
 
         FarmMemberDTO farmMemberDTO = null;
-        farmMemberDTO = memberMapper.getFarmMember(email);
+        farmMemberDTO = memberMapper.getFarmMemberAuth(email);
         
         if (farmMemberDTO == null || !token.equals(farmMemberDTO.getToken())){
             System.out.println("토큰이 같지 않음!");
@@ -67,7 +67,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             user = memberMapper.getConsumerMember(email);
             System.out.println(user.toString());
         } else {
-            user = memberMapper.getFarmMember(email);
+            user = memberMapper.getFarmMemberAuth(email);
             System.out.println(user.toString());
         }
         if (user == null)

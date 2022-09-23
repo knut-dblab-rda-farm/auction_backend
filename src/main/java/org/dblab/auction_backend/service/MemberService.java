@@ -32,6 +32,8 @@ public interface MemberService {
 
     public HashMap<String, Object> signupFarmMember(FarmMemberDTO farmMemberDTO);
 
+    public FarmMemberDTO getFarmMember(int farm_id);
+
     public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
 
     public int updateFarmImages(FarmMemberDTO farmMemberDTO);
