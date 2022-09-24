@@ -3,7 +3,7 @@ package org.dblab.auction_backend.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.dblab.auction_backend.config.JwtTokenProvider;
@@ -11,7 +11,6 @@ import org.dblab.auction_backend.domain.ConsumerMemberDTO;
 import org.dblab.auction_backend.domain.FarmMemberDTO;
 import org.dblab.auction_backend.domain.MemberProfileDTO;
 import org.dblab.auction_backend.mapper.MemberMapper;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import net.nurigo.java_sdk.api.Message;
-import net.nurigo.java_sdk.exceptions.CoolsmsException;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
@@ -162,7 +159,7 @@ public class MemberServiceImpl implements MemberService{
         return token;
     }
 
-    public FarmMemberDTO getFarmMember(int farm_id){
+    public Map<String, Object> getFarmMember(int farm_id){
         return memberMapper.getFarmMember(farm_id);
     }
     
@@ -260,15 +257,19 @@ public class MemberServiceImpl implements MemberService{
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
-    public int findEmail(String checkUser, String name, String phonenum){
-        log.info("findEmail................");
+    public String findEmail(String checkUser, String name, String phonenum){
+        log.info("findEmail................" + checkUser + "_" + name + "_" + phonenum);
         return checkUser.equals("consumer") ?  memberMapper.findConsumerEmail(name, phonenum) : memberMapper.findFarmEmail(name, phonenum);
     }
 
-    public int findId(String checkUser, String name, String email, String phonenum){
+    public Map<String, Object> findPassword(String checkUser, String name, String email, String phonenum){
         log.info("findId................");
-        //checkPhoneNumber(phonenum);
-        return checkUser.equals("consumer") ?  memberMapper.findConsumerId(name, email, phonenum) : memberMapper.findFarmId(name, email, phonenum);
+        // String phoneAuthNumber =  checkPhoneNumber(phonenum);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("phoneAuthNumber", checkPhoneNumber(phonenum));
+        resultMap.put("id", checkUser.equals("consumer") ?  memberMapper.findConsumerId(name, email, phonenum) : memberMapper.findFarmId(name, email, phonenum));
+        log.info("findId................" + resultMap.toString());
+        return resultMap;
     }
 
 
@@ -357,36 +358,36 @@ public class MemberServiceImpl implements MemberService{
     }
 
     // 실제로 사용할 때 주석 풀기!!
-    /* 
+    
     public String checkPhoneNumber(String phoneNumber) {
 
-        String api_key = "NCS0EL4LZSW359YQ";
-        String api_secret = "G7DMS4WVT3BP7MP9XXSAEYACYGP0NUQM";
-        String sentPhoneNumber = "01098474711";
-        Message coolsms = new Message(api_key, api_secret);
-        HashMap<String, String> params = new HashMap<String, String>();
+        // String api_key = "NCS0EL4LZSW359YQ";
+        // String api_secret = "G7DMS4WVT3BP7MP9XXSAEYACYGP0NUQM";
+        // String sentPhoneNumber = "01098474711";
+        // Message coolsms = new Message(api_key, api_secret);
+        // HashMap<String, String> params = new HashMap<String, String>();
         Random rand  = new Random();
         String certificationNumber = "";
 
         for(int i=0; i<4; i++) certificationNumber += Integer.toString(rand.nextInt(10));
 
-        params.put("to", phoneNumber);          // 수신전화번호
-        params.put("from", sentPhoneNumber);    // 발신전화번호
-        params.put("type", "SMS");
-        params.put("text", "Pachi 못난이 농산물 경매 플랫폼 휴대폰 인증 메시지 : 인증번호는" + "["+certificationNumber+"]" + "입니다.");
-        params.put("app_version", "test app 1.2"); // application name and version
+        // params.put("to", phoneNumber);          // 수신전화번호
+        // params.put("from", sentPhoneNumber);    // 발신전화번호
+        // params.put("type", "SMS");
+        // params.put("text", "Pachi 못난이 농산물 경매 플랫폼 휴대폰 인증 메시지 : 인증번호는" + "["+certificationNumber+"]" + "입니다.");
+        // params.put("app_version", "test app 1.2"); // application name and version
 
-        try {
-            JSONObject obj = (JSONObject) coolsms.send(params);
-            System.out.println(obj.toString());
-            System.out.println("인증번호: " + certificationNumber);
-        } catch (CoolsmsException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCode());
-        }
+        // try {
+        //     JSONObject obj = (JSONObject) coolsms.send(params);
+        //     System.out.println(obj.toString());
+        //     System.out.println("인증번호: " + certificationNumber);
+        // } catch (CoolsmsException e) {
+        //     System.out.println(e.getMessage());
+        //     System.out.println(e.getCode());
+        // }
 
         return certificationNumber;
     }
-    */
+
     
 }

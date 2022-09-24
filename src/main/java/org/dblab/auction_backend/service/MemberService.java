@@ -2,6 +2,7 @@ package org.dblab.auction_backend.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dblab.auction_backend.domain.ConsumerMemberDTO;
 import org.dblab.auction_backend.domain.FarmMemberDTO;
@@ -32,7 +33,7 @@ public interface MemberService {
 
     public HashMap<String, Object> signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public FarmMemberDTO getFarmMember(int farm_id);
+    public Map<String, Object> getFarmMember(int farm_id);
 
     public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
 
@@ -50,9 +51,9 @@ public interface MemberService {
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
-    public int findEmail(String checkUser, String name, String phonenum); //아이디가 이메일이라서 이메일 반환해주는
+    public String findEmail(String checkUser, String name, String phonenum); //아이디가 이메일이라서 이메일 반환해주는
 
-    public int findId(String checkUser ,String name, String email, String phonenum);  //비밀번호 찾기 전 아이디 검증 
+    public Map<String, Object> findPassword(String checkUser ,String name, String email, String phonenum);  //비밀번호 찾기 전 아이디 검증 
 
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################

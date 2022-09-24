@@ -61,7 +61,7 @@ public interface AuctionService {
 
     // #################################################### 검색 기능 #####################################################
 
-    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword);
+    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword, int startLimit);
 
     public List<String> getPopularKeyword();
 
@@ -70,7 +70,7 @@ public interface AuctionService {
 
     public List<BidClosingDTO> getRecentlyBid();
 
-    public void closeBidding(int auction_Id);
+    public void closeBidding(int auction_Id, Boolean ealryClosing);
 
     // ############################################## 마이페이지 ####################################################
     
@@ -84,4 +84,7 @@ public interface AuctionService {
 
     public int farmPachiPoint(int farm_id);
     
+    public int farmCountAuction(int farm_id);
+
+    public int consumerCountAuction(int consumer_id);
 }

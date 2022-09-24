@@ -91,8 +91,8 @@ public class MemberController {
 	}
 
 	@GetMapping(value = "/farmMember/{farm_id}")
-	public FarmMemberDTO getFarmMember(@PathVariable("farm_id") int farm_id) {
-		System.out.println(farm_id);
+	public Map<String, Object> getFarmMember(@PathVariable("farm_id") int farm_id) {
+		System.out.println("/farmMember/{farm_id}" + farm_id);
 		return memberService.getFarmMember(farm_id);
 	}
 	
@@ -133,14 +133,15 @@ public class MemberController {
 	}
 	// #################################################### 소비자, 농가 아이디, 비번 찾기 ####################################################
 
-	@PostMapping(value = "findEmail/{checkUser}/{name}/{phonenum}")
-	public int findEmail(@PathVariable("checkUser") String checkUser, @PathVariable("name") String name, @PathVariable("phonenum") String phonenum){
-		return memberService.findEmail(checkUser, name, phonenum);
+	@PostMapping(value = "/findEmail")
+	public String findEmail(@RequestBody Map<String, String> map){
+		System.out.println(map.toString());
+		return memberService.findEmail(map.get("checkUser"), map.get("name"), map.get("phonenum"));
 	}
 
-	@PostMapping(value = "findId/{checkUser}/{name}/{email}/{phonenum}")
-	public int findId(@PathVariable("checkUser") String checkUser, @PathVariable("name") String name, @PathVariable("email") String email, @PathVariable("phonenum") String phonenum){
-		return memberService.findId(checkUser, name, email, phonenum);
+	@PostMapping(value = "/findPassword")
+	public Map<String, Object> findId(@RequestBody Map<String, String> map){
+		return memberService.findPassword(map.get("checkUser"), map.get("name"), map.get("email"), map.get("phonenum"));
 	}
 
 	// #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################

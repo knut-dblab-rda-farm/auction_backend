@@ -1,6 +1,7 @@
 package org.dblab.auction_backend.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.dblab.auction_backend.domain.ConsumerMemberDTO;
@@ -35,7 +36,7 @@ public interface MemberMapper {
     
     public int signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public FarmMemberDTO getFarmMember(@Param("farm_id") int farm_id);
+    public Map<String, Object> getFarmMember(@Param("farm_id") int farm_id);
 
     public FarmMemberDTO getFarmMemberAuth(@Param("f_email") String f_email);
 
@@ -71,9 +72,9 @@ public interface MemberMapper {
 
     public int setNullFarmToken(@Param("f_email") String f_email);
 
-    public int findFarmEmail(@Param("f_name") String f_name, @Param("f_phonenum") String f_phonenum);
+    public String findFarmEmail(@Param("f_name") String f_name, @Param("f_phonenum") String f_phonenum);
 
-    public int findConsumerEmail(@Param("c_name") String c_name, @Param("c_phonenum") String c_phonenum);
+    public String findConsumerEmail(@Param("c_name") String c_name, @Param("c_phonenum") String c_phonenum);
 
     public int findFarmId(@Param("f_name") String f_name,  @Param("f_email") String f_email, @Param("f_phonenum") String f_phonenum);
 

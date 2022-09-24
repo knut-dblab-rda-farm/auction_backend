@@ -86,7 +86,7 @@ public interface AuctionMapper {
 
     // #################################################### 검색 기능 #####################################################
 
-    public List<AuctionDTO> searchAuction(@Param("keyword") String keyword);
+    public List<AuctionDTO> searchAuction(@Param("keyword") String keyword , @Param("startLimit") int startLimit);
 
     public int registKeyword(SearchWordDTO searchWordDTO);
 
@@ -101,6 +101,8 @@ public interface AuctionMapper {
 
     public List<BidClosingDTO> getRecentlyBid();
 
+    public Boolean getBidStatus(@Param("auction_Id") int auction_Id);
+
     public int updateBidStatus(@Param("auction_Id") int auction_Id);
 
     public Bidding getClosedBidding(@Param("auction_Id") int auction_Id);
@@ -108,6 +110,10 @@ public interface AuctionMapper {
     public int plusFarmPachiPoint(@Param("farm_id") int farm_id);
 
     public int plusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
+
+    public int plusConsumerAuctionCount(@Param("consumer_id") int consumer_id);
+
+    public int plusFarmAuctionCount(@Param("farm_id") int farm_id);
 
     // ############################################## 마이페이지 ####################################################
     
@@ -122,5 +128,8 @@ public interface AuctionMapper {
     public int consumerPachiPoint(@Param("consumer_id") int consumer_id);
 
     public int farmPachiPoint(@Param("farm_id") int farm_id);
+
+    public int farmCountAuction(@Param("farm_id") int farm_id);
     
+    public int consumerCountAuction(@Param("consumer_id") int consumer_id);
 }

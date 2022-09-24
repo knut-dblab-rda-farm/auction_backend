@@ -66,7 +66,7 @@
         ]]>
     </insert>
 
-    <select id="getFarmMember" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
+    <select id="getFarmMember" resultType="map">
         SELECT f_email, f_phonenum, f_name, f_BRN, f_zipcode, f_location, f_farm_name, f_num, f_explanation, f_major_crop, f_profile_img, f_img, pachi_point  
 		FROM farm_member 
 		WHERE farm_id = #{farm_id}
@@ -154,12 +154,12 @@
 
     <!-- #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################-->
     
-	<select id="findFarmEmail">
-		SELECT f_email FROM farm_member WHERE f_phonenum = #{f_phonenum} and f_name = #{f_name}
+	<select id="findConsumerEmail" resultType="String">
+		SELECT c_email FROM consumer_member WHERE c_phonenum = #{c_phonenum} and c_name = #{c_name}
 	</select>
 
-	<select id="findConsumerEmail">
-		SELECT c_email FROM farm_member WHERE c_phonenum = #{c_phonenum} and c_name = #{c_name}
+	<select id="findFarmEmail" resultType="String">
+		SELECT f_email FROM farm_member WHERE f_phonenum = #{f_phonenum} and f_name = #{f_name}
 	</select>
 
 	<update id="farmPasswd">
@@ -170,11 +170,11 @@
 		UPDATE consumer_member set c_passwd = #{c_passwd} WHERE c_name = #{c_name} and c_email = #{c_email} and c_phonenum = #{c_phonenum}
 	</update>
 
-	<select id="findFarmId">
+	<select id="findFarmId" resultType="int">
 		SELECT farm_id FROM farm_member WHERE f_name = #{f_name} and f_email= #{f_email} and f_phonenum=#{f_phonenum}
 	</select>
 
-	<select id="findConsumerId">
+	<select id="findConsumerId" resultType="int">
 		SELECT consumer_id FROM consumer_member WHERE c_name = #{c_name} and c_email= #{c_email} and c_phonenum=#{c_phonenum}
 	</select>
 

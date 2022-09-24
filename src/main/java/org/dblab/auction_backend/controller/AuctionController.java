@@ -110,15 +110,24 @@ public class AuctionController {
 
     // #################################################### 검색 기능 #####################################################
 
-    // 경매 검색 기능
-    @GetMapping(value = "/searchAuction/{checkUser}/{id}/{keyword}")
-    public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("keyword") String keyword) {
+    //경매 검색 기능
+    @GetMapping(value = "/searchAuction/{checkUser}/{id}/{keyword}/{startLimit}")
+    public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("keyword") String keyword, @PathVariable("startLimit") int startLimit) {
         
         log.info("keyword: " + keyword);
         log.info("ip: " + request.getRemoteAddr());
 
-        return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword);
+        return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword, startLimit);
     }
+
+    // @GetMapping(value = "/searchAuction/{checkUser}/{id}/{keyword}/{limit}")
+    // public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("keyword") String keyword) {
+        
+    //     log.info("keyword: " + keyword);
+    //     log.info("ip: " + request.getRemoteAddr());
+
+    //     return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword);
+    // }
 
     // 인기 검색어 5개 가져오기
     @GetMapping(value = "/popularKeyword")
@@ -176,6 +185,15 @@ public class AuctionController {
     @GetMapping(value ="/farmPachiPoint/{farm_id}")
     public int farmPachiPoint(@PathVariable("farm_id") int farm_id){
         return auctionService.farmPachiPoint(farm_id);
+    }
+
+    @GetMapping(value = "/consumerCountAuction/{consumer_id}")
+    public int consumerCountAuction(@PathVariable("consumer_id") int consumer_id){
+        return auctionService.consumerCountAuction(consumer_id);
+    }
+    @GetMapping(value = "/farmCountAuction/{farm_id}")
+    public int farmCountAuction(@PathVariable("farm_id") int farm_id){
+        return auctionService.farmCountAuction(farm_id);
     }
 
 }

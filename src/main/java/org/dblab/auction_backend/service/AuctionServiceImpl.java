@@ -36,6 +36,7 @@ public class AuctionServiceImpl implements AuctionService{
     private int BID_ALERT = 1;
     private int END_AUCTION_ALERT = 2;
     private int REIVEW_ALERT = 3;
+    private Boolean EARLY_CLOSING = true;
 
     // #################################################### 경매 CURD #####################################################
 
@@ -105,7 +106,7 @@ public class AuctionServiceImpl implements AuctionService{
         System.out.println(bidding.toString());
         if(bidding.getIsMaxPrice() == 1){
             auctionMapper.updateMaxPriceBidding(bidding);
-            closeBidding(bidding.getAuction_Id());
+            closeBidding(bidding.getAuction_Id(), EARLY_CLOSING);
             return 1;
         } 
         auctionMapper.updateBidding(bidding);
@@ -287,8 +288,8 @@ public class AuctionServiceImpl implements AuctionService{
     // #################################################### 검색 기능 #####################################################
 
     @Override
-    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword){
-        List<AuctionDTO> auctionDTOs = auctionMapper.searchAuction("%" + keyword + "%");
+    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword, int startLimit){
+        List<AuctionDTO> auctionDTOs = auctionMapper.searchAuction("%" + keyword + "%", startLimit);
 
         // 검색된 경매가 있다면 search_word 테이블에 추가
         if (!auctionDTOs.isEmpty()){
@@ -333,14 +334,20 @@ public class AuctionServiceImpl implements AuctionService{
 
     
     // 마감된 경매 상태 업데이트 & 알림
-    public void closeBidding(int auction_Id){
+    public void closeBidding(int auction_Id, Boolean ealryClosing){
         log.info("closeBidding..........");
 
-        auctionMapper.updateBidStatus(auction_Id);           
-        Bidding closedBidding = auctionMapper.getClosedBidding(auction_Id);
-        auctionMapper.plusFarmPachiPoint(closedBidding.getFarm_id());
-        auctionMapper.plusConsumerPachiPoint(closedBidding.getConsumer_id());
-        registAlert(closedBidding, END_AUCTION_ALERT);
+        // 이미 조기 마감된 경매인 경우
+        if(ealryClosing || auctionMapper.getBidStatus(auction_Id)){
+            auctionMapper.updateBidStatus(auction_Id);           
+            Bidding closedBidding = auctionMapper.getClosedBidding(auction_Id);
+            auctionMapper.plusFarmPachiPoint(closedBidding.getFarm_id());
+            auctionMapper.plusFarmAuctionCount(closedBidding.getFarm_id());
+            auctionMapper.plusConsumerPachiPoint(closedBidding.getConsumer_id());
+            auctionMapper.plusConsumerAuctionCount(closedBidding.getConsumer_id());
+            registAlert(closedBidding, END_AUCTION_ALERT);
+        }
+        
     }
 
     // ############################################## 마이페이지 ####################################################
@@ -369,4 +376,11 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.farmPachiPoint(farm_id);
     }
 
+    public int consumerCountAuction(int consumer_id){
+        return auctionMapper.consumerCountAuction(consumer_id);
+    }
+
+    public int farmCountAuction(int farm_id){
+        return auctionMapper.farmCountAuction(farm_id);
+    }
 }

@@ -204,6 +204,7 @@
         SELECT * FROM auction a, product p, farm_member f 
         WHERE a.product_id = p.product_id and a.farm_id = f.farm_id and a.auction_name LIKE #{keyword}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
+        LIMIT #{startLimit}, 4
     </select>
 
     <!-- 검색어 추가 -->
@@ -246,6 +247,13 @@
     ]]>
     </select>
 
+    <!-- 경매 마감 여부 가져오기 -->
+    <select id="getBidStatus" resultType="Boolean">
+        SELECT bid_status
+        FROM auction
+        WHERE auction_Id = #{auction_Id};
+    </select>
+
     <!-- 마감된 경매 상태 업데이트 -->
     <update id="updateBidStatus">
 		UPDATE auction
@@ -274,6 +282,19 @@
         WHERE consumer_id= #{consumer_id}
     </update>
 
+    <update id="plusConsumerAuctionCount">
+        UPDATE consumer_member 
+        SET count_auction = count_auction+1
+        WHERE consumer_id= #{consumer_id}
+    </update>
+
+    <update id="plusFarmAuctionCount">
+        UPDATE farm_member 
+        SET count_auction = count_auction+1
+        WHERE farm_id= #{farm_id}
+    </update>
+
+
     <!-- ############################################## 마이페이지 #################################################### -->
     
     <!-- 소비자, 농가 경매내역 가져오기 -->
@@ -297,6 +318,17 @@
         LIMIT #{startLimit}, 5
     </select>
 
+    <select id="farmCountAuction" resultType="int">
+        SELECT count_auction
+        FROM farm_member
+        WHERE farm_id =#{farm_id}
+    </select>
+
+    <select id="consumerCountAuction" resultType="int">
+        SELECT count_auction
+        FROM consumer_member
+        WHERE consumer_id =#{consumer_id}
+    </select>
     
     <!--a.product_id = p.product_id and     , product p-->
     <!-- ############################################## 찜 #################################################### -->
@@ -325,7 +357,7 @@
 
 
     <!--마이페이지에서 소비자 파치포인트 조회하는 부분인데 어제 sql문때문에 서버가 꺼지는 에러가있어서 혹시 또 에러 발생하면 이부분 지워주세요!-->
-    <select id = "consumerPachiPoint">
+    <select id = "consumerPachiPoint" resultType="int">
         SELECT pachi_point
         FROM consumer_member
         WHERE consumer_id=#{consumer_id}
