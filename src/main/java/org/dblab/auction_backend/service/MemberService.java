@@ -50,9 +50,9 @@ public interface MemberService {
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
-    public int findFarmId(int f_name, int f_phonenum);
+    public int findEmail(String checkUser, String name, String phonenum); //아이디가 이메일이라서 이메일 반환해주는
 
-    public int findConsumerId(int c_name, int c_phonenum);
+    public int findId(String checkUser ,String name, String email, String phonenum);  //비밀번호 찾기 전 아이디 검증 
 
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################

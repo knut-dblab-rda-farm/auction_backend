@@ -27,7 +27,9 @@ public interface AuctionMapper {
 
     public int updateBidding(Bidding bidding);
 
-    public List<AuctionDTO> auctionInfo(@Param("auction_Id") int auction_Id);
+    public int updateMaxPriceBidding(Bidding bidding);
+
+    public AuctionDTO auctionInfo(@Param("auction_Id") int auction_Id);
     // #################################################### 상품 CURD #####################################################
 
     public int registProduct(ProductDTO product);

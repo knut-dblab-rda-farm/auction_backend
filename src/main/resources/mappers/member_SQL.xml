@@ -154,14 +154,31 @@
 
     <!-- #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################-->
     
-	<select id="findFarmId">
-		SELECT f_email FROM farm_member WHERE f_phonenum = #{f_phonenum}
+	<select id="findFarmEmail">
+		SELECT f_email FROM farm_member WHERE f_phonenum = #{f_phonenum} and f_name = #{f_name}
 	</select>
 
+	<select id="findConsumerEmail">
+		SELECT c_email FROM farm_member WHERE c_phonenum = #{c_phonenum} and c_name = #{c_name}
+	</select>
 
+	<update id="farmPasswd">
+		UPDATE farm_member set f_passwd = #{f_passwd} WHERE f_name = #{f_name} and f_email = #{f_email} and f_phonenum = #{f_phonenum}
+	</update>
 
+	<update id="consumerPasswd">
+		UPDATE consumer_member set c_passwd = #{c_passwd} WHERE c_name = #{c_name} and c_email = #{c_email} and c_phonenum = #{c_phonenum}
+	</update>
 
-    <!--  #################################################### 토큰 설정 ####################################################  --> 
+	<select id="findFarmId">
+		SELECT farm_id FROM farm_member WHERE f_name = #{f_name} and f_email= #{f_email} and f_phonenum=#{f_phonenum}
+	</select>
+
+	<select id="findConsumerId">
+		SELECT consumer_id FROM consumer_member WHERE c_name = #{c_name} and c_email= #{c_email} and c_phonenum=#{c_phonenum}
+	</select>
+
+	<!--  #################################################### 토큰 설정 ####################################################  --> 
 
     <update id="setNullConsumerToken">
 		UPDATE consumer_member

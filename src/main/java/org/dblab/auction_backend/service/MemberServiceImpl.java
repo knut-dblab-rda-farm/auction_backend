@@ -260,10 +260,17 @@ public class MemberServiceImpl implements MemberService{
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
-    public int findFarmId(int farm_name, int f_phonenum){
-        log.info("findFarmid................");
-        return memberMapper.findFarmId(farm_name, f_phonenum);
+    public int findEmail(String checkUser, String name, String phonenum){
+        log.info("findEmail................");
+        return checkUser.equals("consumer") ?  memberMapper.findConsumerEmail(name, phonenum) : memberMapper.findFarmEmail(name, phonenum);
     }
+
+    public int findId(String checkUser, String name, String email, String phonenum){
+        log.info("findId................");
+        //checkPhoneNumber(phonenum);
+        return checkUser.equals("consumer") ?  memberMapper.findConsumerId(name, email, phonenum) : memberMapper.findFarmId(name, email, phonenum);
+    }
+
 
     // #################################################### 로그인, 로그아웃, 이메일 중복 확인 ####################################################
 

@@ -44,9 +44,9 @@
 
     <select id="getAuction" resultMap="AuctionDTO">
         SELECT * FROM auction a, product p, farm_member f 
-        WHERE a.product_id = p.product_id and a.farm_id = f.farm_id and a.deadline_date > NOW()
+        WHERE a.product_id = p.product_id AND a.farm_id = f.farm_id AND a.deadline_date > NOW() AND a.bid_status = 1
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date)) 
-        LIMIT #{startLimit}, 2
+        LIMIT #{startLimit}, 4
     </select>
 
     <update id="updateAuction">
@@ -72,13 +72,20 @@
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
+    <update id="updateMaxPriceBidding">
+		UPDATE auction
+		SET bid_price= #{bid_price}, 
+        consumer_id = #{consumer_id},
+        bid_num = bid_num + 1,
+        bid_status = 0
+		WHERE auction_Id = #{auction_Id}
+	</update>
 
-    <select id="auctionInfo" resultType="map">
-        SELECT *
-        FROM auction
-        WHERE auction_Id = #{auction_Id}
+    <select id="auctionInfo" resultMap="AuctionDTO">
+        SELECT * 
+        FROM auction a, product p, farm_member f 
+        WHERE a.product_id = p.product_id and a.farm_id = f.farm_id and a.auction_Id = #{auction_Id}
     </select>
-
 
     <!-- ############################################## 상품 CRUD #################################################### -->
     
@@ -234,7 +241,7 @@
     <![CDATA[ 
         SELECT auction_Id, deadline_date 
         FROM auction
-        WHERE TIMESTAMPDIFF(HOUR, deadline_date, NOW()) < 3000
+        WHERE deadline_date > NOW() AND TIMESTAMPDIFF(HOUR, deadline_date, NOW()) < 3000 AND bid_status = 1
         ORDER BY TIMESTAMPDIFF(HOUR, deadline_date, NOW());
     ]]>
     </select>
@@ -242,7 +249,7 @@
     <!-- 마감된 경매 상태 업데이트 -->
     <update id="updateBidStatus">
 		UPDATE auction
-		SET bid_status = 1
+		SET bid_status = 0
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
@@ -318,7 +325,7 @@
 
 
     <!--마이페이지에서 소비자 파치포인트 조회하는 부분인데 어제 sql문때문에 서버가 꺼지는 에러가있어서 혹시 또 에러 발생하면 이부분 지워주세요!-->
-    <!-- <select id = "consumerPachiPoint">
+    <select id = "consumerPachiPoint">
         SELECT pachi_point
         FROM consumer_member
         WHERE consumer_id=#{consumer_id}
@@ -328,7 +335,7 @@
         SELECT pachi_point
         FROM farm_member
         WHERE farm_id=#{farm_id}
-    </select> -->
+    </select>
 
 
 

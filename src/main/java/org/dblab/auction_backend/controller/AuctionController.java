@@ -47,9 +47,10 @@ public class AuctionController {
         return auctionService.registAuction(auctionDTO);
     }
 
-    @GetMapping(value = "/auctionInfo/{Auction_Id}")
-    public List<AuctionDTO> getAuctionInfo(@PathVariable("Auction_Id") int Auction_Id){
-        return auctionService.auctionInfo(Auction_Id);
+    @GetMapping(value = "/auctionInfo/{auction_Id}")
+    public AuctionDTO getAuctionInfo(@PathVariable("auction_Id") int auction_Id){
+        log.info("aucitonInfo" + auction_Id);
+        return auctionService.auctionInfo(auction_Id);
     }
     
     @PatchMapping(value = "/updateAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })

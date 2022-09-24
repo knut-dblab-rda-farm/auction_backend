@@ -79,7 +79,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public List<AuctionDTO> getAuction(int limit) {
-        log.info("getAuction..........");
+        log.info("getAuction.........." + limit);
         List<AuctionDTO> auctionDTOs = auctionMapper.getAuction(limit);
         log.info(auctionDTOs.toString());
 
@@ -102,24 +102,28 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public int updateBidding(Bidding bidding) {
+        System.out.println(bidding.toString());
+        if(bidding.getIsMaxPrice() == 1){
+            auctionMapper.updateMaxPriceBidding(bidding);
+            closeBidding(bidding.getAuction_Id());
+            return 1;
+        } 
+        auctionMapper.updateBidding(bidding);
 
-        int mapperResult = auctionMapper.updateBidding(bidding);
         int d_status = FIRST_BID_ALERT;
         int alertResult = 0;
 
-        if(mapperResult == 1) {
-            if (bidding.getAuction_consumer_id() != null){
-                d_status = BID_ALERT;
-            }
-            alertResult = registAlert(bidding, d_status);
+        if (bidding.getAuction_consumer_id() != null){
+            d_status = BID_ALERT;
         }
+        alertResult = registAlert(bidding, d_status);
         return alertResult;
     }
 
-    public List<AuctionDTO> auctionInfo(int auction_Id) {
-        //log.info(auctionMapper.auctionInfo(auction_Id));
-
-        return auctionMapper.auctionInfo(auction_Id);
+    public AuctionDTO auctionInfo(int auction_Id) {
+        AuctionDTO tmp = auctionMapper.auctionInfo(auction_Id);
+        System.out.println(tmp.toString());
+        return tmp;
     }
 
     // #################################################### 상품 U #####################################################
@@ -139,15 +143,6 @@ public class AuctionServiceImpl implements AuctionService{
             return auctionMapper.deleteWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id());
         }
     }
-    // @Override
-    // public List<WishDTO> registWish(WishDTO WishDTO){
-    //     if(auctionMapper.checkWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id())==0){
-    //         return auctionMapper.registWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
-    //     } else {
-    //         return auctionMapper.deleteWish(WishDTO.getAuction_Id(), WishDTO.getConsumer_Id());
-    //     }
-    // }
-
     @Override
     public int checkWish(int auction_id, int consumer_id){
         System.out.println(auction_id+" "+consumer_id);
@@ -155,10 +150,6 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionMapper.checkWish(auction_id, consumer_id);
     }
 
-    // @Override
-    // public int deleteWish(int auction_id, int consumer_id){
-    //     return auctionMapper.deleteWish(auction_id, consumer_id);
-    // }
     @Override
     public int deleteWish(int auction_id, int consumer_id){
         return auctionMapper.deleteWish(auction_id, consumer_id);

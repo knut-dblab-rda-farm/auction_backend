@@ -71,8 +71,13 @@ public interface MemberMapper {
 
     public int setNullFarmToken(@Param("f_email") String f_email);
 
-    public int findFarmId(@Param("f_name") int f_name, @Param("f_phonenum") int f_phonenum);
+    public int findFarmEmail(@Param("f_name") String f_name, @Param("f_phonenum") String f_phonenum);
 
+    public int findConsumerEmail(@Param("c_name") String c_name, @Param("c_phonenum") String c_phonenum);
+
+    public int findFarmId(@Param("f_name") String f_name,  @Param("f_email") String f_email, @Param("f_phonenum") String f_phonenum);
+
+    public int findConsumerId(@Param("c_name") String c_name,  @Param("c_email") String c_email, @Param("c_phonenum") String c_phonenum);
 
     // #################################################### 로그인, 이메일 중복 확인 #################################################### 
 

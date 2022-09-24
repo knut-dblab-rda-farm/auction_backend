@@ -25,7 +25,7 @@ public interface AuctionService {
 
     public int updateBidding(Bidding bidding);
 
-    public List<AuctionDTO> auctionInfo(int auction_Id);
+    public AuctionDTO auctionInfo(int auction_Id);
 
 
     // #################################################### 상품 U #####################################################

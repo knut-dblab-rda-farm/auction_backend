@@ -13,6 +13,11 @@ public class Bidding {
     private Integer auction_consumer_id;  // 이전 입찰자
     private Integer consumer_id;
     private String auction_name;
+    private int isMaxPrice;
+
+    public Bidding() {
+        
+    }
 
     public Bidding(Integer auction_Id, String auction_name, Integer consumer_id){
         this.auction_Id = auction_Id;

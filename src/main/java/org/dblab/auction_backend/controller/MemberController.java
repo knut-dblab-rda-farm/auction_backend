@@ -133,19 +133,15 @@ public class MemberController {
 	}
 	// #################################################### 소비자, 농가 아이디, 비번 찾기 ####################################################
 
-	@GetMapping(value = "findFarmId")
-	public int findFarmId(@PathVariable("f_name") int f_name, @PathVariable("f_phonenum") int f_phonenum){
-		return memberService.findFarmId(f_name, f_phonenum);
+	@PostMapping(value = "findEmail/{checkUser}/{name}/{phonenum}")
+	public int findEmail(@PathVariable("checkUser") String checkUser, @PathVariable("name") String name, @PathVariable("phonenum") String phonenum){
+		return memberService.findEmail(checkUser, name, phonenum);
 	}
 
-	// @PatchMapping(value = "changeFarmPw")
-	// public int changePw(@PathVariable("f_email") String f_email){
-		//return memberService.changeFarmPw(f_email);
-
-	// }
-
-
-
+	@PostMapping(value = "findId/{checkUser}/{name}/{email}/{phonenum}")
+	public int findId(@PathVariable("checkUser") String checkUser, @PathVariable("name") String name, @PathVariable("email") String email, @PathVariable("phonenum") String phonenum){
+		return memberService.findId(checkUser, name, email, phonenum);
+	}
 
 	// #################################################### 로그인, 로그아웃, 이메일 중복 확인, 휴대폰 인증번호 확인 ####################################################
 
