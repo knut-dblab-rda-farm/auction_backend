@@ -17,19 +17,19 @@
         SELECT * FROM consumer_member WHERE c_email = #{c_email}
     </select>
 
-    <update id="updateConsumerMemberPassword">
+	<update id="updateConsumerMemberPassword">
 		UPDATE consumer_member
 		SET c_passwd= #{c_passwd}
 		WHERE consumer_id = #{consumer_id}
 	</update>
 
-    <update id="updateConsumerMemberPhoneNumber">
+	<update id="updateConsumerMemberName">
 		UPDATE consumer_member
 		SET c_name= #{c_name}
 		WHERE consumer_id = #{consumer_id}
 	</update>
 
-    <update id="updateConsumerMemberName">
+	<update id="updateConsumerMemberPhoneNumber">
 		UPDATE consumer_member
 		SET c_phonenum= #{c_phonenum}
 		WHERE consumer_id = #{consumer_id}
@@ -142,7 +142,7 @@
 		WHERE farm_id = #{farm_id}
 	</update>
 
-    <update id="updateFarmMemberFarmImage">
+    <update id="updateFarmImages">
 		UPDATE farm_member
 		SET f_img= #{f_img}
 		WHERE farm_id = #{farm_id}

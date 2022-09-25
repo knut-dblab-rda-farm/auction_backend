@@ -1,5 +1,6 @@
 package org.dblab.auction_backend.controller;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class AuctionController {
     // #################################################### 리뷰 CRUD #####################################################
     
     @PostMapping(value = "/AuctionReview")
-    public int registAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
+    public int registAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
 
         return auctionService.registAuctionReview(auctionReviewDTO);
     }
@@ -96,7 +97,7 @@ public class AuctionController {
     }
 
     @PatchMapping(value = "/AuctionReview")
-    public int updateAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
+    public int updateAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
 
         return auctionService.updateAuctionReview(auctionReviewDTO);
     }
@@ -106,6 +107,13 @@ public class AuctionController {
 
         return auctionService.deleteAuctionReview(auctionReviewDTO);
     }
+
+    @GetMapping(value = "/ProductInfo/{product_id}")
+    public List<Map<String, Object>> ProductInfo(@PathVariable("product_id") int product_id){
+        return auctionService.getProductInfo(product_id);
+    }
+
+
 
 
     // #################################################### 검색 기능 #####################################################
@@ -120,14 +128,6 @@ public class AuctionController {
         return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword, startLimit);
     }
 
-    // @GetMapping(value = "/searchAuction/{checkUser}/{id}/{keyword}/{limit}")
-    // public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("keyword") String keyword) {
-        
-    //     log.info("keyword: " + keyword);
-    //     log.info("ip: " + request.getRemoteAddr());
-
-    //     return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword);
-    // }
 
     // 인기 검색어 5개 가져오기
     @GetMapping(value = "/popularKeyword")

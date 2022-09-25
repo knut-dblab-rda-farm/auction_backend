@@ -50,6 +50,8 @@ public interface AuctionService {
 
     public int deleteAuctionReview(AuctionReviewDTO auctionReview);
 
+    public List<Map<String, Object>> getProductInfo(int product_id);
+
     // #################################################### 알림 #####################################################
 
     public SseEmitter registEmitter(String checkUser, int id, SseEmitter emitter);

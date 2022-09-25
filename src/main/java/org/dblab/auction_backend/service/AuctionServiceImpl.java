@@ -30,6 +30,7 @@ public class AuctionServiceImpl implements AuctionService{
     private final AuctionMapper auctionMapper;
     private Logger log = LoggerFactory.getLogger(AuctionServiceImpl.class);
     private String PRODUCT_IMG_PATH = "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/product_images/";
+    private String AUCTION_REVIEW_IMAGES_FOLDER_PATH = "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/auciton_review_images/";
     private HashMap<Integer,SseEmitter> consumerEmitters = new HashMap<Integer, SseEmitter>();
     private HashMap<Integer,SseEmitter> farmEmitters = new HashMap<Integer, SseEmitter>();
     private int FIRST_BID_ALERT = 0;    // 열거형 
@@ -47,10 +48,11 @@ public class AuctionServiceImpl implements AuctionService{
         // 유저 이름 + 날짜, 임시로 농가 ID 사용!
         String product_img_name = auctionDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);
         // 이미지 개수
-        int numberOfImg = auctionDTO.getProductDTO().getProduct_img_file().size();
+        int numberOfImg = auctionDTO.getProductDTO().getProduct_img_files().size();
+        System.out.println("numberOfImg: " + numberOfImg);
         try {
             for (int i=0; i<numberOfImg; i++){
-                auctionDTO.getProductDTO().getProduct_img_file().get(i).transferTo(new File(PRODUCT_IMG_PATH + product_img_name + "(" + i + ")" + numberOfImg +".png"));
+                auctionDTO.getProductDTO().getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + product_img_name + "(" + i + ")" + numberOfImg +".png"));
             }
             System.out.println(product_img_name + " 파일 저장 완료");
         } catch (IllegalStateException e) {
@@ -164,11 +166,25 @@ public class AuctionServiceImpl implements AuctionService{
 
         if(auctionReview.getCheckUser().equals("consumer")){
             auctionMapper.plusConsumerPachiPoint(auctionReview.getConsumer_id());
+            // 리뷰 이미지 저장
+            if(auctionReview.getReview_img_file() != null){
+                auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
+                try {
+                    auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png"));
+                    System.out.println(auctionReview.getAuction_name() + " 새로운 리뷰 이미지 저장 완료");
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             auctionMapper.registConsumerAuctionReview(auctionReview);
         } else {
             auctionMapper.plusFarmPachiPoint(auctionReview.getFarm_id());
             auctionMapper.registFarmAuctionReview(auctionReview);
         }
+        
+
         return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getConsumer_id()), REIVEW_ALERT);
     }
 
@@ -181,7 +197,38 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int updateAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("updateAuctionReview..........");
-        return auctionReview.getCheckUser().equals("consumer") ? auctionMapper.updateConsumerAuctionReview(auctionReview) : auctionMapper.updateFarmAuctionReview(auctionReview);
+        
+        if(auctionReview.getCheckUser().equals("consumer")){
+            File newAuctionReviewImg=new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png");
+
+            if(newAuctionReviewImg.exists()){
+                if(newAuctionReviewImg.delete()){
+                    System.out.println(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 성공");
+                } else{
+                    System.out.println(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 실패");
+                }
+            } else{
+                System.out.println("리뷰 사진 파일이 존재하지 않습니다.");
+            }
+
+            auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
+            try{
+                auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name()+".png"));
+                System.out.println(auctionReview.getReview_img_name() + " 새로운 리뷰 이미지 저장 완료");
+
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return auctionMapper.updateConsumerAuctionReview(auctionReview);
+        } else {
+            return auctionMapper.updateFarmAuctionReview(auctionReview);
+        }
+        
+        
+
+        //return auctionReview.getCheckUser().equals("consumer") ? auctionMapper.updateConsumerAuctionReview(auctionReview) : auctionMapper.updateFarmAuctionReview(auctionReview);
     }
 
     @Override
@@ -189,6 +236,12 @@ public class AuctionServiceImpl implements AuctionService{
         log.info("deleteAuctionReview..........");
         auctionMapper.minusConsumerPachiPoint(auctionReview.getConsumer_id());
         return auctionMapper.deleteAuctionReview(auctionReview);
+    }
+
+    @Override
+    public List<Map<String, Object>> getProductInfo(int product_id) {
+        log.info("getProductInfo");
+        return auctionMapper.getProductInfo(product_id);
     }
 
     

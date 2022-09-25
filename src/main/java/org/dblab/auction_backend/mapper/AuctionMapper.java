@@ -68,6 +68,8 @@ public interface AuctionMapper {
 
     public int deleteAuctionReview(AuctionReviewDTO auctionReview);
 
+    public List<Map<String, Object>> getProductInfo(@Param("product_id") int product_id);
+
     
     // #################################################### 알림 CRUD #####################################################
 

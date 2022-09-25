@@ -46,8 +46,6 @@ public interface MemberService {
     public int updateFarmMemberExplanation(int farm_id, String f_explanation);
 
     public int updateFarmMemberMajorCrop(int farm_id, String f_major_crop);
-    
-    public int updateFarmMemberFarmImage(int farm_id, String f_img);
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     

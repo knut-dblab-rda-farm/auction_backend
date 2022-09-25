@@ -24,6 +24,8 @@ public class AuctionDTO {
     private String f_name;
     private Integer f_num;
     private String f_location;
+    private String f_profile_img;
+    private String f_img;
     private Integer f_phonenum;
 
     private ProductDTO productDTO;

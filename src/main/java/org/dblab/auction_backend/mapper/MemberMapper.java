@@ -61,8 +61,6 @@ public interface MemberMapper {
     public int updateFarmMemberExplanation(@Param("farm_id") int farm_id, @Param("f_explanation") String f_explanation);
 
     public int updateFarmMemberMajorCrop(@Param("farm_id") int farm_id, @Param("f_major_crop") String f_major_crop);
-    
-    public int updateFarmMemberFarmImage(@Param("farm_id") int farm_id, @Param("f_img") String f_img);
 
     // ------------------------
 

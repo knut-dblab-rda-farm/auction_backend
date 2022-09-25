@@ -126,11 +126,13 @@ public class MemberController {
 		return memberService.updateFarmMemberMajorCrop(Integer.parseInt(map.get("farm_id")), map.get("f_major_crop"));
 	}
 	
-	@PatchMapping(value = "/farmMemberFarmImage")
-	public int updateFarmMemberFarmImage(@RequestBody Map<String, String> map) {
-		System.out.println(map.toString());
-		return memberService.updateFarmMemberFarmImage(Integer.parseInt(map.get("farm_id")), map.get("img"));
+	@PatchMapping(value = "/farmImages")
+	public int updateFarmImages(@ModelAttribute FarmMemberDTO farmMemberDTO){
+		System.out.println(farmMemberDTO.toString().toString());
+		return memberService.updateFarmImages(farmMemberDTO);
 	}
+
+
 	// #################################################### 소비자, 농가 아이디, 비번 찾기 ####################################################
 
 	@PostMapping(value = "/findEmail")

@@ -19,7 +19,7 @@ public class ProductDTO {
     private String p_status;
     private String p_explanation;
     private String product_img_name;
-    private List<MultipartFile> product_img_file;
+    private List<MultipartFile> product_img_files;
     private Date p_reg_date;
     private int farm_id;
     

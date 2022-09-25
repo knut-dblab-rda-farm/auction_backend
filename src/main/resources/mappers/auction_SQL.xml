@@ -39,6 +39,11 @@
         <id property="farm_id" column="farm_id" />
         <id property="f_farm_name" column="f_farm_name" />
         <id property="f_phonenum" column="f_phonenum" />
+        <id property="f_num" column="f_num" />
+        <id property="f_location" column="f_location" />
+        <id property="f_profile_img" column="f_profile_img" />
+        <id property="f_img" column="f_img" />
+
         <collection property="productDTO" resultMap="ProductDTO"/>
     </resultMap>
 
@@ -116,8 +121,8 @@
     
     <insert id="registConsumerAuctionReview">  
         INSERT INTO auction_review
-        (auction_Id, grade_point, consumer_review) VALUES
-        (#{auction_Id}, #{grade_point}, #{consumer_review})
+        (auction_Id, grade_point, consumer_review, review_img_name) VALUES
+        (#{auction_Id}, #{grade_point}, #{consumer_review}, #{review_img_name})
     </insert>
 
     <update id="registFarmAuctionReview">
@@ -126,15 +131,22 @@
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
+    <select id="getProductInfo" resultType="map">
+        SELECT *
+        FROM product
+        WHERE product_id=#{product_id}
+    </select>
+    
+
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
     <select id="getFarmAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, consumer_member c
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.consumer_id = c.consumer_id and a.farm_id = #{farm_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
@@ -143,7 +155,8 @@
     <update id="updateConsumerAuctionReview">
 		UPDATE auction_review
 		SET grade_point= #{grade_point},
-		consumer_review = #{consumer_review}
+		consumer_review = #{consumer_review},
+        review_img_name = #{review_img_name}
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
