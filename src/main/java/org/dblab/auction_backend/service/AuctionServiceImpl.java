@@ -183,9 +183,10 @@ public class AuctionServiceImpl implements AuctionService{
             auctionMapper.plusFarmPachiPoint(auctionReview.getFarm_id());
             auctionMapper.registFarmAuctionReview(auctionReview);
         }
-        
 
-        return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getConsumer_id()), REIVEW_ALERT);
+        return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), 
+                                        auctionReview.getConsumer_id(), auctionReview.getProduct_img_name(), 
+                                        auctionReview.getF_farm_name(), auctionReview.getC_name()), REIVEW_ALERT);
     }
 
     @Override
@@ -282,17 +283,18 @@ public class AuctionServiceImpl implements AuctionService{
          * d_status = 2 = END_AUCTION_ALERT, 경매 종료 후 알림
          * d_status = 3 = REIVEW_ALERT, 경매 리뷰 생성 후 알림
          */
-
-        AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getConsumer_id(), d_status);
+        log.info("registAlert..........");
+        AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getConsumer_id(), 
+                                        bidding.getFarm_id(), d_status, bidding.getProduct_img_name(), bidding.getF_farm_name(), bidding.getC_name());
 
         SseEmitter farmEmitter = farmEmitters.get(bidding.getFarm_id());
         SseEmitter consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
         // SseEmitter consumerEmitter = null;
-
+        log.info("registAlert.........." + alertDto.toString());
         // if (bidding.getConsumer_id() != null) consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
 
-        alertDto = auctionMapper.registAlert(alertDto);
-        
+        alertDto.setAlert_id(auctionMapper.registAlert(alertDto));
+
         // alert time error로 인한 코드
         alertDto.setTime(auctionMapper.getAlertTime(alertDto.getAlert_id()));
         System.out.println("---------------");
@@ -383,6 +385,11 @@ public class AuctionServiceImpl implements AuctionService{
         log.info("getRecentlyBid..........");
 
         return auctionMapper.getRecentlyBid();
+    }
+
+    // 경매 조기 마감
+    public void earlyCloseBidding(Bidding bidding){
+
     }
 
     

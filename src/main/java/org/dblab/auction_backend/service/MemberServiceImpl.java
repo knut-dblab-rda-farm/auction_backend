@@ -2,6 +2,7 @@ package org.dblab.auction_backend.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessHandle.Info;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,23 +203,30 @@ public class MemberServiceImpl implements MemberService{
         log.info("updateFarmImages..........");
 
         // 이전 농가업체 이미지 삭제
-        String f_img = farmMemberDTO.getF_img();  // 9,2022-09-26T15:44:25(0)10
-        String temp_f_img = f_img.substring(24); //9,2022-09-26T15:44:25(0)10 여기서 뒤에 개수만 짜르기 -> 10
-        int f_img_length = Integer.parseInt(temp_f_img); //int로 변환
-
-        for(int i=0; i<f_img_length;i++){
-            File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + temp_f_img + "("+i+")" +f_img_length+ ".png");
-            if (farmImageFile.exists()){
-                    // 파일 생성
+        log.info(farmMemberDTO.getF_img());
+        //log.info(f_img);
+        if(farmMemberDTO.getF_img().length() < 1){
+            System.out.println("-------------");
+            String f_img = farmMemberDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);  // 9,2022-09-26T15:44:25      (0)10
+            int idx = f_img.indexOf(")");
+            String temp_f_img = f_img.substring(idx+1); //9,2022-09-26T15:44:25(0)10 여기서 뒤에 개수만 짜르기 -> 10
+            int f_img_length = Integer.parseInt(temp_f_img); //int로 변환
+            //기존 농가이미지 삭제
+            for(int i=0; i<f_img_length;i++){
+                File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + f_img + "("+i+")" +f_img_length+ ".png");// 파일 생성
+                if (farmImageFile.exists()){
                     if (farmImageFile.delete()){
                         System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
                     } else {
                         System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 실패...");
                     }
-            }else{
-                System.out.println("농가업체 이미지 파일이 존재하지 않습니다.");
-            }
-        } 
+                }else{
+                    System.out.println("농가업체 이미지 파일이 존재하지 않습니다.");
+                }
+            } 
+        }
+        
+        //새로 업데이트하는 농가사진 추가
         int numberOfFarmImg=farmMemberDTO.getFarm_img_files().size();
         String f_img_name = farmMemberDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);
         // 새로운 농가업체 이미지 생성 farm_id_시간_(0)개수

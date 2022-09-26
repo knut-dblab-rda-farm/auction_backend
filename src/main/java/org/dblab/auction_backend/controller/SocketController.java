@@ -32,7 +32,7 @@ public class SocketController {
     @MessageMapping("/receive_bidding")
     @SendTo("/send_bidding")
     public Bidding bid(Bidding bidding){
-
+        System.out.println("receive_bidding : " + bidding.toString());
         int result = auctionService.updateBidding(bidding);
         System.out.println("updateBidding result: " + result);
 

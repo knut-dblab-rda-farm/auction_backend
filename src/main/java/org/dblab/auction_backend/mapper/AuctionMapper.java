@@ -73,7 +73,7 @@ public interface AuctionMapper {
     
     // #################################################### 알림 CRUD #####################################################
 
-    public AlertDTO registAlert(AlertDTO alertDTO);
+    public Integer registAlert(AlertDTO alertDTO);
 
     public String getAlertTime(@Param("alert_id") int alert_id);
 

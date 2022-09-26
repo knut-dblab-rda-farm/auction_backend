@@ -14,12 +14,15 @@ public class Bidding {
     private Integer consumer_id;
     private String auction_name;
     private int isMaxPrice;
+    private String product_img_name;
+    private String f_farm_name;
+    private String c_name;
 
     public Bidding() {
         
     }
 
-    public Bidding(Integer auction_Id, String auction_name, Integer consumer_id){
+    public Bidding(Integer auction_Id, String auction_name, Integer consumer_id, String product_img_name, String f_farm_name, String c_name){
         this.auction_Id = auction_Id;
         this.auction_name = auction_name;
         this.consumer_id = consumer_id;

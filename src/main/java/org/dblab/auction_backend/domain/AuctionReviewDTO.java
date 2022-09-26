@@ -14,5 +14,8 @@ public class AuctionReviewDTO {
     private Integer consumer_id;
     private String auction_name;
     private String review_img_name;
+    private String product_img_name;
+    private String f_farm_name;
+    private String c_name;
     private MultipartFile review_img_file;
 }

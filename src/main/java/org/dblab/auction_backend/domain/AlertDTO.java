@@ -10,10 +10,14 @@ public class AlertDTO {
     private String time;
     private Integer auction_Id;
     private Integer consumer_id;
+    private Integer farm_id;
     private Integer checked;
     private String auction_name;
+    private String product_img_name;
+    private String f_farm_name;
+    private String c_name;
 
-    public AlertDTO(Integer auction_Id, String auction_name, Integer consumer_id, Integer d_status){
+    public AlertDTO(Integer auction_Id, String auction_name, Integer consumer_id, Integer farm_id, Integer d_status, String product_img_name, String f_farm_name, String c_name){
         this.auction_Id = auction_Id;
         this.auction_name = auction_name;
         this.consumer_id = consumer_id;
