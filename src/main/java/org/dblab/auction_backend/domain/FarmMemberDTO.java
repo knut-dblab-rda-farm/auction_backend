@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Collections;
-
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -36,6 +36,7 @@ public class FarmMemberDTO implements UserDetails {
     private String token;
     private MultipartFile new_bank_img;
     private MultipartFile new_farm_img;
+    private List<MultipartFile> farm_img_files;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -5,8 +5,8 @@
     <!-- ############################################## 경매 CRUD #################################################### -->
     <select id="registAuction" parameterType="org.dblab.auction_backend.domain.AuctionDTO" resultType="org.dblab.auction_backend.domain.BidClosingDTO">
         INSERT INTO auction
-        (auction_name, start_date, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id) VALUES
-        (#{auction_name}, #{start_date}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id})
+        (auction_name, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id) VALUES
+        (#{auction_name}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id})
         RETURNING auction_Id, deadline_date
     </select>
 

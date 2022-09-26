@@ -202,29 +202,39 @@ public class MemberServiceImpl implements MemberService{
         log.info("updateFarmImages..........");
 
         // 이전 농가업체 이미지 삭제
-        File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + farmMemberDTO.getF_img());
+        String f_img = farmMemberDTO.getF_img();  // 9,2022-09-26T15:44:25(0)10
+        String temp_f_img = f_img.substring(24); //9,2022-09-26T15:44:25(0)10 여기서 뒤에 개수만 짜르기 -> 10
+        int f_img_length = Integer.parseInt(temp_f_img); //int로 변환
 
-        if (farmImageFile.exists()){
-            if (farmImageFile.delete()){
-                System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
-            } else {
-                System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 실패...");
+        for(int i=0; i<f_img_length;i++){
+            File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + temp_f_img + "("+i+")" +f_img_length+ ".png");
+            if (farmImageFile.exists()){
+                    // 파일 생성
+                    if (farmImageFile.delete()){
+                        System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
+                    } else {
+                        System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 실패...");
+                    }
+            }else{
+                System.out.println("농가업체 이미지 파일이 존재하지 않습니다.");
             }
-        } else{
-    		System.out.println("농가업체 이미지 파일이 존재하지 않습니다.");
-    	}
+        } 
+        int numberOfFarmImg=farmMemberDTO.getFarm_img_files().size();
+        String f_img_name = farmMemberDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);
+        // 새로운 농가업체 이미지 생성 farm_id_시간_(0)개수
         
-        // 새로운 농가업체 이미지 생성
-        farmMemberDTO.setF_img(farmMemberDTO.getFarm_id() + "_" + LocalDateTime.now().toString().substring(0, 19));
         System.out.println(FARM_IMAGES_FOLDER_PATH + farmMemberDTO.getF_img());
         try {
-            farmMemberDTO.getNew_farm_img().transferTo(new File(FARM_IMAGES_FOLDER_PATH + farmMemberDTO.getF_img() + ".png"));
+            for(int i=0; i< numberOfFarmImg;i++){
+                farmMemberDTO.getFarm_img_files().get(i).transferTo(new File(FARM_IMAGES_FOLDER_PATH + f_img_name + "("+i+")"+ numberOfFarmImg+ ".png"));
+            }
             System.out.println(farmMemberDTO.getF_img() + " 새로운 농가 이미지 저장 완료");
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        farmMemberDTO.setF_img(f_img_name + "(0)" + numberOfFarmImg);
 
         // 이미지 이름 DB에 저장
         return memberMapper.updateFarmImages(farmMemberDTO);

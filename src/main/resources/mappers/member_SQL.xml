@@ -7,9 +7,9 @@
     <insert id="signupConsumer">  
         <![CDATA[
         insert into consumer_member
-        (c_passwd, c_name, c_email, c_phonenum) 
+        (c_passwd, c_name, c_email, c_phonenum, c_zipcode, c_location) 
         values
-        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum})
+        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum}, #{c_zipcode}, #{c_location})
         ]]>
     </insert>
 
@@ -170,7 +170,7 @@
 		UPDATE consumer_member set c_passwd = #{c_passwd} WHERE c_name = #{c_name} and c_email = #{c_email} and c_phonenum = #{c_phonenum}
 	</update>
 
-	<select id="findFarmId" resultType="int">
+	<select id="findFarmId" resultType="Integer">
 		SELECT farm_id FROM farm_member WHERE f_name = #{f_name} and f_email= #{f_email} and f_phonenum=#{f_phonenum}
 	</select>
 
