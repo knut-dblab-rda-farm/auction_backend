@@ -281,10 +281,18 @@
 
     <!-- 마감된 경매 참여자(낙차잘, 농가) 가져오기 -->
     <select id="getClosedBidding" resultType="org.dblab.auction_backend.domain.Bidding">
+        SELECT a.auction_Id, a.bid_price, a.farm_id, a.consumer_id, a.auction_name , p.product_img_name, f.f_farm_name, c.c_name
+        FROM auction AS a 
+        INNER JOIN product AS p ON a.product_id = p.product_id
+        INNER JOIN farm_member AS f ON a.farm_id = f.farm_id
+        INNER JOIN consumer_member AS c ON a.consumer_id = c.consumer_id
+        WHERE a.auction_Id = #{auction_Id}
+    </select>
+    <!-- <select id="getClosedBidding" resultType="org.dblab.auction_backend.domain.Bidding">
         SELECT auction_Id, bid_price, farm_id, consumer_id, auction_name
         FROM auction
         WHERE auction_Id = #{auction_Id};
-    </select>
+    </select> -->
 
     <!-- 마감된 경매 농가 경매 점수 추가 -->
     <update id="plusFarmPachiPoint" >

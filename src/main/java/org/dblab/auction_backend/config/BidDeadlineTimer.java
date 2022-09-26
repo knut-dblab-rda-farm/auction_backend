@@ -18,7 +18,6 @@ public class BidDeadlineTimer extends Thread {
     private static long sleepTime = DEADLINE_STANDARD_TIME;
     private static Date latestTime = null;
     private final AuctionService auctionService;
-    private static Boolean REGULAR_CLOSING = false;
 
     @Override
     public void run() {
@@ -55,7 +54,7 @@ public class BidDeadlineTimer extends Thread {
 
                     // 0.01 초 미만 시
                     if (sleepTime < 10) {
-                        auctionService.closeBidding(bidClosingDTOs.get(0).getAuction_Id(), REGULAR_CLOSING);
+                        auctionService.closeBidding(bidClosingDTOs.get(0).getAuction_Id());
                         bidClosingDTOs.remove(0);
                     }
                 }

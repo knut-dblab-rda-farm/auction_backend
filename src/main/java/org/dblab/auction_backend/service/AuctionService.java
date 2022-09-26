@@ -72,7 +72,11 @@ public interface AuctionService {
 
     public List<BidClosingDTO> getRecentlyBid();
 
-    public void closeBidding(int auction_Id, Boolean ealryClosing);
+    public int earlyCloseBidding(Bidding bidding);
+
+    public void closeBidding(int auction_Id);
+
+    public void plusPoint(Bidding bidding);
 
     // ############################################## 마이페이지 ####################################################
     

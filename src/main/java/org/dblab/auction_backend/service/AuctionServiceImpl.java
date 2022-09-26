@@ -35,9 +35,10 @@ public class AuctionServiceImpl implements AuctionService{
     private HashMap<Integer,SseEmitter> farmEmitters = new HashMap<Integer, SseEmitter>();
     private int FIRST_BID_ALERT = 0;    // 열거형 
     private int BID_ALERT = 1;
-    private int END_AUCTION_ALERT = 2;
-    private int REIVEW_ALERT = 3;
-    private Boolean EARLY_CLOSING = true;
+    private int EARLY_CLOSING_AUCTION_ALERT = 2;
+    private int END_AUCTION_ALERT = 3;
+    private int CONSUMER_REIVEW_ALERT = 4;
+    private int FARM_REIVEW_ALERT = 5;
 
     // #################################################### 경매 CURD #####################################################
 
@@ -92,7 +93,38 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int updateAuction(AuctionDTO auctionDTO) {
         log.info("updateAuction..........");
-        // 이미지 변경했는지 여부 확인하기, 이전 이미지 이름
+        
+
+        String p_img = auctionDTO.getProductDTO().getProduct_img_name();
+        int idx = p_img.indexOf(")");
+        String temp_p_img=p_img.substring(idx);
+        int p_img_length = Integer.parseInt(temp_p_img);
+        for(int i = 0; i<p_img_length;i++){
+            File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
+            if(productImageFile.exists()){
+                if(productImageFile.delete()){
+                    System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
+                }else{
+                    System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
+                }
+            }else{
+                System.out.println("상품이미지 파일이 없습니다...");
+            }
+        }
+
+        int numberOfProductImg=auctionDTO.getProductDTO().getProduct_img_files().size();
+        String p_img_name = auctionDTO.getProduct_id()+"."+LocalDateTime.now().toString().substring(0,19);
+        System.out.println(PRODUCT_IMG_PATH+auctionDTO.getProductDTO().getProduct_img_name());
+        try {
+            for(int i=0; i< numberOfProductImg;i++){
+                auctionDTO.getProductDTO().getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + p_img_name + "("+i+")"+ numberOfProductImg+ ".png"));
+            }
+            System.out.println(auctionDTO.getProductDTO().getProduct_img_name() + " 새로운 상품 이미지 저장 완료");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return auctionMapper.updateAuction(auctionDTO);
     }
 
@@ -108,8 +140,7 @@ public class AuctionServiceImpl implements AuctionService{
         System.out.println(bidding.toString());
         if(bidding.getIsMaxPrice() == 1){
             auctionMapper.updateMaxPriceBidding(bidding);
-            closeBidding(bidding.getAuction_Id(), EARLY_CLOSING);
-            return 1;
+            return earlyCloseBidding(bidding);
         } 
         auctionMapper.updateBidding(bidding);
 
@@ -163,7 +194,7 @@ public class AuctionServiceImpl implements AuctionService{
     @Override
     public int registAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("registAuctionReview.........." + auctionReview.toString());
-
+        int d_status = CONSUMER_REIVEW_ALERT;
         if(auctionReview.getCheckUser().equals("consumer")){
             auctionMapper.plusConsumerPachiPoint(auctionReview.getConsumer_id());
             // 리뷰 이미지 저장
@@ -180,13 +211,14 @@ public class AuctionServiceImpl implements AuctionService{
             }
             auctionMapper.registConsumerAuctionReview(auctionReview);
         } else {
+            d_status = FARM_REIVEW_ALERT;
             auctionMapper.plusFarmPachiPoint(auctionReview.getFarm_id());
             auctionMapper.registFarmAuctionReview(auctionReview);
         }
 
         return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), 
                                         auctionReview.getConsumer_id(), auctionReview.getProduct_img_name(), 
-                                        auctionReview.getF_farm_name(), auctionReview.getC_name()), REIVEW_ALERT);
+                                        auctionReview.getF_farm_name(), auctionReview.getC_name()), d_status);
     }
 
     @Override
@@ -279,11 +311,13 @@ public class AuctionServiceImpl implements AuctionService{
     public int registAlert(Bidding bidding, int d_status) {
         /*
          * d_status = 0 = FIRST_BID_ALERT, 첫 입찰인 경우
-         * d_status = 1 =  BID_ALERT, 이전 입찰자가 있는 경우
-         * d_status = 2 = END_AUCTION_ALERT, 경매 종료 후 알림
-         * d_status = 3 = REIVEW_ALERT, 경매 리뷰 생성 후 알림
+         * d_status = 1 = BID_ALERT, 이전 입찰자가 있는 경우
+         * d_status = 2 = EARLY_CLOSING_AUCTION_ALERT, 경매 조기 마감 후 알림
+         * d_status = 3 = END_AUCTION_ALERT, 경매 정시 마감 후 알림
+         * d_status = 4 = CONSUMER_REIVEW_ALERT, 경매 종료 후 알림
+         * d_status = 5 = FARM_REIVEW_ALERT, 경매 리뷰 생성 후 알림
          */
-        log.info("registAlert..........");
+        log.info("registAlert.........." + bidding.toString());
         AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getConsumer_id(), 
                                         bidding.getFarm_id(), d_status, bidding.getProduct_img_name(), bidding.getF_farm_name(), bidding.getC_name());
 
@@ -388,26 +422,32 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     // 경매 조기 마감
-    public void earlyCloseBidding(Bidding bidding){
-
+    public int earlyCloseBidding(Bidding bidding){ 
+        log.info("earlyCloseBidding..........");
+        plusPoint(bidding);
+        return registAlert(bidding, EARLY_CLOSING_AUCTION_ALERT);
     }
-
     
-    // 마감된 경매 상태 업데이트 & 알림
-    public void closeBidding(int auction_Id, Boolean ealryClosing){
+    // 경매 정시 마감, 마감된 경매 상태 업데이트 & 알림
+    public void closeBidding(int auction_Id){
         log.info("closeBidding..........");
 
-        // 이미 조기 마감된 경매인 경우
-        if(ealryClosing || auctionMapper.getBidStatus(auction_Id)){
+        // 이미 조기 마감된 경매인 경우 예외 처리
+        if(auctionMapper.getBidStatus(auction_Id)){
             auctionMapper.updateBidStatus(auction_Id);           
             Bidding closedBidding = auctionMapper.getClosedBidding(auction_Id);
-            auctionMapper.plusFarmPachiPoint(closedBidding.getFarm_id());
-            auctionMapper.plusFarmAuctionCount(closedBidding.getFarm_id());
-            auctionMapper.plusConsumerPachiPoint(closedBidding.getConsumer_id());
-            auctionMapper.plusConsumerAuctionCount(closedBidding.getConsumer_id());
+            plusPoint(closedBidding);
             registAlert(closedBidding, END_AUCTION_ALERT);
         }
-        
+    }
+
+    // 파치 포인트와 경매 횟수 추가
+    public void plusPoint(Bidding bidding){
+        log.info("plusPoint..........");
+        auctionMapper.plusFarmPachiPoint(bidding.getFarm_id());
+        auctionMapper.plusFarmAuctionCount(bidding.getFarm_id());
+        auctionMapper.plusConsumerPachiPoint(bidding.getConsumer_id());
+        auctionMapper.plusConsumerAuctionCount(bidding.getConsumer_id());
     }
 
     // ############################################## 마이페이지 ####################################################

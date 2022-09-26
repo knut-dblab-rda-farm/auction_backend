@@ -22,5 +22,8 @@ public class AlertDTO {
         this.auction_name = auction_name;
         this.consumer_id = consumer_id;
         this.d_status = d_status;
+        this.product_img_name = product_img_name;
+        this.f_farm_name = f_farm_name;
+        this.c_name = c_name;
     }
 }

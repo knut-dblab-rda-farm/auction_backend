@@ -26,5 +26,8 @@ public class Bidding {
         this.auction_Id = auction_Id;
         this.auction_name = auction_name;
         this.consumer_id = consumer_id;
+        this.product_img_name = product_img_name;
+        this.f_farm_name = f_farm_name;
+        this.c_name = c_name;
     }
 }
