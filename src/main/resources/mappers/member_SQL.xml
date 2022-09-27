@@ -103,18 +103,18 @@
 		WHERE farm_id = #{farm_id}
 	</update>
 
-    <update id="updateFarmMemberProfileImage">
+	<update id="updateFarmMemberProfileImage">
 		UPDATE farm_member
 		SET f_profile_img= #{f_profile_img}
 		WHERE farm_id = #{farm_id}
 	</update>
 
-    <update id="updateFarmMemberBank">
+	<update id="updateFarmMemberBank">
 		UPDATE farm_member
 		SET f_bank = #{f_bank},
         f_bank_name = #{f_bank_name},
-        f_bank_num = #{f_bank_num},
-		f_bank_img = #{f_bank_img}
+        f_bank_num = #{f_bank_num}
+		<!-- f_bank_img = #{f_bank_img} -->
 		WHERE farm_id = #{farm_id}
 	</update>
 

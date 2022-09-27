@@ -103,11 +103,11 @@ public interface AuctionMapper {
 
     public List<BidClosingDTO> getRecentlyBid();
 
-    public Boolean getBidStatus(@Param("auction_Id") int auction_Id);
+    public Integer getBidStatus(@Param("auction_Id") int auction_Id);
 
     public int updateBidStatus(@Param("auction_Id") int auction_Id);
 
-    public Bidding getClosedBidding(@Param("auction_Id") int auction_Id);
+    public Map<String, Object> getClosedBidding(@Param("auction_Id") int auction_Id);
 
     public int plusFarmPachiPoint(@Param("farm_id") int farm_id);
 

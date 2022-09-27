@@ -29,9 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             System.out.println("토큰이 같지 않음!");
             throw new UsernameNotFoundException("User not authorized.");
         }
-
-        System.out.println("token: " + token);
-        System.out.println("token2: " + consumerMemberDTO.getToken());
+        System.out.println("consumerMemberDTO.getToken(): " + consumerMemberDTO.getToken());
 
         return consumerMemberDTO;
     }

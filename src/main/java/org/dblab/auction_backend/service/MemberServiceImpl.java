@@ -83,7 +83,7 @@ public class MemberServiceImpl implements MemberService{
         }
     }
 
-    public int updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
+    public String updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
         log.info("updateMemberPassword..........");
         
         // 이전 이미지 삭제
@@ -113,10 +113,11 @@ public class MemberServiceImpl implements MemberService{
 
         // 이미지 이름 DB에 저장
         if (memberProfileDTO.getCheckUser().equals("consumer")) {
-            return memberMapper.updateConsumerMemberProfileImage(memberProfileDTO.getId(), profile_img);
+            memberMapper.updateConsumerMemberProfileImage(memberProfileDTO.getId(), profile_img);
         } else {
-            return memberMapper.updateFarmMemberProfileImage(memberProfileDTO.getId(), profile_img);
+            memberMapper.updateFarmMemberProfileImage(memberProfileDTO.getId(), profile_img);
         }
+        return profile_img;
     }
 
     public int deleteMember(String checkUser, int id){

@@ -8,6 +8,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 // import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
@@ -26,27 +27,42 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
         throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        
+        HttpServletResponse httpSeveletResponse = (HttpServletResponse)response;
+
         System.out.println("token : " + token);
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {   // validateToken : Jwt 토큰의 유효성 + 만료일자 확인
                 Authentication auth = jwtTokenProvider.getAuthentication(token);   // getAuthentication : Jwt 토큰으로 인증 정보 조회
                 SecurityContextHolder.getContext().setAuthentication(auth);
+                httpSeveletResponse.addHeader("TOKEN", "exist token");
+            } 
+            else {
+                System.out.println("resolveToken, TOKEN : null ==================================");
+                
+                httpSeveletResponse.addHeader("TOKEN", "not exist token");
+                httpSeveletResponse.sendRedirect("/");
+                // redirectResponse.sendError(305, "토큰이 없거나 유효하지 않습니다!");
+                // redirectResponse.sendRedirect("/");
+                // filterChain.doFilter(request, redirectResponse);
+                // return;
+                // response.
             }
         } catch(UsernameNotFoundException e){
             System.out.println("UsernameNotFoundException 발생");
-
         } catch (Exception e) {
             System.out.println("Exception 발생");
         }
 
         // if (token == null) {
-        //     HttpServletResponse redirectResponse = (HttpServletResponse)response;
-        //     redirectResponse.sendRedirect("/");
+        //     System.out.println("toekn nulladadssda");
+        //     // HttpServletResponse redirectResponse = (HttpServletResponse)response;
+        //     // redirectResponse.sendRedirect("http://localhost:8082/login");
+        //     // redirectResponse.sendRedirect("/");
         //     filterChain.doFilter(request, redirectResponse);
-        // } else {
+        // } 
+        // else {
         //     filterChain.doFilter(request, response);
         // }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, httpSeveletResponse);
     }
 }

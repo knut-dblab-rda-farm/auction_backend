@@ -21,7 +21,7 @@ public interface MemberService {
 
     public int updateMemberAddress(String checkUser, int id, String zipcode, String location);
 
-    public int updateMemberProfileImage(MemberProfileDTO userProfileDTO);
+    public String updateMemberProfileImage(MemberProfileDTO userProfileDTO);
 
     public int deleteMember(String checkUser, int id);
 

@@ -91,7 +91,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return claims.getSubject() + ":" + claims.get("checkUser");
     }
 
-    // Request의 Header에서 token 파싱 : "X-AUTH-TOKEN: jwt토큰"
+    // Request의 Header에서 token 파싱 : "TOKEN: jwt토큰"
     public String resolveToken(HttpServletRequest req) {
         System.out.println(req.toString());
         System.out.println("resolveToken, TOKEN : " + req.getHeader("TOKEN"));

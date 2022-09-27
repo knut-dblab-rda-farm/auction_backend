@@ -30,7 +30,7 @@ public class FarmMemberDTO implements UserDetails {
     private String f_img;
     private String f_bank;
     private String f_bank_name;
-    private int f_bank_num; 
+    private int f_bank_num;
     private String f_bank_img;
     private String authority;
     private String token;

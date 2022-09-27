@@ -63,7 +63,7 @@ public class MemberController {
 	}
 
 	@PatchMapping(value = "/memberProfileImage")
-	public int updateMemberProfileImage(@ModelAttribute MemberProfileDTO memberProfileDTO) {
+	public String updateMemberProfileImage(@ModelAttribute MemberProfileDTO memberProfileDTO) {
 		System.out.println(memberProfileDTO.toString());
 		return memberService.updateMemberProfileImage(memberProfileDTO);
 	}

@@ -74,11 +74,10 @@ public class AuctionServiceImpl implements AuctionService{
         log.info(bidClosingDTO.toString());
         // 새롭게 등록된 경매의 마감일을 마감경매 타이머 리스트에 저장된 데이터의 경매 마감일들과 비교한다. 
         if (bidClosingDTO.getAuction_Id() != null) {
+            log.info("bidClosingDTO.getAuction_Id() != null");
             ThreadControl.checkBidding(bidClosingDTO.getAuction_Id(), bidClosingDTO.getDeadline_date());
-            return 1;
-        } else {
-            return 0;
         }
+        return 1;
     }
 
     @Override
@@ -171,6 +170,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public int registWish(WishDTO wishDTO){
+        log.info("registWish....." + wishDTO.toString());
         if(auctionMapper.checkWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id())==0){
             return auctionMapper.registWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id());
         } else {
@@ -216,14 +216,14 @@ public class AuctionServiceImpl implements AuctionService{
             auctionMapper.registFarmAuctionReview(auctionReview);
         }
 
-        return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), 
+        return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getFarm_id(),
                                         auctionReview.getConsumer_id(), auctionReview.getProduct_img_name(), 
                                         auctionReview.getF_farm_name(), auctionReview.getC_name()), d_status);
     }
 
     @Override
     public List<Map<String, Object>> getAuctionReview(String checkUser, int id) {
-        log.info("getAuctionReview..........");
+        log.info("getAuctionReview.........." + checkUser + " " +  id );
         return checkUser.equals("consumer") ? auctionMapper.getConsumerAuctionReview(id) : auctionMapper.getFarmAuctionReview(id);
     }
 
@@ -325,6 +325,8 @@ public class AuctionServiceImpl implements AuctionService{
         SseEmitter consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
         // SseEmitter consumerEmitter = null;
         log.info("registAlert.........." + alertDto.toString());
+        // log.info("registAlert.........." + farmEmitter.toString());
+        // log.info("registAlert.........." + consumerEmitter.toString());
         // if (bidding.getConsumer_id() != null) consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
 
         alertDto.setAlert_id(auctionMapper.registAlert(alertDto));
@@ -430,24 +432,43 @@ public class AuctionServiceImpl implements AuctionService{
     
     // 경매 정시 마감, 마감된 경매 상태 업데이트 & 알림
     public void closeBidding(int auction_Id){
-        log.info("closeBidding..........");
+        log.info("closeBidding.........." + auction_Id);
 
+        Integer test = auctionMapper.getBidStatus(auction_Id);
+        log.info("closeBidding.......... test: " + test);
         // 이미 조기 마감된 경매인 경우 예외 처리
-        if(auctionMapper.getBidStatus(auction_Id)){
+        if(test == 1){
             auctionMapper.updateBidStatus(auction_Id);           
-            Bidding closedBidding = auctionMapper.getClosedBidding(auction_Id);
-            plusPoint(closedBidding);
-            registAlert(closedBidding, END_AUCTION_ALERT);
+            Map<String, Object> closedBidding = auctionMapper.getClosedBidding(auction_Id);
+            log.info("closeBidding.......... closedBidding: " + closedBidding.toString());
+            Integer consumer_id = null;
+            if(closedBidding.get("consumer_id") != null){
+                log.info("closeBidding.......... consumer_id: ");
+                consumer_id = (Integer) closedBidding.get("consumer_id");
+                closedBidding.put("consumer_id", "0");
+                log.info("closeBidding.......... closedBidding: " + consumer_id);
+            }
+            for( String key : closedBidding.keySet()){
+                System.out.println(key + "   " + closedBidding.get(key).getClass().getName());
+                System.out.println(key + "   " + closedBidding.get(key).toString());
+            }
+            Bidding bidding = new Bidding((Integer) closedBidding.get("auction_Id"), String.valueOf(closedBidding.get("auction_name")), (Integer) closedBidding.get("farm_id"), 
+                                                    consumer_id, String.valueOf(closedBidding.get("product_img_name")), String.valueOf((closedBidding.get("f_farm_name"))), String.valueOf(closedBidding.get("c_name")));
+            log.info("closeBidding.........." + bidding.toString());
+            plusPoint(bidding);
+            registAlert(bidding, END_AUCTION_ALERT);
         }
     }
 
     // 파치 포인트와 경매 횟수 추가
     public void plusPoint(Bidding bidding){
-        log.info("plusPoint..........");
-        auctionMapper.plusFarmPachiPoint(bidding.getFarm_id());
-        auctionMapper.plusFarmAuctionCount(bidding.getFarm_id());
-        auctionMapper.plusConsumerPachiPoint(bidding.getConsumer_id());
-        auctionMapper.plusConsumerAuctionCount(bidding.getConsumer_id());
+        log.info("plusPoint.........." + bidding.toString());
+        if(bidding.getConsumer_id() != null){
+            auctionMapper.plusConsumerPachiPoint(bidding.getConsumer_id());
+            auctionMapper.plusConsumerAuctionCount(bidding.getConsumer_id());  
+            auctionMapper.plusFarmPachiPoint(bidding.getFarm_id());
+            auctionMapper.plusFarmAuctionCount(bidding.getFarm_id()); 
+        }
     }
 
     // ############################################## 마이페이지 ####################################################

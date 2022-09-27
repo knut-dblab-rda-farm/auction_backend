@@ -260,13 +260,13 @@
     <![CDATA[ 
         SELECT auction_Id, deadline_date 
         FROM auction
-        WHERE deadline_date > NOW() AND TIMESTAMPDIFF(HOUR, deadline_date, NOW()) < 3000 AND bid_status = 1
+        WHERE deadline_date > NOW() AND TIMESTAMPDIFF(HOUR, NOW(), deadline_date) < 3 AND bid_status = 1
         ORDER BY TIMESTAMPDIFF(HOUR, deadline_date, NOW());
     ]]>
     </select>
 
     <!-- 경매 마감 여부 가져오기 -->
-    <select id="getBidStatus" resultType="Boolean">
+    <select id="getBidStatus" resultType="Integer">
         SELECT bid_status
         FROM auction
         WHERE auction_Id = #{auction_Id};
@@ -279,13 +279,24 @@
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
+    <resultMap type="org.dblab.auction_backend.domain.Bidding" id="Bidding">
+        <id property="auction_Id" column="auction_Id" />
+        <id property="farm_id" column="farm_id" />
+        <id property="consumer_id" column="consumer_id" />
+        <id property="bid_price" column="bid_price" />
+        <id property="auction_name" column="auction_name" />
+        <id property="product_img_name" column="product_img_name" />
+        <id property="f_farm_name" column="f_farm_name" />
+        <id property="c_name" column="c_name" />
+    </resultMap>
+
     <!-- 마감된 경매 참여자(낙차잘, 농가) 가져오기 -->
-    <select id="getClosedBidding" resultType="org.dblab.auction_backend.domain.Bidding">
+    <select id="getClosedBidding" resultType="map">
         SELECT a.auction_Id, a.bid_price, a.farm_id, a.consumer_id, a.auction_name , p.product_img_name, f.f_farm_name, c.c_name
         FROM auction AS a 
         INNER JOIN product AS p ON a.product_id = p.product_id
         INNER JOIN farm_member AS f ON a.farm_id = f.farm_id
-        INNER JOIN consumer_member AS c ON a.consumer_id = c.consumer_id
+        LEFT JOIN consumer_member AS c ON a.consumer_id = c.consumer_id
         WHERE a.auction_Id = #{auction_Id}
     </select>
     <!-- <select id="getClosedBidding" resultType="org.dblab.auction_backend.domain.Bidding">
@@ -389,7 +400,7 @@
         WHERE consumer_id=#{consumer_id}
     </select>
 
-    <select id = "farmPachiPoint">
+    <select id = "farmPachiPoint" resultType="int">
         SELECT pachi_point
         FROM farm_member
         WHERE farm_id=#{farm_id}

@@ -48,7 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
                         .antMatchers("/**").permitAll()
-                        // .antMatchers("/", "/login","/test/**", "/api/signupConsumer", "/api/signupFarmMember", "/api/login", "/api/existEmail", "/socket").permitAll()
+                        // .antMatchers("/", "/api/login","/test/**", "/api/signupConsumer", "/api/signupFarmMember", "/api/login", "/api/existEmail", "/socket").permitAll()
                         .anyRequest().hasRole("USER")
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
@@ -66,6 +66,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override 
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/", "/product_images/**", "/user_profile_images/**");
+        web.ignoring().antMatchers("/", "/product_images/**", "/member_profile_images/**", "/farm_images/**", "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**");
     }
 }
