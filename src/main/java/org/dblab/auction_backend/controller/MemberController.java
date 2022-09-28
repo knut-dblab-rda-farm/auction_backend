@@ -97,7 +97,7 @@ public class MemberController {
 	}
 	
 	@PatchMapping(value = "/farmMemberBank")
-	public int updateFarmMemberBank(@ModelAttribute FarmMemberDTO farmMemberDTO) {
+	public String updateFarmMemberBank(@ModelAttribute FarmMemberDTO farmMemberDTO) {
 		System.out.println(farmMemberDTO.toString());
 		return memberService.updateFarmMemberBank(farmMemberDTO);
 	}
@@ -127,8 +127,8 @@ public class MemberController {
 	}
 	
 	@PatchMapping(value = "/farmImages")
-	public int updateFarmImages(@ModelAttribute FarmMemberDTO farmMemberDTO){
-		System.out.println(farmMemberDTO.toString().toString());
+	public String updateFarmImages(@ModelAttribute FarmMemberDTO farmMemberDTO){
+		System.out.println(farmMemberDTO.toString());
 		return memberService.updateFarmImages(farmMemberDTO);
 	}
 

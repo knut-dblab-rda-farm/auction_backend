@@ -35,9 +35,9 @@ public interface MemberService {
 
     public Map<String, Object> getFarmMember(int farm_id);
 
-    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
+    public String updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmImages(FarmMemberDTO farmMemberDTO);
+    public String updateFarmImages(FarmMemberDTO farmMemberDTO);
 
     public int updateFarmMemberNumber(int farm_id, String f_num);
 

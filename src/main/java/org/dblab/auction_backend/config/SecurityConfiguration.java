@@ -47,8 +47,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // jwt token으로 생성하므로 세션은 필요 없으므로 생성 안함.
                 .and()
                     .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
-                        .antMatchers("/**").permitAll()
-                        // .antMatchers("/", "/api/login","/test/**", "/api/signupConsumer", "/api/signupFarmMember", "/api/login", "/api/existEmail", "/socket").permitAll()
+                        // .antMatchers("/**").permitAll()
+                        .antMatchers("/", "/favicon.ico","/css/**", "/js/**", "/fonts/**", "/product_images/**", "/member_profile_images/**", "/farm_images/**", 
+                                                    "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**", "/api/login/**", "/api/logout/**","/test/**", 
+                                                    "/api/signupConsumer/**", "/api/signupFarmMember/**", "/api/existEmail/**", "/socket/**", "/api/subscribeAlert/**").permitAll()
                         .anyRequest().hasRole("USER")
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
@@ -66,6 +68,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override 
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/", "/product_images/**", "/member_profile_images/**", "/farm_images/**", "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**");
+        // web.ignoring().antMatchers("/", "/favicon.ico","/css/**", "/js/**", "/fonts/**", "/product_images/**", "/member_profile_images/**", "/farm_images/**", "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**");
     }
 }

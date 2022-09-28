@@ -85,30 +85,35 @@ public class MemberServiceImpl implements MemberService{
 
     public String updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
         log.info("updateMemberPassword..........");
+
+        String profile_img = null;
         
         // 이전 이미지 삭제
-        File profileImageFile = new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + memberProfileDTO.getProfile_img());
-
+        File profileImageFile = new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + memberProfileDTO.getProfile_img() + ".png");
+        log.info("updateMemberPassword..........");
         if (profileImageFile.exists()){
             if (profileImageFile.delete()){
                 System.out.println(memberProfileDTO.getProfile_img() + " 프로필 이미지 삭제 성공");
             } else {
                 System.out.println(memberProfileDTO.getProfile_img() + "프로필 이미지 삭제 실패...");
             }
+            
         } else{
     		System.out.println("회원 프로필 파일이 존재하지 않습니다.");
     	}
 
-        // 새로운 프로필 이미지 생성
-        String profile_img = memberProfileDTO.getCheckUser() + "_" +memberProfileDTO.getId();
+        if(memberProfileDTO.getNew_profile_img() != null){
+            // 새로운 프로필 이미지 생성
+            profile_img = memberProfileDTO.getCheckUser() + "_" +memberProfileDTO.getId();
 
-        try {
-            memberProfileDTO.getNew_profile_img().transferTo(new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + profile_img + ".png"));
-            System.out.println(profile_img + "새로운 프로필 이미지 저장 완료");
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                memberProfileDTO.getNew_profile_img().transferTo(new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + profile_img + ".png"));
+                System.out.println(profile_img + "새로운 프로필 이미지 저장 완료");
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // 이미지 이름 DB에 저장
@@ -169,7 +174,7 @@ public class MemberServiceImpl implements MemberService{
         return memberMapper.getFarmMember(farm_id);
     }
     
-    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
+    public String updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
         log.info("updateFarmMemberBank..........");
 
         // 이전 통장사본 이미지 삭제
@@ -197,24 +202,26 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // 이미지 이름 DB에 저장
-        return memberMapper.updateFarmMemberBank(farmMemberDTO);
+        memberMapper.updateFarmMemberBank(farmMemberDTO);
+        return farmMemberDTO.getF_bank_img();
     }
 
-    public int updateFarmImages(FarmMemberDTO farmMemberDTO) {
+    public String updateFarmImages(FarmMemberDTO farmMemberDTO) {
         log.info("updateFarmImages..........");
 
-        // 이전 농가업체 이미지 삭제
-        log.info(farmMemberDTO.getF_img());
-        //log.info(f_img);
-        if(farmMemberDTO.getF_img().length() < 1){
-            System.out.println("-------------");
-            String f_img = farmMemberDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);  // 9,2022-09-26T15:44:25      (0)10
-            int idx = f_img.indexOf(")");
-            String temp_f_img = f_img.substring(idx+1); //9,2022-09-26T15:44:25(0)10 여기서 뒤에 개수만 짜르기 -> 10
-            int f_img_length = Integer.parseInt(temp_f_img); //int로 변환
-            //기존 농가이미지 삭제
-            for(int i=0; i<f_img_length;i++){
+        // 이전 농가 이미지 삭제
+        String f_img = farmMemberDTO.getF_img();
+        if(f_img != null){
+            System.out.println("-------------" + (f_img.indexOf(")")+1));
+            
+            String f_img_str_length = f_img.substring(f_img.indexOf(")")+1);
+            System.out.println("f_img_str_length: " + f_img_str_length);
+            Integer f_img_length = Integer.parseInt(f_img_str_length);
+            f_img = f_img.substring(0, f_img.indexOf("("));
+
+            for(Integer i=0; i < f_img_length; i++){
                 File farmImageFile = new File(FARM_IMAGES_FOLDER_PATH + f_img + "("+i+")" +f_img_length+ ".png");// 파일 생성
+                System.out.println(farmImageFile.toString());
                 if (farmImageFile.exists()){
                     if (farmImageFile.delete()){
                         System.out.println(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
@@ -228,7 +235,7 @@ public class MemberServiceImpl implements MemberService{
         }
         
         //새로 업데이트하는 농가사진 추가
-        int numberOfFarmImg=farmMemberDTO.getFarm_img_files().size();
+        int numberOfFarmImg = farmMemberDTO.getFarm_img_files().size();
         String f_img_name = farmMemberDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);
         // 새로운 농가업체 이미지 생성 farm_id_시간_(0)개수
         
@@ -246,7 +253,8 @@ public class MemberServiceImpl implements MemberService{
         farmMemberDTO.setF_img(f_img_name + "(0)" + numberOfFarmImg);
 
         // 이미지 이름 DB에 저장
-        return memberMapper.updateFarmImages(farmMemberDTO);
+        memberMapper.updateFarmImages(farmMemberDTO);
+        return farmMemberDTO.getF_img();
     }
 
     public int updateFarmMemberNumber(int farm_id, String f_num) {
@@ -361,7 +369,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public int logout(String checkUser, String email) {
-
+        log.info("logout.........." + checkUser + "   " + email);
         int result;
         if (checkUser.equals("consumer")) {
             result = memberMapper.setNullConsumerToken(email);
@@ -385,6 +393,7 @@ public class MemberServiceImpl implements MemberService{
         String certificationNumber = "";
 
         for(int i=0; i<4; i++) certificationNumber += Integer.toString(rand.nextInt(10));
+        log.info("checkPhoneNumber.........." + certificationNumber);
 
         return certificationNumber;
     }

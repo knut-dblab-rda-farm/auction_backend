@@ -34,25 +34,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             if (token != null && jwtTokenProvider.validateToken(token)) {   // validateToken : Jwt 토큰의 유효성 + 만료일자 확인
                 Authentication auth = jwtTokenProvider.getAuthentication(token);   // getAuthentication : Jwt 토큰으로 인증 정보 조회
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                httpSeveletResponse.addHeader("TOKEN", "exist token");
-            } 
-            else {
-                System.out.println("resolveToken, TOKEN : null ==================================");
-                
-                httpSeveletResponse.addHeader("TOKEN", "not exist token");
-                httpSeveletResponse.sendRedirect("/");
-                // redirectResponse.sendError(305, "토큰이 없거나 유효하지 않습니다!");
-                // redirectResponse.sendRedirect("/");
-                // filterChain.doFilter(request, redirectResponse);
-                // return;
-                // response.
+                httpSeveletResponse.addHeader("TOKEN", "token");
             }
         } catch(UsernameNotFoundException e){
             System.out.println("UsernameNotFoundException 발생");
+            httpSeveletResponse.addHeader("TOKEN", "not exist token");
         } catch (Exception e) {
             System.out.println("Exception 발생");
         }
-
+        filterChain.doFilter(request, httpSeveletResponse);
         // if (token == null) {
         //     System.out.println("toekn nulladadssda");
         //     // HttpServletResponse redirectResponse = (HttpServletResponse)response;
@@ -63,6 +53,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         // else {
         //     filterChain.doFilter(request, response);
         // }
-        filterChain.doFilter(request, httpSeveletResponse);
+        
     }
 }

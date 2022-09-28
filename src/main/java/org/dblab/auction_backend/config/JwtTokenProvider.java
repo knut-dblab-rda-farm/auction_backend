@@ -28,7 +28,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     private String secretKey = "asdagsd^&445asasdfasdsdf&(@#@DSFS!DSFSD#%@%@$!@#$#!@)";
 
-    private long tokenValidMillisecond = 1000L * 60 * 60; // 1시간 토큰 유효
+    private long tokenValidMillisecond = 1000L * 60 * 60 * 3; // 3시간 토큰 유효
 
     // private final UserDetailsService userDetailsService;
     private final CustomUserDetailsService customUserDetailsService;
