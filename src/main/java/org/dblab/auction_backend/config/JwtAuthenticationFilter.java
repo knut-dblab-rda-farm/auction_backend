@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         } catch(UsernameNotFoundException e){
             System.out.println("UsernameNotFoundException 발생");
             httpSeveletResponse.addHeader("TOKEN", "not exist token");
+            filterChain.doFilter(request, httpSeveletResponse);
         } catch (Exception e) {
             System.out.println("Exception 발생");
         }

@@ -24,7 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         ConsumerMemberDTO consumerMemberDTO = null;
         consumerMemberDTO = memberMapper.getConsumerMember(email);
-
+        System.out.println(token);
+        System.out.println(consumerMemberDTO.getToken());
+        System.out.println(consumerMemberDTO.toString());
         if (consumerMemberDTO == null || !token.equals(consumerMemberDTO.getToken())){
             System.out.println("토큰이 같지 않음!");
             throw new UsernameNotFoundException("User not authorized.");

@@ -28,7 +28,7 @@ public class AlertController {
     @GetMapping(value = "/subscribeAlert/{checkUser}/{id}", produces = "text/event-stream")
     public SseEmitter subscribe(@PathVariable("checkUser") String checkUser, @PathVariable("id") int id) {
 
-        System.out.println(checkUser + "/" + id);
+        System.out.println("/subscribeAlert/{checkUser}/{id}-----------------------------" + checkUser + "/" + id);
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
 
         auctionService.registEmitter(checkUser, id, emitter);

@@ -137,14 +137,14 @@
     
 
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, a_r.review_img_name
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, f.farm_id, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
     <select id="getFarmAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, c.c_name, a_r.review_img_name
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, a.farm_id, c.c_name, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, consumer_member c
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.consumer_id = c.consumer_id and a.farm_id = #{farm_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))

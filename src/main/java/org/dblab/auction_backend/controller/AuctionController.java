@@ -86,7 +86,7 @@ public class AuctionController {
     
     @PostMapping(value = "/AuctionReview")
     public int registAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
-
+        System.out.println(auctionReviewDTO.toString());
         return auctionService.registAuctionReview(auctionReviewDTO);
     }
 

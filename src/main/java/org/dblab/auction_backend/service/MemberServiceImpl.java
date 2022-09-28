@@ -178,7 +178,7 @@ public class MemberServiceImpl implements MemberService{
         log.info("updateFarmMemberBank..........");
 
         // 이전 통장사본 이미지 삭제
-        File farmBankImageFile = new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img());
+        File farmBankImageFile = new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img()+ ".png");
 
         if (farmBankImageFile.exists()){
             if (farmBankImageFile.delete()){
@@ -212,10 +212,7 @@ public class MemberServiceImpl implements MemberService{
         // 이전 농가 이미지 삭제
         String f_img = farmMemberDTO.getF_img();
         if(f_img != null){
-            System.out.println("-------------" + (f_img.indexOf(")")+1));
-            
             String f_img_str_length = f_img.substring(f_img.indexOf(")")+1);
-            System.out.println("f_img_str_length: " + f_img_str_length);
             Integer f_img_length = Integer.parseInt(f_img_str_length);
             f_img = f_img.substring(0, f_img.indexOf("("));
 

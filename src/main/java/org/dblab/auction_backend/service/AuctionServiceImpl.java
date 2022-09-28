@@ -214,6 +214,7 @@ public class AuctionServiceImpl implements AuctionService{
             d_status = FARM_REIVEW_ALERT;
             auctionMapper.plusFarmPachiPoint(auctionReview.getFarm_id());
             auctionMapper.registFarmAuctionReview(auctionReview);
+            log.info("registAuctionReview.........." + auctionReview.toString());
         }
 
         return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getFarm_id(),
