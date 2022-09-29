@@ -29,8 +29,10 @@ public class BidDeadlineTimer extends Thread {
         while(true){
             try {
                 if (bidClosingDTOs == null || bidClosingDTOs.size() == 0) {
+                    log.info("mustSleep: " + mustSleep);
                     if(mustSleep){
                         sleepTime = 30000;
+                        mustSleep = false;
                     } else{
                         bidClosingDTOs = auctionService.getRecentlyBid(); 
 
@@ -38,14 +40,17 @@ public class BidDeadlineTimer extends Thread {
                         if (bidClosingDTOs.size() == 0){
                             sleepTime = DEADLINE_STANDARD_TIME;
                             latestTime = null;
+                            log.info("########## : " + sleepTime);
                         } else {
                             latestTime = bidClosingDTOs.get(bidClosingDTOs.size()-1).getDeadline_date();
                             sleepTime = bidClosingDTOs.get(0).getDeadline_date().getTime() - System.currentTimeMillis();
+                            log.info(bidClosingDTOs.get(0).toString());
                         }
                         if (sleepTime < 0) sleepTime = 30000;
 
                         for(int i = 0; i < bidClosingDTOs.size(); i++) 
                             log.info(bidClosingDTOs.get(i).getAuction_Id() + "  " + bidClosingDTOs.get(i).getDeadline_date().getTime());
+                        mustSleep = false;
                     }
                     log.info("-----------------------------------------" + System.currentTimeMillis() + "  sleepTime : "  + sleepTime);
                 } else {
