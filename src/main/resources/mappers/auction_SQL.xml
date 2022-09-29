@@ -36,6 +36,7 @@
         <id property="bid_status" column="bid_status" />
         <id property="bid_time" column="bid_time" />
         <id property="product_id" column="product_id" />
+        <id property="consumer_id" column="consumer_id" />
         <id property="farm_id" column="farm_id" />
         <id property="f_farm_name" column="f_farm_name" />
         <id property="f_phonenum" column="f_phonenum" />
@@ -137,7 +138,7 @@
     
 
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, f.farm_id, a_r.review_img_name
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, a.farm_id, a.consumer_id, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
@@ -150,7 +151,7 @@
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
     </select>
 
-    <update id="updateConsumerAuctionReview">
+    <update id="updateConsumerAuctionReview" parameterType="org.dblab.auction_backend.domain.AuctionReviewDTO">
 		UPDATE auction_review
 		SET grade_point= #{grade_point},
 		consumer_review = #{consumer_review},
@@ -158,10 +159,12 @@
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
-    <update id="updateFarmAuctionReview">
+    <update id="updateFarmAuctionReview" parameterType="org.dblab.auction_backend.domain.AuctionReviewDTO">
+    <![CDATA[ 
 		UPDATE auction_review
 		SET farm_review= #{farm_review}
 		WHERE auction_Id = #{auction_Id}
+    ]]>
 	</update>
 
     <delete id="deleteAuctionReview">
@@ -182,9 +185,9 @@
     <select id="registAlert" parameterType="org.dblab.auction_backend.domain.AlertDTO" resultType="Integer">
     <![CDATA[ 
         INSERT INTO alert 
-        (d_status, auction_Id, consumer_id, auction_name, product_img_name, f_farm_name, c_name)
+        (d_status, auction_Id, consumer_id, auction_name, product_img_name, farm_id, f_farm_name, c_name)
         VALUES
-        (#{d_status}, #{auction_Id}, #{consumer_id}, #{auction_name}, #{product_img_name}, #{f_farm_name}, #{c_name})
+        (#{d_status}, #{auction_Id}, #{consumer_id}, #{auction_name}, #{product_img_name}, #{farm_id}, #{f_farm_name}, #{c_name})
         RETURNING alert_id
     ]]>
     </select>
@@ -196,7 +199,7 @@
 
     <select id="getConsumerAlert" resultType="map">
         SELECT * FROM alert 
-        WHERE consumer_id = #{consumer_id}
+        WHERE consumer_id = #{consumer_id} OR pre_consumer_id = #{consumer_id}
     </select>
 
     <select id="getFarmAlert" resultType="map">

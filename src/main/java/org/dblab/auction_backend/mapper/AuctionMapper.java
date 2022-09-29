@@ -57,7 +57,7 @@ public interface AuctionMapper {
 
     public int updateConsumerAuctionReview(AuctionReviewDTO auctionReview);
 
-    public int updateFarmAuctionReview(AuctionReviewDTO auctionReview);
+    public int updateFarmAuctionReview(@Param("auction_Id") int auction_Id, @Param("farm_review") String farm_review);
     //{"auction_Id" : 1, "consumer_id": 5}
 
     //public int deleteAuctionReview(@Param("auction_Id") int auction_Id);

@@ -211,7 +211,10 @@ public class MemberServiceImpl implements MemberService{
 
         // 이전 농가 이미지 삭제
         String f_img = farmMemberDTO.getF_img();
-        if(f_img != null){
+        log.info("updateFarmImages.......... f_img: " + farmMemberDTO.getF_img());
+        log.info("updateFarmImages.......... f_img: " + (farmMemberDTO.getF_img() == null));
+        log.info("updateFarmImages.......... f_img: " + f_img);
+        if(f_img != null && !f_img.equals("null")){
             String f_img_str_length = f_img.substring(f_img.indexOf(")")+1);
             Integer f_img_length = Integer.parseInt(f_img_str_length);
             f_img = f_img.substring(0, f_img.indexOf("("));

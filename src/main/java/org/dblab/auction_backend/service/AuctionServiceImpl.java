@@ -230,7 +230,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public int updateAuctionReview(AuctionReviewDTO auctionReview) {
-        log.info("updateAuctionReview..........");
+        log.info("updateAuctionReview.........." + auctionReview.toString());
         
         if(auctionReview.getCheckUser().equals("consumer")){
             File newAuctionReviewImg=new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png");
@@ -244,20 +244,26 @@ public class AuctionServiceImpl implements AuctionService{
             } else{
                 System.out.println("리뷰 사진 파일이 존재하지 않습니다.");
             }
+            if(auctionReview.getReview_img_file() != null){
+                auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
+                try{
+                    auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name()+".png"));
+                    System.out.println(auctionReview.getReview_img_name() + " 새로운 리뷰 이미지 저장 완료");
 
-            auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
-            try{
-                auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name()+".png"));
-                System.out.println(auctionReview.getReview_img_name() + " 새로운 리뷰 이미지 저장 완료");
-
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             return auctionMapper.updateConsumerAuctionReview(auctionReview);
         } else {
-            return auctionMapper.updateFarmAuctionReview(auctionReview);
+            log.info("updateAuctionReview.......                ..." + auctionReview.toString());
+            log.info("auctionReview Id" + auctionReview.getAuction_Id() + "   " + auctionReview.getFarm_review());
+            auctionMapper.updateFarmAuctionReview(auctionReview.getAuction_Id(), auctionReview.getFarm_review());
+            return registAlert(new Bidding(auctionReview.getAuction_Id(), auctionReview.getAuction_name(), auctionReview.getFarm_id(),
+                                        auctionReview.getConsumer_id(), auctionReview.getProduct_img_name(), 
+                                        auctionReview.getF_farm_name(), auctionReview.getC_name()), FARM_REIVEW_ALERT);
         }
         
         
@@ -337,7 +343,8 @@ public class AuctionServiceImpl implements AuctionService{
         System.out.println("---------------");
         System.out.println(alertDto.toString());
 
-        if (d_status == BID_ALERT) {                             // 이전 입찰자가 있는 경우
+        if (bidding.getAuction_consumer_id() != null) {                             // 이전 입찰자가 있는 경우
+            alertDto.setPre_consumer_id(bidding.getAuction_consumer_id());
             SseEmitter auctionConsumerEmitter = consumerEmitters.get(bidding.getAuction_consumer_id());
             if(auctionConsumerEmitter != null){
                 // 이전 입찰자에게 알림

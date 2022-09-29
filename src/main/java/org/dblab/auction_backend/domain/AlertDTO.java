@@ -10,6 +10,7 @@ public class AlertDTO {
     private String time;
     private Integer auction_Id;
     private Integer consumer_id;
+    private Integer pre_consumer_id;
     private Integer farm_id;
     private Integer checked;
     private String auction_name;
