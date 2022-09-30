@@ -21,7 +21,7 @@ public interface MemberMapper {
 
     public int updateConsumerMemberName(@Param("consumer_id") int consumer_id, @Param("c_name") String c_name);
 
-    public int updateConsumerMemberAddress(@Param("consumer_id") int consumer_id, @Param("c_zipcode") String c_zipcode, @Param("c_location") String c_location);
+    public int updateConsumerMemberAddress(@Param("consumer_id") int consumer_id, @Param("c_zipcode") String c_zipcode, @Param("c_location") String c_location, @Param("c_detail_location") String c_detail_location);
 
     public int updateConsumerMemberProfileImage(@Param("consumer_id") int consumer_id, @Param("c_profile_img") String c_profile_img);
 

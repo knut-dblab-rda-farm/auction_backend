@@ -59,7 +59,7 @@ public class MemberController {
 	@PatchMapping(value = "/memberAddress")
 	public int updateMemberAddress(@RequestBody Map<String, String> map) {
 		System.out.println(map.toString());
-		return memberService.updateMemberAddress(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("zipcode"), map.get("location"));
+		return memberService.updateMemberAddress(map.get("checkUser"), Integer.parseInt(map.get("id")), map.get("zipcode"), map.get("location"), map.get("c_detail_location"));
 	}
 
 	@PatchMapping(value = "/memberProfileImage")

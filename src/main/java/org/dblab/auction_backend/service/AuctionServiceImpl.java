@@ -93,23 +93,26 @@ public class AuctionServiceImpl implements AuctionService{
     public int updateAuction(AuctionDTO auctionDTO) {
         log.info("updateAuction..........");
         
-
         String p_img = auctionDTO.getProductDTO().getProduct_img_name();
         int idx = p_img.indexOf(")");
         String temp_p_img=p_img.substring(idx);
         int p_img_length = Integer.parseInt(temp_p_img);
-        for(int i = 0; i<p_img_length;i++){
-            File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
-            if(productImageFile.exists()){
-                if(productImageFile.delete()){
-                    System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
+        if(p_img != null){
+            for(int i = 0; i<p_img_length;i++){
+                File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
+                if(productImageFile.exists()){
+                    if(productImageFile.delete()){
+                        System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
+                    }else{
+                        System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
+                    }
                 }else{
-                    System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
+                    System.out.println("상품이미지 파일이 없습니다...");
                 }
-            }else{
-                System.out.println("상품이미지 파일이 없습니다...");
             }
+
         }
+        
 
         int numberOfProductImg=auctionDTO.getProductDTO().getProduct_img_files().size();
         String p_img_name = auctionDTO.getProduct_id()+"."+LocalDateTime.now().toString().substring(0,19);
@@ -163,8 +166,51 @@ public class AuctionServiceImpl implements AuctionService{
     
     @Override
     public int updateProduct(ProductDTO productDTO) {
+        log.info("updateProduct..........");
 
         // 이미지 변경 시 처리 코드 
+        String p_img = productDTO.getProduct_img_name();
+        
+        if(p_img != null){
+            try {
+                Integer p_img_length = Integer.parseInt(p_img.substring(p_img.indexOf(")")+1));
+                p_img = p_img.substring(0, p_img.indexOf("("));
+
+                for(int i = 0; i<p_img_length;i++){
+                    File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
+                    if(productImageFile.exists()){
+                        if(productImageFile.delete()){
+                            System.out.println(productDTO.getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
+                        }else{
+                            System.out.println(productDTO.getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
+                        }
+                    }else{
+                        System.out.println("상품이미지 파일이 없습니다...");
+                    }
+                }
+            } catch (Exception e) {
+                log.info(e.toString());
+                log.info("잘못된 이미지 이름입니다!");
+            }
+            
+        }
+        
+
+        int numberOfProductImg=productDTO.getProduct_img_files().size();
+        String p_img_name = productDTO.getProduct_id()+"."+LocalDateTime.now().toString().substring(0,19);
+        System.out.println(PRODUCT_IMG_PATH + productDTO.getProduct_img_name());
+        try {
+            for(int i=0; i< numberOfProductImg;i++){
+                productDTO.getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + p_img_name + "("+i+")"+ numberOfProductImg+ ".png"));
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        productDTO.setProduct_img_name(p_img_name + "(0)" + numberOfProductImg);
+        System.out.println(productDTO.getProduct_img_name() + " 새로운 상품 이미지 저장 완료");
+
         return auctionMapper.updateProduct(productDTO);
     }
 
@@ -325,7 +371,7 @@ public class AuctionServiceImpl implements AuctionService{
          * d_status = 5 = FARM_REIVEW_ALERT, 경매 리뷰 생성 후 알림
          */
         log.info("registAlert.........." + bidding.toString());
-        AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getConsumer_id(), 
+        AlertDTO alertDto = new AlertDTO(bidding.getAuction_Id(), bidding.getAuction_name(), bidding.getAuction_consumer_id(), bidding.getConsumer_id(), 
                                         bidding.getFarm_id(), d_status, bidding.getProduct_img_name(), bidding.getF_farm_name(), bidding.getC_name());
 
         SseEmitter farmEmitter = farmEmitters.get(bidding.getFarm_id());
@@ -344,7 +390,6 @@ public class AuctionServiceImpl implements AuctionService{
         System.out.println(alertDto.toString());
 
         if (bidding.getAuction_consumer_id() != null) {                             // 이전 입찰자가 있는 경우
-            alertDto.setPre_consumer_id(bidding.getAuction_consumer_id());
             SseEmitter auctionConsumerEmitter = consumerEmitters.get(bidding.getAuction_consumer_id());
             if(auctionConsumerEmitter != null){
                 // 이전 입찰자에게 알림
@@ -370,8 +415,10 @@ public class AuctionServiceImpl implements AuctionService{
             emitter.send(SseEmitter.event().name("alert").data(alertDto));
         } catch (IOException e) {
             if (checkUser.equals("consumer")){
+                log.info("consumerEmitters.remove " + id);
                 consumerEmitters.remove(id);
             } else {
+                log.info("farmEmitters.remove " + id);
                 farmEmitters.remove(id);
             }
             e.printStackTrace();

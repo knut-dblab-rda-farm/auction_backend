@@ -50,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         // .antMatchers("/**").permitAll()
                         .antMatchers("/", "/favicon.ico","/css/**", "/js/**", "/fonts/**", "/product_images/**", "/member_profile_images/**", "/farm_images/**", 
                                                     "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**", "/api/login/**", "/api/logout/**","/test/**", 
-                                                    "/api/signupConsumer/**", "/api/signupFarmMember/**", "/api/existEmail/**", "/socket/**", "/api/subscribeAlert/**", "api/subscribeAlert/**").permitAll()
+                                                    "/api/signupConsumer/**", "/api/signupFarmMember/**", "/api/existEmail/**", "/api/findPassword/**", "/socket/**", "/api/subscribeAlert/**", "api/subscribeAlert/**").permitAll()
                         .anyRequest().hasRole("USER")
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

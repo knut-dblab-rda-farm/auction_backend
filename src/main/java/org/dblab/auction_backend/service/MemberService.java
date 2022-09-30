@@ -19,7 +19,7 @@ public interface MemberService {
 
     public int updateMemberName(String checkUser, int id, String name);
 
-    public int updateMemberAddress(String checkUser, int id, String zipcode, String location);
+    public int updateMemberAddress(String checkUser, int id, String zipcode, String location, String c_detail_location);
 
     public String updateMemberProfileImage(MemberProfileDTO userProfileDTO);
 

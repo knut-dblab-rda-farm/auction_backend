@@ -6,7 +6,7 @@
     <select id="registAuction" parameterType="org.dblab.auction_backend.domain.AuctionDTO" resultType="org.dblab.auction_backend.domain.BidClosingDTO">
         INSERT INTO auction
         (auction_name, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id, c_name, f_farm_name) VALUES
-        (#{auction_name}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id}, #{c_name, #{f_farm_name}})
+        (#{auction_name}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id}, #{c_name}, #{f_farm_name})
         RETURNING auction_Id, deadline_date
     </select>
 
@@ -73,6 +73,7 @@
 		UPDATE auction
 		SET bid_price= #{bid_price}, 
         consumer_id = #{consumer_id},
+        c_name = #{c_name},
         bid_num = bid_num + 1
 		WHERE auction_Id = #{auction_Id}
 	</update>
@@ -81,6 +82,7 @@
 		UPDATE auction
 		SET bid_price= #{bid_price}, 
         consumer_id = #{consumer_id},
+        c_name = #{c_name},
         bid_num = bid_num + 1,
         bid_status = 0
 		WHERE auction_Id = #{auction_Id}
@@ -101,15 +103,9 @@
     </insert>
 
     <update id="updateProduct">
-		UPDATE auction
-		SET p_name= #{p_name},
-		product = #{product},
-		product_kg = #{product_kg},
-        p_drop_date = #{p_drop_date},
-		size = #{size},
-        p_status = #{p_status},
-        p_explanation = #{p_explanation},
-        product_img_name = #{product_img_name},
+		UPDATE product
+		SET p_explanation = #{p_explanation},
+        product_img_name = #{product_img_name}
 		WHERE product_id = #{product_id}
 	</update>
 
@@ -186,9 +182,9 @@
     <select id="registAlert" parameterType="org.dblab.auction_backend.domain.AlertDTO" resultType="Integer">
     <![CDATA[ 
         INSERT INTO alert 
-        (d_status, auction_Id, consumer_id, auction_name, product_img_name, farm_id, f_farm_name, c_name)
+        (d_status, auction_Id, consumer_id, auction_name, product_img_name, farm_id, f_farm_name, c_name, pre_consumer_id)
         VALUES
-        (#{d_status}, #{auction_Id}, #{consumer_id}, #{auction_name}, #{product_img_name}, #{farm_id}, #{f_farm_name}, #{c_name})
+        (#{d_status}, #{auction_Id}, #{consumer_id}, #{auction_name}, #{product_img_name}, #{farm_id}, #{f_farm_name}, #{c_name}, #{pre_consumer_id})
         RETURNING alert_id
     ]]>
     </select>
@@ -296,11 +292,9 @@
 
     <!-- 마감된 경매 참여자(낙차잘, 농가) 가져오기 -->
     <select id="getClosedBidding" resultType="map">
-        SELECT a.auction_Id, a.bid_price, a.farm_id, a.consumer_id, a.auction_name , p.product_img_name, f.f_farm_name, c.c_name
+        SELECT a.auction_Id, a.bid_price, a.farm_id, a.consumer_id, a.auction_name , p.product_img_name, a.f_farm_name, a.c_name
         FROM auction AS a 
         INNER JOIN product AS p ON a.product_id = p.product_id
-        INNER JOIN farm_member AS f ON a.farm_id = f.farm_id
-        LEFT JOIN consumer_member AS c ON a.consumer_id = c.consumer_id
         WHERE a.auction_Id = #{auction_Id}
     </select>
     <!-- <select id="getClosedBidding" resultType="org.dblab.auction_backend.domain.Bidding">

@@ -38,7 +38,8 @@
     <update id="updateConsumerMemberAddress">
 		UPDATE consumer_member
 		SET c_zipcode= #{c_zipcode}, 
-        c_location= #{c_location}
+        c_location= #{c_location},
+		c_detail_location= #{c_detail_location}
 		WHERE consumer_id = #{consumer_id}
 	</update>
 
