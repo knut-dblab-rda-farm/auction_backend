@@ -5,8 +5,8 @@
     <!-- ############################################## 경매 CRUD #################################################### -->
     <select id="registAuction" parameterType="org.dblab.auction_backend.domain.AuctionDTO" resultType="org.dblab.auction_backend.domain.BidClosingDTO">
         INSERT INTO auction
-        (auction_name, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id) VALUES
-        (#{auction_name}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id})
+        (auction_name, deadline_date, a_starting_price, a_max_price, bid_price, product_id, farm_id, c_name, f_farm_name) VALUES
+        (#{auction_name}, #{deadline_date}, #{a_starting_price}, #{a_max_price}, #{bid_price}, #{productDTO.product_id}, #{farm_id}, #{c_name, #{f_farm_name}})
         RETURNING auction_Id, deadline_date
     </select>
 
@@ -37,6 +37,7 @@
         <id property="bid_time" column="bid_time" />
         <id property="product_id" column="product_id" />
         <id property="consumer_id" column="consumer_id" />
+        <id property="c_name" column="c_name" />
         <id property="farm_id" column="farm_id" />
         <id property="f_farm_name" column="f_farm_name" />
         <id property="f_phonenum" column="f_phonenum" />

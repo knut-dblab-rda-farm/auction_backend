@@ -19,7 +19,8 @@ public class AuctionDTO {
     private Integer product_id;
     private Integer farm_id;
     private Integer consumer_id;
-    
+    private String c_name;
+
     private String f_farm_name;
     private String f_name;
     private Integer f_num;
@@ -27,6 +28,7 @@ public class AuctionDTO {
     private String f_profile_img;
     private String f_img;
     private Integer f_phonenum;
+
 
     private ProductDTO productDTO;
 

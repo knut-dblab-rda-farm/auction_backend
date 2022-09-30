@@ -21,6 +21,7 @@ public class ConsumerMemberDTO implements UserDetails{
     private String c_profile_img;
     private String authority;
     private String token;
+    private String c_detail_location;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

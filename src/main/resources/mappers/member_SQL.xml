@@ -7,9 +7,9 @@
     <insert id="signupConsumer">  
         <![CDATA[
         insert into consumer_member
-        (c_passwd, c_name, c_email, c_phonenum, c_zipcode, c_location) 
+        (c_passwd, c_name, c_email, c_phonenum, c_zipcode, c_location, c_detail_location) 
         values
-        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum}, #{c_zipcode}, #{c_location})
+        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum}, #{c_zipcode}, #{c_location}, #{c_detail_location})
         ]]>
     </insert>
 
