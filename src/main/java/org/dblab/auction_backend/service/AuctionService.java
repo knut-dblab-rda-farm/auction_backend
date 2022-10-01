@@ -15,55 +15,57 @@ public interface AuctionService {
 
     // #################################################### 경매 CURD #####################################################
     
-    public int registAuction(AuctionDTO auctionDTO);
+    public Integer registAuction(AuctionDTO auctionDTO);
     
-    public List<AuctionDTO> getAuction(int limit);
+    public List<AuctionDTO> getAuction(Integer limit);
 
-    public int updateAuction(AuctionDTO auctionDTO);
+    public Integer deleteAuction(Integer auction_Id, Integer product_id, String product_img_name);
 
-    public int deleteAuction(int auction_Id, int product_id);
+    public Integer updateBidding(Bidding bidding);
 
-    public int updateBidding(Bidding bidding);
-
-    public AuctionDTO auctionInfo(int auction_Id);
+    public AuctionDTO auctionInfo(Integer auction_Id);
 
 
     // #################################################### 상품 U #####################################################
 
-    public int updateProduct(ProductDTO productDTO);
+    public Integer updateProduct(ProductDTO productDTO);
 
-    // public int registWish(int auction_id, int consumer_id);
+    public void deleteProductImages(String product_img_name);
 
-    public int registWish(WishDTO wishDTO);
+    // public Integer registWish(Integer auction_id, Integer consumer_id);
 
-    public int deleteWish(int auction_id, int consumer_id);
+    public Integer registWish(WishDTO wishDTO);
 
-    public int checkWish(int auction_id, int consumer_id);
+    public Integer deleteWish(Integer auction_id, Integer consumer_id);
+
+    public Integer checkWish(Integer auction_id, Integer consumer_id);
 
     // #################################################### 리뷰 CRUD #####################################################
 
-    public int registAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer registAuctionReview(AuctionReviewDTO auctionReview);
 
-    public List<Map<String, Object>> getAuctionReview(String checkUser, int id);
+    public List<Map<String, Object>> getAuctionReview(String checkUser, Integer id);
 
-    public int updateAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer updateAuctionReview(AuctionReviewDTO auctionReview);
 
-    public int deleteAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer deleteAuctionReview(AuctionReviewDTO auctionReview);
 
-    public List<Map<String, Object>> getProductInfo(int product_id);
+    public List<Map<String, Object>> getProductInfo(Integer product_id);
 
     // #################################################### 알림 #####################################################
 
-    public SseEmitter registEmitter(String checkUser, int id, SseEmitter emitter);
+    public SseEmitter registEmitter(String checkUser, Integer id, SseEmitter emitter);
 
-    public int registAlert(Bidding bidding, int d_status);
+    public Integer registAlert(Bidding bidding, Integer d_status);
 
-    public int checkedAlert(int alert_id);
+    public List<Map<String, Object>> getAlert(String checkUser, Integer id, Integer startLimit);
+
+    public Integer checkedAlert(Integer alert_id);
 
 
     // #################################################### 검색 기능 #####################################################
 
-    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword, int startLimit);
+    public List<AuctionDTO> searchAuction(String ip, String checkUser, Integer id, String keyword, Integer startLimit);
 
     public List<String> getPopularKeyword();
 
@@ -72,25 +74,25 @@ public interface AuctionService {
 
     public List<BidClosingDTO> getRecentlyBid();
 
-    public int earlyCloseBidding(Bidding bidding);
+    public Integer earlyCloseBidding(Bidding bidding);
 
-    public void closeBidding(int auction_Id);
+    public void closeBidding(Integer auction_Id);
 
     public void plusPoint(Bidding bidding);
 
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
-    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit);
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, Integer id, Integer limit);
 
     //마이페이지 나의 찜 목록 가져오기
-    public List<Map<String, Object>> getWishList(int consumer_id, int limit);
+    public List<Map<String, Object>> getWishList(Integer consumer_id, Integer limit);
 
-    public int consumerPachiPoint(int consumer_id);
+    public Integer consumerPachiPoint(Integer consumer_id);
 
-    public int farmPachiPoint(int farm_id);
+    public Integer farmPachiPoint(Integer farm_id);
     
-    public int farmCountAuction(int farm_id);
+    public Integer farmCountAuction(Integer farm_id);
 
-    public int consumerCountAuction(int consumer_id);
+    public Integer consumerCountAuction(Integer consumer_id);
 }

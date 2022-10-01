@@ -35,9 +35,7 @@ public class AuctionSocketController {
         System.out.println("receive_bidding : " + bidding.toString());
         int result = auctionService.updateBidding(bidding);
         System.out.println("updateBidding result: " + result);
-
-        if(result != 1) return null;
-
+        if(result == 0) bidding.setBid_price(-1);                   // 경매가 이전에 삭제된 경우
         return bidding;
     }
 }

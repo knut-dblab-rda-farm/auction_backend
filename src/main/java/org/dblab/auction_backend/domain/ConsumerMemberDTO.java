@@ -11,17 +11,19 @@ import lombok.Data;
 @Data
 public class ConsumerMemberDTO implements UserDetails{
 
-    private int consumer_id;
+    private Integer consumer_id;
     private String c_passwd;
     private String c_name;
     private String c_email;
     private String c_phonenum;
-    private int c_zipcode;
+    private Integer c_zipcode;
     private String c_location;
     private String c_profile_img;
     private String authority;
     private String token;
     private String c_detail_location;
+    private Integer pachi_point;
+    private Integer count_auction;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

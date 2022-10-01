@@ -4,14 +4,13 @@
 
     <!--  #################################################### 소비자 CRUD ####################################################  --> 
 
-    <insert id="signupConsumer">  
-        <![CDATA[
-        insert into consumer_member
-        (c_passwd, c_name, c_email, c_phonenum, c_zipcode, c_location, c_detail_location) 
+    <select id="signupConsumer" parameterType="org.dblab.auction_backend.domain.ConsumerMemberDTO" resultType="org.dblab.auction_backend.domain.ConsumerMemberDTO">  
+        INSERT INTO consumer_member
+        (c_passwd, c_name, c_email, c_phonenum, c_zipcode, c_location, c_detail_location, token) 
         values
-        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum}, #{c_zipcode}, #{c_location}, #{c_detail_location})
-        ]]>
-    </insert>
+        (#{c_passwd}, #{c_name}, #{c_email}, #{c_phonenum}, #{c_zipcode}, #{c_location}, #{c_detail_location}, #{token})
+		RETURNING consumer_id, c_name, c_email, c_phonenum, c_zipcode, c_location, c_detail_location, authority, token, pachi_point, count_auction
+    </select>
 
     <select id="getConsumerMember" resultType="org.dblab.auction_backend.domain.ConsumerMemberDTO">
         SELECT * FROM consumer_member WHERE c_email = #{c_email}
@@ -56,16 +55,16 @@
 
     <!--  #################################################### 농가 CRUD ####################################################  --> 
 
-    <insert id="signupFarmMember">  
-        <![CDATA[
+    <select id="signupFarmMember" parameterType="org.dblab.auction_backend.domain.FarmMemberDTO" resultType="org.dblab.auction_backend.domain.FarmMemberDTO">
         insert into farm_member
         (f_passwd, f_email, f_phonenum, f_name, f_RRN, f_BRN, f_zipcode, f_location, f_farm_name, 
-        f_num, f_explanation, f_major_crop, f_profile_img, f_img, f_bank, f_bank_name, f_bank_num, f_bank_img) 
+        f_num, f_explanation, f_major_crop, f_profile_img, f_img, f_bank, f_bank_name, f_bank_num, f_bank_img, token) 
         values
         (#{f_passwd}, #{f_email}, #{f_phonenum}, #{f_name}, #{f_RRN}, #{f_BRN}, #{f_zipcode}, #{f_location}, #{f_farm_name}, 
-        #{f_num}, #{f_explanation}, #{f_major_crop}, #{f_profile_img}, #{f_img}, #{f_bank}, #{f_bank_name}, #{f_bank_num}, #{f_bank_img}) 
-        ]]>
-    </insert>
+        #{f_num}, #{f_explanation}, #{f_major_crop}, #{f_profile_img}, #{f_img}, #{f_bank}, #{f_bank_name}, #{f_bank_num}, #{f_bank_img}, #{token}) 
+		RETURNING farm_id, f_email, f_phonenum, f_name, f_RRN, f_BRN, f_zipcode, f_location, f_farm_name, 
+        f_num, f_explanation, f_major_crop, f_profile_img, f_img, f_bank, f_bank_name, f_bank_num, f_bank_img, authority, token, pachi_point, count_auction
+    </select>
 
     <select id="getFarmMember" resultType="map">
         SELECT f_email, f_phonenum, f_name, f_BRN, f_zipcode, f_location, f_farm_name, f_num, f_explanation, f_major_crop, f_profile_img, f_img, pachi_point  

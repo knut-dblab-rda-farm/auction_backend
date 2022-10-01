@@ -13,39 +13,39 @@ public interface MemberService {
 
     // #################################################### 소비자, 농가 공통 기능 ####################################################
 
-    public int updateMemberPassword(String checkUser, int id, String passwd);
+    public Integer updateMemberPassword(String checkUser, Integer id, String passwd);
 
-    public int updateMemberPhoneNumber(String checkUser, int id, String phonenum);
+    public Integer updateMemberPhoneNumber(String checkUser, Integer id, String phonenum);
 
-    public int updateMemberName(String checkUser, int id, String name);
+    public Integer updateMemberName(String checkUser, Integer id, String name);
 
-    public int updateMemberAddress(String checkUser, int id, String zipcode, String location, String c_detail_location);
+    public Integer updateMemberAddress(String checkUser, Integer id, String zipcode, String location, String c_detail_location);
 
     public String updateMemberProfileImage(MemberProfileDTO userProfileDTO);
 
-    public int deleteMember(String checkUser, int id);
+    public Integer deleteMember(String checkUser, Integer id);
 
     // #################################################### 소비자 C ####################################################
 
-    public HashMap<String, Object> signupConsumer(ConsumerMemberDTO consumerMember);
+    public UserDetails signupConsumer(ConsumerMemberDTO consumerMemberDTO);
 
     // #################################################### 농가 CRUD ####################################################
 
-    public HashMap<String, Object> signupFarmMember(FarmMemberDTO farmMemberDTO);
+    public UserDetails signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public Map<String, Object> getFarmMember(int farm_id);
+    public Map<String, Object> getFarmMember(Integer farm_id);
 
     public String updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
 
     public String updateFarmImages(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmMemberNumber(int farm_id, String f_num);
+    public Integer updateFarmMemberNumber(Integer farm_id, String f_num);
 
-    public int updateFarmMemberFarmName(int farm_id, String f_farm_name);
+    public Integer updateFarmMemberFarmName(Integer farm_id, String f_farm_name);
 
-    public int updateFarmMemberExplanation(int farm_id, String f_explanation);
+    public Integer updateFarmMemberExplanation(Integer farm_id, String f_explanation);
 
-    public int updateFarmMemberMajorCrop(int farm_id, String f_major_crop);
+    public Integer updateFarmMemberMajorCrop(Integer farm_id, String f_major_crop);
 
     // #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################
     
@@ -58,9 +58,9 @@ public interface MemberService {
 
     public UserDetails login(String checkUser ,String email, String password);
 
-    public int logout(String checkUser ,String email);
+    public Integer logout(String checkUser ,String email);
 
-    public int existEmail(String email);
+    public Integer existEmail(String email);
 
     // 실제로 사용할 때 주석 풀기!!
     /*

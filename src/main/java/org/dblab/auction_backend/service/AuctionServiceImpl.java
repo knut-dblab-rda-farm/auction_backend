@@ -33,32 +33,33 @@ public class AuctionServiceImpl implements AuctionService{
     private String AUCTION_REVIEW_IMAGES_FOLDER_PATH = "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/auciton_review_images/";
     private HashMap<Integer,SseEmitter> consumerEmitters = new HashMap<Integer, SseEmitter>();
     private HashMap<Integer,SseEmitter> farmEmitters = new HashMap<Integer, SseEmitter>();
-    private int FIRST_BID_ALERT = 0;    // 열거형 
-    private int BID_ALERT = 1;
-    private int EARLY_CLOSING_AUCTION_ALERT = 2;
-    private int END_AUCTION_ALERT = 3;
-    private int CONSUMER_REIVEW_ALERT = 4;
-    private int FARM_REIVEW_ALERT = 5;
+    private Integer FIRST_BID_ALERT = 0;    // 열거형 
+    private Integer BID_ALERT = 1;
+    private Integer EARLY_CLOSING_AUCTION_ALERT = 2;
+    private Integer END_AUCTION_ALERT = 3;
+    private Integer CONSUMER_REIVEW_ALERT = 4;
+    private Integer FARM_REIVEW_ALERT = 5;
+    private Integer ALERT_INIT_START_LIMIT = 0;
 
     // #################################################### 경매 CURD #####################################################
 
     @Override
-    public int registAuction(AuctionDTO auctionDTO) {
+    public Integer registAuction(AuctionDTO auctionDTO) {
         log.info("registAuction.........." + auctionDTO);
 
         // 유저 이름 + 날짜, 임시로 농가 ID 사용!
         String product_img_name = auctionDTO.getFarm_id() + "," + LocalDateTime.now().toString().substring(0, 19);
         // 이미지 개수
-        int numberOfImg = auctionDTO.getProductDTO().getProduct_img_files().size();
-        System.out.println("numberOfImg: " + numberOfImg);
+        Integer numberOfImg = auctionDTO.getProductDTO().getProduct_img_files().size();
+        log.info("numberOfImg: " + numberOfImg);
         try {
-            for (int i=0; i<numberOfImg; i++){
+            for (Integer i=0; i<numberOfImg; i++){
                 auctionDTO.getProductDTO().getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + product_img_name + "(" + i + ")" + numberOfImg +".png"));
             }
-            System.out.println(product_img_name + " 파일 저장 완료");
+            log.info(product_img_name + " 파일 저장 완료");
         } catch (IllegalStateException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException e) { 
             e.printStackTrace();
         }
         auctionDTO.getProductDTO().setProduct_img_name(product_img_name + "(0)" + numberOfImg);
@@ -81,7 +82,7 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public List<AuctionDTO> getAuction(int limit) {
+    public List<AuctionDTO> getAuction(Integer limit) {
         log.info("getAuction.........." + limit);
         List<AuctionDTO> auctionDTOs = auctionMapper.getAuction(limit);
         log.info(auctionDTOs.toString());
@@ -90,64 +91,27 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public int updateAuction(AuctionDTO auctionDTO) {
-        log.info("updateAuction..........");
-        
-        String p_img = auctionDTO.getProductDTO().getProduct_img_name();
-        int idx = p_img.indexOf(")");
-        String temp_p_img=p_img.substring(idx);
-        int p_img_length = Integer.parseInt(temp_p_img);
-        if(p_img != null){
-            for(int i = 0; i<p_img_length;i++){
-                File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
-                if(productImageFile.exists()){
-                    if(productImageFile.delete()){
-                        System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
-                    }else{
-                        System.out.println(auctionDTO.getProductDTO().getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
-                    }
-                }else{
-                    System.out.println("상품이미지 파일이 없습니다...");
-                }
-            }
-
-        }
-        
-
-        int numberOfProductImg=auctionDTO.getProductDTO().getProduct_img_files().size();
-        String p_img_name = auctionDTO.getProduct_id()+"."+LocalDateTime.now().toString().substring(0,19);
-        System.out.println(PRODUCT_IMG_PATH+auctionDTO.getProductDTO().getProduct_img_name());
-        try {
-            for(int i=0; i< numberOfProductImg;i++){
-                auctionDTO.getProductDTO().getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + p_img_name + "("+i+")"+ numberOfProductImg+ ".png"));
-            }
-            System.out.println(auctionDTO.getProductDTO().getProduct_img_name() + " 새로운 상품 이미지 저장 완료");
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return auctionMapper.updateAuction(auctionDTO);
-    }
-
-    @Override
-    public int deleteAuction(int auction_Id, int product_id) {
+    public Integer deleteAuction(Integer auction_Id, Integer product_id, String product_img_name) {
         log.info("deleteAuction..........");
+        auctionMapper.deleteAuctionWish(auction_Id);
+        auctionMapper.deleteAlert(auction_Id);
+        auctionMapper.deleteAuctionReview(auction_Id);
         auctionMapper.deleteAuction(auction_Id);
+        deleteProductImages(product_img_name);
         return auctionMapper.deleteProduct(product_id);
     }
 
     @Override
-    public int updateBidding(Bidding bidding) {
-        System.out.println(bidding.toString());
+    public Integer updateBidding(Bidding bidding) {
+        log.info(bidding.toString());
         if(bidding.getIsMaxPrice() == 1){
-            auctionMapper.updateMaxPriceBidding(bidding);
+            if(auctionMapper.updateMaxPriceBidding(bidding) == 0) return 0;                 // 경매가 이전에 삭제된 경우
             return earlyCloseBidding(bidding);
         } 
-        auctionMapper.updateBidding(bidding);
+        if(auctionMapper.updateBidding(bidding)==0) return 0;                               // 경매가 이전에 삭제된 경우
 
-        int d_status = FIRST_BID_ALERT;
-        int alertResult = 0;
+        Integer d_status = FIRST_BID_ALERT;
+        Integer alertResult = 0;
 
         if (bidding.getAuction_consumer_id() != null){
             d_status = BID_ALERT;
@@ -156,51 +120,25 @@ public class AuctionServiceImpl implements AuctionService{
         return alertResult;
     }
 
-    public AuctionDTO auctionInfo(int auction_Id) {
+    public AuctionDTO auctionInfo(Integer auction_Id) {
         AuctionDTO tmp = auctionMapper.auctionInfo(auction_Id);
-        System.out.println(tmp.toString());
+        log.info(tmp.toString());
         return tmp;
     }
 
     // #################################################### 상품 U #####################################################
     
     @Override
-    public int updateProduct(ProductDTO productDTO) {
+    public Integer updateProduct(ProductDTO productDTO) {
         log.info("updateProduct..........");
 
-        // 이미지 변경 시 처리 코드 
-        String p_img = productDTO.getProduct_img_name();
-        
-        if(p_img != null){
-            try {
-                Integer p_img_length = Integer.parseInt(p_img.substring(p_img.indexOf(")")+1));
-                p_img = p_img.substring(0, p_img.indexOf("("));
+        deleteProductImages(productDTO.getProduct_img_name());
 
-                for(int i = 0; i<p_img_length;i++){
-                    File productImageFile = new File(PRODUCT_IMG_PATH+p_img+"("+i+")"+p_img_length+".png");
-                    if(productImageFile.exists()){
-                        if(productImageFile.delete()){
-                            System.out.println(productDTO.getProduct_img_name()+"상품이미지 삭제 성공!!!!!~~");
-                        }else{
-                            System.out.println(productDTO.getProduct_img_name()+"상품이미지 삭제 실패!!!!!~~");
-                        }
-                    }else{
-                        System.out.println("상품이미지 파일이 없습니다...");
-                    }
-                }
-            } catch (Exception e) {
-                log.info(e.toString());
-                log.info("잘못된 이미지 이름입니다!");
-            }
-            
-        }
-        
-
-        int numberOfProductImg=productDTO.getProduct_img_files().size();
+        Integer numberOfProductImg=productDTO.getProduct_img_files().size();
         String p_img_name = productDTO.getProduct_id()+"."+LocalDateTime.now().toString().substring(0,19);
-        System.out.println(PRODUCT_IMG_PATH + productDTO.getProduct_img_name());
+        log.info(PRODUCT_IMG_PATH + productDTO.getProduct_img_name());
         try {
-            for(int i=0; i< numberOfProductImg;i++){
+            for(Integer i=0; i< numberOfProductImg;i++){
                 productDTO.getProduct_img_files().get(i).transferTo(new File(PRODUCT_IMG_PATH + p_img_name + "("+i+")"+ numberOfProductImg+ ".png"));
             }
         } catch (IllegalStateException e) {
@@ -209,13 +147,39 @@ public class AuctionServiceImpl implements AuctionService{
             e.printStackTrace();
         }
         productDTO.setProduct_img_name(p_img_name + "(0)" + numberOfProductImg);
-        System.out.println(productDTO.getProduct_img_name() + " 새로운 상품 이미지 저장 완료");
+        log.info(productDTO.getProduct_img_name() + " 새로운 상품 이미지 저장 완료");
 
         return auctionMapper.updateProduct(productDTO);
     }
 
+    // 상품 이미지 삭제 코드
+    public void deleteProductImages(String product_img_name){
+        if(product_img_name != null){
+            try {
+                Integer product_img_name_length = Integer.parseInt(product_img_name.substring(product_img_name.indexOf(")")+1));
+                product_img_name = product_img_name.substring(0, product_img_name.indexOf("("));
+
+                for(Integer i = 0; i<product_img_name_length;i++){
+                    File productImageFile = new File(PRODUCT_IMG_PATH+product_img_name+"("+i+")"+product_img_name_length+".png");
+                    if(productImageFile.exists()){
+                        if(productImageFile.delete()){
+                            log.info(product_img_name + "상품이미지 삭제 성공!!!!!~~");
+                        }else{
+                            log.info(product_img_name + "상품이미지 삭제 실패!!!!!~~");
+                        }
+                    }else{
+                        log.info("상품이미지 파일이 없습니다...");
+                    }
+                }
+            } catch (Exception e) {
+                log.info(e.toString());
+                log.info("잘못된 이미지 이름입니다!");
+            }
+        }
+    }
+
     @Override
-    public int registWish(WishDTO wishDTO){
+    public Integer registWish(WishDTO wishDTO){
         log.info("registWish....." + wishDTO.toString());
         if(auctionMapper.checkWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id())==0){
             return auctionMapper.registWish(wishDTO.getAuction_id(), wishDTO.getConsumer_id());
@@ -224,23 +188,23 @@ public class AuctionServiceImpl implements AuctionService{
         }
     }
     @Override
-    public int checkWish(int auction_id, int consumer_id){
-        System.out.println(auction_id+" "+consumer_id);
+    public Integer checkWish(Integer auction_id, Integer consumer_id){
+        log.info(auction_id+" "+consumer_id);
 
         return auctionMapper.checkWish(auction_id, consumer_id);
     }
 
     @Override
-    public int deleteWish(int auction_id, int consumer_id){
+    public Integer deleteWish(Integer auction_id, Integer consumer_id){
         return auctionMapper.deleteWish(auction_id, consumer_id);
     }
 
     // #################################################### 리뷰 CRUD #####################################################
 
     @Override
-    public int registAuctionReview(AuctionReviewDTO auctionReview) {
+    public Integer registAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("registAuctionReview.........." + auctionReview.toString());
-        int d_status = CONSUMER_REIVEW_ALERT;
+        Integer d_status = CONSUMER_REIVEW_ALERT;
         if(auctionReview.getCheckUser().equals("consumer")){
             auctionMapper.plusConsumerPachiPoint(auctionReview.getConsumer_id());
             // 리뷰 이미지 저장
@@ -248,7 +212,7 @@ public class AuctionServiceImpl implements AuctionService{
                 auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
                 try {
                     auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png"));
-                    System.out.println(auctionReview.getAuction_name() + " 새로운 리뷰 이미지 저장 완료");
+                    log.info(auctionReview.getAuction_name() + " 새로운 리뷰 이미지 저장 완료");
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -269,13 +233,13 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public List<Map<String, Object>> getAuctionReview(String checkUser, int id) {
+    public List<Map<String, Object>> getAuctionReview(String checkUser, Integer id) {
         log.info("getAuctionReview.........." + checkUser + " " +  id );
         return checkUser.equals("consumer") ? auctionMapper.getConsumerAuctionReview(id) : auctionMapper.getFarmAuctionReview(id);
     }
 
     @Override
-    public int updateAuctionReview(AuctionReviewDTO auctionReview) {
+    public Integer updateAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("updateAuctionReview.........." + auctionReview.toString());
         
         if(auctionReview.getCheckUser().equals("consumer")){
@@ -283,18 +247,18 @@ public class AuctionServiceImpl implements AuctionService{
 
             if(newAuctionReviewImg.exists()){
                 if(newAuctionReviewImg.delete()){
-                    System.out.println(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 성공");
+                    log.info(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 성공");
                 } else{
-                    System.out.println(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 실패");
+                    log.info(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 실패");
                 }
             } else{
-                System.out.println("리뷰 사진 파일이 존재하지 않습니다.");
+                log.info("리뷰 사진 파일이 존재하지 않습니다.");
             }
             if(auctionReview.getReview_img_file() != null){
                 auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
                 try{
                     auctionReview.getReview_img_file().transferTo(new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name()+".png"));
-                    System.out.println(auctionReview.getReview_img_name() + " 새로운 리뷰 이미지 저장 완료");
+                    log.info(auctionReview.getReview_img_name() + " 새로운 리뷰 이미지 저장 완료");
 
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
@@ -318,14 +282,14 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public int deleteAuctionReview(AuctionReviewDTO auctionReview) {
+    public Integer deleteAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("deleteAuctionReview..........");
         auctionMapper.minusConsumerPachiPoint(auctionReview.getConsumer_id());
-        return auctionMapper.deleteAuctionReview(auctionReview);
+        return auctionMapper.deleteAuctionReview(auctionReview.getAuction_Id());
     }
 
     @Override
-    public List<Map<String, Object>> getProductInfo(int product_id) {
+    public List<Map<String, Object>> getProductInfo(Integer product_id) {
         log.info("getProductInfo");
         return auctionMapper.getProductInfo(product_id);
     }
@@ -334,21 +298,21 @@ public class AuctionServiceImpl implements AuctionService{
     // #################################################### 알림 #####################################################
 
     @Override
-    public SseEmitter registEmitter(String checkUser, int id, SseEmitter emitter) {
+    public SseEmitter registEmitter(String checkUser, Integer id, SseEmitter emitter) {
         
         try {
-            System.out.println("id: " + id);
+            log.info("id: " + id);
             emitter.send(SseEmitter.event().name(""+id));
 
             // checkUser와 id를 이용해서 Alert 데이터 가져와서 emitter에 저장하기
             if (checkUser.equals("consumer")){
-                List<Map<String, Object>> alertDTOs = auctionMapper.getConsumerAlert(id);
+                List<Map<String, Object>> alertDTOs = auctionMapper.getConsumerAlert(id, ALERT_INIT_START_LIMIT);
 
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
                 emitter.onCompletion(() -> consumerEmitters.remove(id));
                 consumerEmitters.put(id, emitter);
             } else {
-                List<Map<String, Object>> alertDTOs = auctionMapper.getFarmAlert(id);
+                List<Map<String, Object>> alertDTOs = auctionMapper.getFarmAlert(id, ALERT_INIT_START_LIMIT);
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
                 emitter.onCompletion(() -> farmEmitters.remove(id));
                 farmEmitters.put(id, emitter);
@@ -361,7 +325,7 @@ public class AuctionServiceImpl implements AuctionService{
     
     // 경매 중일 때 알림 생성하고 보내기, 이름 수정 하기
     @Override
-    public int registAlert(Bidding bidding, int d_status) {
+    public Integer registAlert(Bidding bidding, Integer d_status) {
         /*
          * d_status = 0 = FIRST_BID_ALERT, 첫 입찰인 경우
          * d_status = 1 = BID_ALERT, 이전 입찰자가 있는 경우
@@ -386,20 +350,20 @@ public class AuctionServiceImpl implements AuctionService{
 
         // alert time error로 인한 코드
         alertDto.setTime(auctionMapper.getAlertTime(alertDto.getAlert_id()));
-        System.out.println("---------------");
-        System.out.println(alertDto.toString());
+        log.info("---------------");
+        log.info(alertDto.toString());
 
         if (bidding.getAuction_consumer_id() != null) {                             // 이전 입찰자가 있는 경우
             SseEmitter auctionConsumerEmitter = consumerEmitters.get(bidding.getAuction_consumer_id());
             if(auctionConsumerEmitter != null){
                 // 이전 입찰자에게 알림
-                System.out.println("auctionConsumerEmitter: " + alertDto.toString());
+                log.info("auctionConsumerEmitter: " + alertDto.toString());
                 snedEvent(auctionConsumerEmitter, alertDto, "consumer", bidding.getAuction_consumer_id());
             }
         }
         if(consumerEmitter != null){
             // 새로운 입찰자 혹은 낙찰자에게 알림
-            System.out.println("consumerEmitter: " + alertDto.toString());
+            log.info("consumerEmitter: " + alertDto.toString());
             snedEvent(consumerEmitter, alertDto, "consumer", bidding.getConsumer_id());
         }
         if(farmEmitter != null){
@@ -410,7 +374,7 @@ public class AuctionServiceImpl implements AuctionService{
         return 1;
     }
 
-    public void snedEvent(SseEmitter emitter, AlertDTO alertDto, String checkUser, int id){
+    public void snedEvent(SseEmitter emitter, AlertDTO alertDto, String checkUser, Integer id){
         try {
             emitter.send(SseEmitter.event().name("alert").data(alertDto));
         } catch (IOException e) {
@@ -425,8 +389,13 @@ public class AuctionServiceImpl implements AuctionService{
         }
     }
 
+    public List<Map<String, Object>> getAlert(String checkUser, Integer id, Integer startLimit){
+        log.info("getAlert.....");
+        return checkUser.equals("consumer") ? auctionMapper.getConsumerAlert(id, startLimit) : auctionMapper.getFarmAlert(id, startLimit);
+    }
+
     @Override
-    public int checkedAlert(int alert_id) {
+    public Integer checkedAlert(Integer alert_id) {
         return auctionMapper.updateCheckedAlert(alert_id);
     }
 
@@ -434,7 +403,7 @@ public class AuctionServiceImpl implements AuctionService{
     // #################################################### 검색 기능 #####################################################
 
     @Override
-    public List<AuctionDTO> searchAuction(String ip, String checkUser, int id, String keyword, int startLimit){
+    public List<AuctionDTO> searchAuction(String ip, String checkUser, Integer id, String keyword, Integer startLimit){
         List<AuctionDTO> auctionDTOs = auctionMapper.searchAuction("%" + keyword + "%", startLimit);
 
         // 검색된 경매가 있다면 search_word 테이블에 추가
@@ -465,7 +434,7 @@ public class AuctionServiceImpl implements AuctionService{
     public List<String> getPopularKeyword(){
 
         List<String> keywords = auctionMapper.getPopularKeyword();
-        System.out.println(keywords.toString());
+        log.info(keywords.toString());
         return keywords;
     };
 
@@ -479,14 +448,14 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     // 경매 조기 마감
-    public int earlyCloseBidding(Bidding bidding){ 
+    public Integer earlyCloseBidding(Bidding bidding){ 
         log.info("earlyCloseBidding..........");
         plusPoint(bidding);
         return registAlert(bidding, EARLY_CLOSING_AUCTION_ALERT);
     }
     
     // 경매 정시 마감, 마감된 경매 상태 업데이트 & 알림
-    public void closeBidding(int auction_Id){
+    public void closeBidding(Integer auction_Id){
         log.info("closeBidding.........." + auction_Id);
 
         Integer test = auctionMapper.getBidStatus(auction_Id);
@@ -504,8 +473,8 @@ public class AuctionServiceImpl implements AuctionService{
                 log.info("closeBidding.......... closedBidding: " + consumer_id);
             }
             for( String key : closedBidding.keySet()){
-                System.out.println(key + "   " + closedBidding.get(key).getClass().getName());
-                System.out.println(key + "   " + closedBidding.get(key).toString());
+                log.info(key + "   " + closedBidding.get(key).getClass().getName());
+                log.info(key + "   " + closedBidding.get(key).toString());
             }
             Bidding bidding = new Bidding((Integer) closedBidding.get("auction_Id"), String.valueOf(closedBidding.get("auction_name")), (Integer) closedBidding.get("farm_id"), 
                                                     consumer_id, String.valueOf(closedBidding.get("product_img_name")), String.valueOf((closedBidding.get("f_farm_name"))), String.valueOf(closedBidding.get("c_name")));
@@ -529,12 +498,12 @@ public class AuctionServiceImpl implements AuctionService{
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
-    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, int id, int limit){
+    public List<Map<String, Object>> getMypageAuctionDetails(String checkUser, Integer id, Integer limit){
         return checkUser.equals("consumer") ? auctionMapper.getMypageConsumerAuctionDetails(id, limit) : auctionMapper.getMypageFarmAuctionDetails(id, limit); 
     }
 
     //마이페이지 나의 찜 목록 가져오기
-    public List<Map<String, Object>> getWishList(int consumer_id, int limit){
+    public List<Map<String, Object>> getWishList(Integer consumer_id, Integer limit){
         log.info("limit22---"+limit);
         log.info("consumer22---"+consumer_id);
         log.info("리스트"+auctionMapper.getWishList(consumer_id, limit));
@@ -544,19 +513,19 @@ public class AuctionServiceImpl implements AuctionService{
 
     }
 
-    public int consumerPachiPoint(int consumer_id){
+    public Integer consumerPachiPoint(Integer consumer_id){
         return auctionMapper.consumerPachiPoint(consumer_id);
     }
 
-    public int farmPachiPoint(int farm_id){
+    public Integer farmPachiPoint(Integer farm_id){
         return auctionMapper.farmPachiPoint(farm_id);
     }
 
-    public int consumerCountAuction(int consumer_id){
+    public Integer consumerCountAuction(Integer consumer_id){
         return auctionMapper.consumerCountAuction(consumer_id);
     }
 
-    public int farmCountAuction(int farm_id){
+    public Integer farmCountAuction(Integer farm_id){
         return auctionMapper.farmCountAuction(farm_id);
     }
 }

@@ -13,7 +13,7 @@ public class Bidding {
     private Integer auction_consumer_id;  // 이전 입찰자
     private Integer consumer_id;
     private String auction_name;
-    private int isMaxPrice;
+    private Integer isMaxPrice;
     private String product_img_name;
     private String f_farm_name;
     private String c_name;

@@ -66,7 +66,7 @@
 	</update>
 
     <delete id="deleteAuction">
-		DELETE FROM auction WHERE auction_Id = #{auction_id}
+		DELETE FROM auction WHERE auction_Id = #{auction_Id}
 	</delete>
 
     <update id="updateBidding">
@@ -166,7 +166,7 @@
 
     <delete id="deleteAuctionReview">
 		DELETE FROM auction_review 
-        WHERE auction_Id = #{auction_Id}, consumer_id = #{consumer_Id}
+        WHERE auction_Id = #{auction_Id}
 	</delete> 
 
     <!-- 리뷰삭제 시 구매자 점수 삭제 -->
@@ -197,11 +197,15 @@
     <select id="getConsumerAlert" resultType="map">
         SELECT * FROM alert 
         WHERE consumer_id = #{consumer_id} OR pre_consumer_id = #{consumer_id}
+        ORDER BY time DESC
+        LIMIT #{startLimit}, 10
     </select>
 
     <select id="getFarmAlert" resultType="map">
         SELECT * FROM alert 
         WHERE farm_id = #{farm_id}
+        ORDER BY time DESC
+        LIMIT #{startLimit}, 10
     </select>
 
     <update id="updateCheckedAlert">
@@ -212,7 +216,7 @@
 
     <delete id="deleteAlert">
 		DELETE FROM alert 
-        WHERE alert_id = #{alert_id}
+        WHERE auction_Id = #{auction_Id}
 	</delete>
 
 
@@ -381,6 +385,10 @@
 
     <delete id="deleteWish">
 		DELETE FROM wish WHERE consumer_id = #{consumer_id} and auction_id = #{auction_id}
+	</delete>
+
+    <delete id="deleteAuctionWish">
+		DELETE FROM wish WHERE auction_id = #{auction_id}
 	</delete>
 
     <select id="getWishList" resultType="map">

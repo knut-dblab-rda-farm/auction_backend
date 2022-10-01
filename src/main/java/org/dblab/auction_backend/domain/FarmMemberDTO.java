@@ -37,6 +37,8 @@ public class FarmMemberDTO implements UserDetails {
     private MultipartFile new_bank_img;
     private MultipartFile new_farm_img;
     private List<MultipartFile> farm_img_files;
+    private Integer pachi_point;
+    private Integer count_auction;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -19,82 +19,83 @@ public interface AuctionMapper {
 
     public BidClosingDTO registAuction(AuctionDTO auction);
     
-    public List<AuctionDTO> getAuction(@Param("startLimit") int startLimit);
+    public List<AuctionDTO> getAuction(@Param("startLimit") Integer startLimit);
 
-    public int updateAuction(AuctionDTO auction);
+    public Integer updateAuction(AuctionDTO auction);
 
-    public int deleteAuction(@Param("auction_Id") int auction_Id);
+    public Integer deleteAuction(@Param("auction_Id") Integer auction_Id);
 
-    public int updateBidding(Bidding bidding);
+    public Integer updateBidding(Bidding bidding);
 
-    public int updateMaxPriceBidding(Bidding bidding);
+    public Integer updateMaxPriceBidding(Bidding bidding);
 
-    public AuctionDTO auctionInfo(@Param("auction_Id") int auction_Id);
+    public AuctionDTO auctionInfo(@Param("auction_Id") Integer auction_Id);
     // #################################################### 상품 CURD #####################################################
 
-    public int registProduct(ProductDTO product);
+    public Integer registProduct(ProductDTO product);
 
-    public int updateProduct(ProductDTO productDTO);
+    public Integer updateProduct(ProductDTO productDTO);
 
-    public int deleteProduct(@Param("product_id") int product_id);
+    public Integer deleteProduct(@Param("product_id") Integer product_id);
 
-    public int checkWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public Integer checkWish(@Param("auction_id") Integer auction_id, @Param("consumer_id") Integer consumer_id);
 
-    public int registWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public Integer registWish(@Param("auction_id") Integer auction_id, @Param("consumer_id") Integer consumer_id);
     
-    public int deleteWish(@Param("auction_id") int auction_id, @Param("consumer_id") int consumer_id);
+    public Integer deleteWish(@Param("auction_id") Integer auction_id, @Param("consumer_id") Integer consumer_id);
 
+    public Integer deleteAuctionWish(@Param("auction_id") Integer auction_id);
 
     // #################################################### 리뷰 CRUD #####################################################
 
-    public int registConsumerAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer registConsumerAuctionReview(AuctionReviewDTO auctionReview);
 
-    public int registFarmAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer registFarmAuctionReview(AuctionReviewDTO auctionReview);
 
-    public List<Map<String, Object>> getConsumerAuctionReview(@Param("consumer_id") int consumer_id);
+    public List<Map<String, Object>> getConsumerAuctionReview(@Param("consumer_id") Integer consumer_id);
 
-    public List<Map<String, Object>> getFarmAuctionReview(@Param("farm_id") int farm_id);
+    public List<Map<String, Object>> getFarmAuctionReview(@Param("farm_id") Integer farm_id);
 
-    public int updateConsumerAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer updateConsumerAuctionReview(AuctionReviewDTO auctionReview);
 
-    public int updateFarmAuctionReview(@Param("auction_Id") int auction_Id, @Param("farm_review") String farm_review);
+    public Integer updateFarmAuctionReview(@Param("auction_Id") Integer auction_Id, @Param("farm_review") String farm_review);
     //{"auction_Id" : 1, "consumer_id": 5}
 
-    //public int deleteAuctionReview(@Param("auction_Id") int auction_Id);
+    //public Integer deleteAuctionReview(@Param("auction_Id") Integer auction_Id);
 
-    public int minusFarmPachiPoint(@Param("farm_id") int farm_id);
+    public Integer minusFarmPachiPoint(@Param("farm_id") Integer farm_id);
 
-    public int minusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
+    public Integer minusConsumerPachiPoint(@Param("consumer_id") Integer consumer_id);
 
-    public int deleteAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer deleteAuctionReview(@Param("auction_Id") Integer auction_Id);
 
-    public List<Map<String, Object>> getProductInfo(@Param("product_id") int product_id);
+    public List<Map<String, Object>> getProductInfo(@Param("product_id") Integer product_id);
 
     
     // #################################################### 알림 CRUD #####################################################
 
     public Integer registAlert(AlertDTO alertDTO);
 
-    public String getAlertTime(@Param("alert_id") int alert_id);
+    public String getAlertTime(@Param("alert_id") Integer alert_id);
 
-    public List<Map<String, Object>> getConsumerAlert(@Param("consumer_id") int consumer_id);
+    public List<Map<String, Object>> getConsumerAlert(@Param("consumer_id") Integer consumer_id, @Param("startLimit") Integer startLimit);
     
-    public List<Map<String, Object>> getFarmAlert(@Param("farm_id") int farm_id);
+    public List<Map<String, Object>> getFarmAlert(@Param("farm_id") Integer farm_id, @Param("startLimit") Integer startLimit);
 
-    public int updateCheckedAlert(@Param("alert_id") int alert_id);
+    public Integer updateCheckedAlert(@Param("alert_id") Integer alert_id);
 
-    public int deleteAlert(@Param("alert_id") int alert_id);
+    public Integer deleteAlert(@Param("auction_Id") Integer auction_Id);
 
 
     // #################################################### 검색 기능 #####################################################
 
-    public List<AuctionDTO> searchAuction(@Param("keyword") String keyword , @Param("startLimit") int startLimit);
+    public List<AuctionDTO> searchAuction(@Param("keyword") String keyword , @Param("startLimit") Integer startLimit);
 
-    public int registKeyword(SearchWordDTO searchWordDTO);
+    public Integer registKeyword(SearchWordDTO searchWordDTO);
 
-    public int registConsumerKeyword(SearchWordDTO searchWordDTO);
+    public Integer registConsumerKeyword(SearchWordDTO searchWordDTO);
 
-    public int registFarmKeyword(SearchWordDTO searchWordDTO);
+    public Integer registFarmKeyword(SearchWordDTO searchWordDTO);
 
     public List<String> getPopularKeyword();
 
@@ -103,35 +104,35 @@ public interface AuctionMapper {
 
     public List<BidClosingDTO> getRecentlyBid();
 
-    public Integer getBidStatus(@Param("auction_Id") int auction_Id);
+    public Integer getBidStatus(@Param("auction_Id") Integer auction_Id);
 
-    public int updateBidStatus(@Param("auction_Id") int auction_Id);
+    public Integer updateBidStatus(@Param("auction_Id") Integer auction_Id);
 
-    public Map<String, Object> getClosedBidding(@Param("auction_Id") int auction_Id);
+    public Map<String, Object> getClosedBidding(@Param("auction_Id") Integer auction_Id);
 
-    public int plusFarmPachiPoint(@Param("farm_id") int farm_id);
+    public Integer plusFarmPachiPoint(@Param("farm_id") Integer farm_id);
 
-    public int plusConsumerPachiPoint(@Param("consumer_id") int consumer_id);
+    public Integer plusConsumerPachiPoint(@Param("consumer_id") Integer consumer_id);
 
-    public int plusConsumerAuctionCount(@Param("consumer_id") int consumer_id);
+    public Integer plusConsumerAuctionCount(@Param("consumer_id") Integer consumer_id);
 
-    public int plusFarmAuctionCount(@Param("farm_id") int farm_id);
+    public Integer plusFarmAuctionCount(@Param("farm_id") Integer farm_id);
 
     // ############################################## 마이페이지 ####################################################
     
     // 소비자, 농가 경매내역 가져오기
     
-    public List<Map<String, Object>> getMypageConsumerAuctionDetails(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
+    public List<Map<String, Object>> getMypageConsumerAuctionDetails(@Param("consumer_id") Integer consumer_id, @Param("startLimit") Integer startLimit);
 
-    public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("farm_id") int farm_id, @Param("startLimit") int startLimit);
+    public List<Map<String, Object>> getMypageFarmAuctionDetails(@Param("farm_id") Integer farm_id, @Param("startLimit") Integer startLimit);
 
-    public List<Map<String, Object>> getWishList(@Param("consumer_id") int consumer_id, @Param("startLimit") int startLimit);
+    public List<Map<String, Object>> getWishList(@Param("consumer_id") Integer consumer_id, @Param("startLimit") Integer startLimit);
 
-    public int consumerPachiPoint(@Param("consumer_id") int consumer_id);
+    public Integer consumerPachiPoint(@Param("consumer_id") Integer consumer_id);
 
-    public int farmPachiPoint(@Param("farm_id") int farm_id);
+    public Integer farmPachiPoint(@Param("farm_id") Integer farm_id);
 
-    public int farmCountAuction(@Param("farm_id") int farm_id);
+    public Integer farmCountAuction(@Param("farm_id") Integer farm_id);
     
-    public int consumerCountAuction(@Param("consumer_id") int consumer_id);
+    public Integer consumerCountAuction(@Param("consumer_id") Integer consumer_id);
 }

@@ -42,41 +42,32 @@ public class AuctionController {
     // #################################################### 경매 CURD #####################################################
 
     @PostMapping(value = "/registAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public int registAuction(@ModelAttribute AuctionDTO auctionDTO) {
-        System.out.println(auctionDTO.toString());
+    public Integer registAuction(@ModelAttribute AuctionDTO auctionDTO) {
+        log.info(auctionDTO.toString());
         return auctionService.registAuction(auctionDTO);
     }
 
     @GetMapping(value = "/auctionInfo/{auction_Id}")
-    public AuctionDTO getAuctionInfo(@PathVariable("auction_Id") int auction_Id){
+    public AuctionDTO getAuctionInfo(@PathVariable("auction_Id") Integer auction_Id){
         log.info("aucitonInfo" + auction_Id);
         return auctionService.auctionInfo(auction_Id);
     }
-    
-    @PatchMapping(value = "/updateAuction", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public int updateAuction(@ModelAttribute AuctionDTO auctionDTO) {
 
-        // 이미지 변경했는지 여부확인하기
-        System.out.println(auctionDTO.toString());
+    @DeleteMapping(value = "/auction/{auction_Id}/{product_id}/{product_img_name}")
+    public Integer deleteAuction(@PathVariable("auction_Id") Integer auction_Id, @PathVariable("product_id") Integer product_id, @PathVariable("product_img_name") String product_img_name) {
 
-        return auctionService.updateAuction(auctionDTO);
-    }
+        log.info("/deleteAuction : " + auction_Id + "-" + product_id  + "-" + product_img_name);
 
-    @DeleteMapping(value = "/deleteAuction")
-    public int deleteAuction(@RequestBody Map<String, Integer> map) {
-
-        log.info("/deleteAuction : " + map.get("auction_Id") + "-" + map.get("product_id"));
-
-        return auctionService.deleteAuction(map.get("auction_Id"), map.get("product_id"));
+        return auctionService.deleteAuction(auction_Id, product_id, product_img_name);
     }
 
 
     // #################################################### 상품 U #####################################################
-    @PatchMapping(value = "/updateProduct")
-    public int updateProduct(@ModelAttribute ProductDTO productDTO) {
+    @PatchMapping(value = "/product")
+    public Integer updateProduct(@ModelAttribute ProductDTO productDTO) {
 
         // 이미지 변경했는지 여부, 이전 이미지 이름
-        System.out.println(productDTO.toString());
+        log.info(productDTO.toString());
 
         return auctionService.updateProduct(productDTO);
     }
@@ -84,44 +75,41 @@ public class AuctionController {
     // #################################################### 리뷰 CRUD #####################################################
     
     @PostMapping(value = "/AuctionReview")
-    public int registAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
-        System.out.println(auctionReviewDTO.toString());
+    public Integer registAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
+        log.info(auctionReviewDTO.toString());
         return auctionService.registAuctionReview(auctionReviewDTO);
     }
 
     @GetMapping(value = "/AuctionReview/{checkUser}/{id}")
-    public List<Map<String, Object>> getAuctionReview(@PathVariable("checkUser") String checkUser, @PathVariable("id") int id) {
+    public List<Map<String, Object>> getAuctionReview(@PathVariable("checkUser") String checkUser, @PathVariable("id") Integer id) {
 
         return auctionService.getAuctionReview(checkUser, id);
     }
 
     @PatchMapping(value = "/AuctionReview")
-    public int updateAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
+    public Integer updateAuctionReview(@ModelAttribute AuctionReviewDTO auctionReviewDTO) {
 
         return auctionService.updateAuctionReview(auctionReviewDTO);
     }
 
     @DeleteMapping(value = "/AuctionReview")
-    public int deleteAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
+    public Integer deleteAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
 
         return auctionService.deleteAuctionReview(auctionReviewDTO);
     }
 
     @GetMapping(value = "/ProductInfo/{product_id}")
-    public List<Map<String, Object>> ProductInfo(@PathVariable("product_id") int product_id){
+    public List<Map<String, Object>> ProductInfo(@PathVariable("product_id") Integer product_id){
         return auctionService.getProductInfo(product_id);
     }
-
-
-
 
     // #################################################### 검색 기능 #####################################################
 
     //경매 검색 기능
     @GetMapping(value = "/searchAuction/{checkUser}/{id}/{keyword}/{startLimit}")
-    public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("keyword") String keyword, @PathVariable("startLimit") int startLimit) {
+    public List<AuctionDTO> searchAuction(HttpServletRequest request, @PathVariable("checkUser") String checkUser, @PathVariable("id") Integer id, @PathVariable("keyword") String keyword, @PathVariable("startLimit") Integer startLimit) {
         
-        log.info("keyword: " + keyword);
+        log.info("keyword: " + keyword.toString());
         log.info("ip: " + request.getRemoteAddr());
 
         return auctionService.searchAuction(request.getRemoteAddr(), checkUser, id, keyword, startLimit);
@@ -138,7 +126,7 @@ public class AuctionController {
     
     // 소비자, 농가 경매내역 가져오기
     @GetMapping(value = "/mypageAuctionDetails/{checkUser}/{id}/{limit}")
-    public List<Map<String, Object>> getMypageAuctionDetails(@PathVariable("checkUser") String checkUser, @PathVariable("id") int id, @PathVariable("limit") int limit) {
+    public List<Map<String, Object>> getMypageAuctionDetails(@PathVariable("checkUser") String checkUser, @PathVariable("id") Integer id, @PathVariable("limit") Integer limit) {
         log.info("limit: " + limit);
         return auctionService.getMypageAuctionDetails(checkUser, id, limit);
     }
@@ -146,52 +134,52 @@ public class AuctionController {
     // ############################################## 찜 ####################################################
     
     @PostMapping(value = "/registWish")
-    public int registWish(@RequestBody WishDTO wishDTO){
+    public Integer registWish(@RequestBody WishDTO wishDTO){
 
         return auctionService.registWish(wishDTO);
 
     }
 
     @DeleteMapping(value = "/deleteWish/{auction_id}/{consumer_id}")
-    public int deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+    public Integer deleteWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") Integer consumer_id){
         
         return auctionService.deleteWish(auction_id, consumer_id);
 
     }
 
     @GetMapping(value = "/checkWish/{auction_id}/{consumer_id}")
-    public int checkWish(@PathVariable("auction_id") int auction_id, @PathVariable("consumer_id") int consumer_id){
+    public Integer checkWish(@PathVariable("auction_id") Integer auction_id, @PathVariable("consumer_id") Integer consumer_id){
         log.info(" ddafsdfasdfasdfasdfasdfasdfd"+auctionService.checkWish(auction_id, consumer_id));
         //log.info(" auction_id ,consumer_id "+auction_id+" "+consumer_id);
-        System.out.println(" auction_id ,consumer_id "+auction_id+" "+consumer_id);
-        //System.out.println(" auction_id ,consumer_id "+auctionService.checkWish(auction_id, consumer_id));
+        log.info(" auction_id ,consumer_id "+auction_id+" "+consumer_id);
+        //log.info(" auction_id ,consumer_id "+auctionService.checkWish(auction_id, consumer_id));
         
         return auctionService.checkWish(auction_id, consumer_id);
     }
 
     @GetMapping(value ="/getWishList/{consumer_id}/{limit}")
-    public List<Map<String, Object>> getWishList(@PathVariable("consumer_id") int consumer_id, @PathVariable("limit") int limit){
+    public List<Map<String, Object>> getWishList(@PathVariable("consumer_id") Integer consumer_id, @PathVariable("limit") int limit){
         log.info("limit"+limit);
         log.info("consumer"+consumer_id);
         return auctionService.getWishList(consumer_id, limit);
     }
 
     @GetMapping(value ="/consumerPachiPoint/{consumer_id}")
-    public int consumerPachiPoint(@PathVariable("consumer_id") int consumer_id){
+    public Integer consumerPachiPoint(@PathVariable("consumer_id") Integer consumer_id){
         return auctionService.consumerPachiPoint(consumer_id);
     }
 
     @GetMapping(value ="/farmPachiPoint/{farm_id}")
-    public int farmPachiPoint(@PathVariable("farm_id") int farm_id){
+    public Integer farmPachiPoint(@PathVariable("farm_id") Integer farm_id){
         return auctionService.farmPachiPoint(farm_id);
     }
 
     @GetMapping(value = "/consumerCountAuction/{consumer_id}")
-    public int consumerCountAuction(@PathVariable("consumer_id") int consumer_id){
+    public Integer consumerCountAuction(@PathVariable("consumer_id") Integer consumer_id){
         return auctionService.consumerCountAuction(consumer_id);
     }
     @GetMapping(value = "/farmCountAuction/{farm_id}")
-    public int farmCountAuction(@PathVariable("farm_id") int farm_id){
+    public Integer farmCountAuction(@PathVariable("farm_id") Integer farm_id){
         return auctionService.farmCountAuction(farm_id);
     }
 

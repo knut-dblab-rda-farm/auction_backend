@@ -11,64 +11,64 @@ public interface MemberMapper {
 
     // #################################################### 소비자 CRUD ####################################################
 
-    public int signupConsumer(ConsumerMemberDTO consumerMember);
+    public ConsumerMemberDTO signupConsumer(ConsumerMemberDTO consumerMember);
 
     public ConsumerMemberDTO getConsumerMember(@Param("c_email") String c_email);
 
-    public int updateConsumerMemberPassword(@Param("consumer_id") int consumer_id, @Param("c_passwd") String c_passwd);
+    public Integer updateConsumerMemberPassword(@Param("consumer_id") Integer consumer_id, @Param("c_passwd") String c_passwd);
 
-    public int updateConsumerMemberPhoneNumber(@Param("consumer_id") int consumer_id, @Param("c_phonenum") String c_phonenum);
+    public Integer updateConsumerMemberPhoneNumber(@Param("consumer_id") Integer consumer_id, @Param("c_phonenum") String c_phonenum);
 
-    public int updateConsumerMemberName(@Param("consumer_id") int consumer_id, @Param("c_name") String c_name);
+    public Integer updateConsumerMemberName(@Param("consumer_id") Integer consumer_id, @Param("c_name") String c_name);
 
-    public int updateConsumerMemberAddress(@Param("consumer_id") int consumer_id, @Param("c_zipcode") String c_zipcode, @Param("c_location") String c_location, @Param("c_detail_location") String c_detail_location);
+    public Integer updateConsumerMemberAddress(@Param("consumer_id") Integer consumer_id, @Param("c_zipcode") String c_zipcode, @Param("c_location") String c_location, @Param("c_detail_location") String c_detail_location);
 
-    public int updateConsumerMemberProfileImage(@Param("consumer_id") int consumer_id, @Param("c_profile_img") String c_profile_img);
+    public Integer updateConsumerMemberProfileImage(@Param("consumer_id") Integer consumer_id, @Param("c_profile_img") String c_profile_img);
 
-    public int deleteConsumerMember(@Param("consumer_id") int consumer_id);
+    public Integer deleteConsumerMember(@Param("consumer_id") Integer consumer_id);
 
-    public int setConsumerToken(@Param("c_email") String c_email, @Param("token") String token);
+    public Integer setConsumerToken(@Param("c_email") String c_email, @Param("token") String token);
 
-    public int setNullConsumerToken(@Param("c_email") String c_email);
+    public Integer setNullConsumerToken(@Param("c_email") String c_email);
 
 
     // #################################################### 농가 CRUD ####################################################
     
-    public int signupFarmMember(FarmMemberDTO farmMemberDTO);
+    public FarmMemberDTO signupFarmMember(FarmMemberDTO farmMemberDTO);
 
-    public Map<String, Object> getFarmMember(@Param("farm_id") int farm_id);
+    public Map<String, Object> getFarmMember(@Param("farm_id") Integer farm_id);
 
     public FarmMemberDTO getFarmMemberAuth(@Param("f_email") String f_email);
 
-    public int updateFarmMemberPassword(@Param("farm_id") int farm_id, @Param("f_passwd") String f_passwd);
+    public Integer updateFarmMemberPassword(@Param("farm_id") Integer farm_id, @Param("f_passwd") String f_passwd);
 
-    public int updateFarmMemberPhoneNumber(@Param("farm_id") int farm_id, @Param("f_phonenum") String f_phonenum);
+    public Integer updateFarmMemberPhoneNumber(@Param("farm_id") Integer farm_id, @Param("f_phonenum") String f_phonenum);
 
-    public int updateFarmMemberName(@Param("farm_id") int farm_id, @Param("f_name") String f_name);
+    public Integer updateFarmMemberName(@Param("farm_id") Integer farm_id, @Param("f_name") String f_name);
 
-    public int updateFarmMemberAddress(@Param("farm_id") int farm_id, @Param("f_zipcode") String f_zipcode, @Param("f_location") String f_location);
+    public Integer updateFarmMemberAddress(@Param("farm_id") Integer farm_id, @Param("f_zipcode") String f_zipcode, @Param("f_location") String f_location);
 
-    public int updateFarmMemberProfileImage(@Param("farm_id") int farm_id, @Param("f_profile_img") String f_profile_img);
+    public Integer updateFarmMemberProfileImage(@Param("farm_id") Integer farm_id, @Param("f_profile_img") String f_profile_img);
 
-    public int updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
+    public Integer updateFarmMemberBank(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmImages(FarmMemberDTO farmMemberDTO);
+    public Integer updateFarmImages(FarmMemberDTO farmMemberDTO);
 
-    public int updateFarmMemberNumber(@Param("farm_id") int farm_id, @Param("f_num") String f_num);
+    public Integer updateFarmMemberNumber(@Param("farm_id") Integer farm_id, @Param("f_num") String f_num);
 
-    public int updateFarmMemberFarmName(@Param("farm_id") int farm_id, @Param("f_farm_name") String f_farm_name);
+    public Integer updateFarmMemberFarmName(@Param("farm_id") Integer farm_id, @Param("f_farm_name") String f_farm_name);
 
-    public int updateFarmMemberExplanation(@Param("farm_id") int farm_id, @Param("f_explanation") String f_explanation);
+    public Integer updateFarmMemberExplanation(@Param("farm_id") Integer farm_id, @Param("f_explanation") String f_explanation);
 
-    public int updateFarmMemberMajorCrop(@Param("farm_id") int farm_id, @Param("f_major_crop") String f_major_crop);
+    public Integer updateFarmMemberMajorCrop(@Param("farm_id") Integer farm_id, @Param("f_major_crop") String f_major_crop);
 
     // ------------------------
 
-    public int deleteFarmMember(@Param("farm_id") int farm_id);
+    public Integer deleteFarmMember(@Param("farm_id") Integer farm_id);
 
-    public int setFarmToken(@Param("f_email") String f_email, @Param("token") String token);
+    public Integer setFarmToken(@Param("f_email") String f_email, @Param("token") String token);
 
-    public int setNullFarmToken(@Param("f_email") String f_email);
+    public Integer setNullFarmToken(@Param("f_email") String f_email);
 
     public String findFarmEmail(@Param("f_name") String f_name, @Param("f_phonenum") String f_phonenum);
 
@@ -84,5 +84,5 @@ public interface MemberMapper {
 
     public FarmMemberDTO loginFarmMember(@Param("email") String email, @Param("password") String password);
 
-    public int existEmail(@Param("email") String email);
+    public Integer existEmail(@Param("email") String email);
 }
