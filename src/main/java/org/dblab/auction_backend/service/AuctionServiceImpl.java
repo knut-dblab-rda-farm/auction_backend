@@ -244,7 +244,6 @@ public class AuctionServiceImpl implements AuctionService{
         
         if(auctionReview.getCheckUser().equals("consumer")){
             File newAuctionReviewImg=new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png");
-
             if(newAuctionReviewImg.exists()){
                 if(newAuctionReviewImg.delete()){
                     log.info(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 성공");
