@@ -68,10 +68,10 @@ public class MemberController {
 		return memberService.updateMemberProfileImage(memberProfileDTO);
 	}
 
-	@DeleteMapping(value = "/member/{checkUser}/{id}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public int deleteConsumerMember(@PathVariable("checkUser") String checkUser, @PathVariable("id") Integer id) {
-		log.info("deleteMember: " + checkUser + "   " + id);
-		return memberService.deleteMember(checkUser, id);
+	@DeleteMapping(value = "/member/{checkUser}/{id}/{email}/{password}", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public int deleteConsumerMember(@PathVariable("checkUser") String checkUser, @PathVariable("id") Integer id, @PathVariable("email") String email, @PathVariable("password") String password) {
+		log.info("deleteMember: " + checkUser + "   " + id + "   " + email + "  " + password);
+		return memberService.deleteMember(checkUser, id, email, password);
 	}
 
 	// #################################################### 소비자 C ####################################################

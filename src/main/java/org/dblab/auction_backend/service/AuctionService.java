@@ -48,7 +48,7 @@ public interface AuctionService {
 
     public Integer updateAuctionReview(AuctionReviewDTO auctionReview);
 
-    public Integer deleteAuctionReview(AuctionReviewDTO auctionReview);
+    public Integer deleteAuctionReview(Integer auction_Id, Integer consumer_id, String review_img_name);
 
     public List<Map<String, Object>> getProductInfo(Integer product_id);
 

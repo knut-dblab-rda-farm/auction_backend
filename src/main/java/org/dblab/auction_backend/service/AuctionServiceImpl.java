@@ -95,7 +95,7 @@ public class AuctionServiceImpl implements AuctionService{
         log.info("deleteAuction..........");
         auctionMapper.deleteAuctionWish(auction_Id);
         auctionMapper.deleteAlert(auction_Id);
-        auctionMapper.deleteAuctionReview(auction_Id);
+        // auctionMapper.deleteAuctionReview(auction_Id);       // 입찰하지 않은 경매만 리뷰 삭제 불필요..
         auctionMapper.deleteAuction(auction_Id);
         deleteProductImages(product_img_name);
         return auctionMapper.deleteProduct(product_id);
@@ -238,21 +238,28 @@ public class AuctionServiceImpl implements AuctionService{
         return checkUser.equals("consumer") ? auctionMapper.getConsumerAuctionReview(id) : auctionMapper.getFarmAuctionReview(id);
     }
 
+    public void deleteAuctionReviewImage(String review_img_name){
+        // 이전 리뷰 이미지 삭제
+        File auctionReviewImageFile = new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + review_img_name+ ".png");
+
+        if (auctionReviewImageFile.exists()){
+            if (auctionReviewImageFile.delete()){
+                log.info(review_img_name + " 리뷰 이미지 삭제 성공");
+            } else {
+                log.info(review_img_name + " 리뷰 이미지 삭제 실패...");
+            }
+        } else{
+    		log.info("리뷰 이미지 파일이 존재하지 않습니다.");
+    	}
+    }
+
     @Override
     public Integer updateAuctionReview(AuctionReviewDTO auctionReview) {
         log.info("updateAuctionReview.........." + auctionReview.toString());
         
         if(auctionReview.getCheckUser().equals("consumer")){
-            File newAuctionReviewImg=new File(AUCTION_REVIEW_IMAGES_FOLDER_PATH + auctionReview.getReview_img_name() + ".png");
-            if(newAuctionReviewImg.exists()){
-                if(newAuctionReviewImg.delete()){
-                    log.info(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 성공");
-                } else{
-                    log.info(auctionReview.getReview_img_name()+"리뷰 이미지 삭제 실패");
-                }
-            } else{
-                log.info("리뷰 사진 파일이 존재하지 않습니다.");
-            }
+            deleteAuctionReviewImage(auctionReview.getReview_img_name());
+
             if(auctionReview.getReview_img_file() != null){
                 auctionReview.setReview_img_name(auctionReview.getAuction_Id() + "_" + LocalDateTime.now().toString().substring(0, 19));
                 try{
@@ -281,10 +288,12 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public Integer deleteAuctionReview(AuctionReviewDTO auctionReview) {
+    public Integer deleteAuctionReview(Integer auction_Id, Integer consumer_id, String review_img_name) {
         log.info("deleteAuctionReview..........");
-        auctionMapper.minusConsumerPachiPoint(auctionReview.getConsumer_id());
-        return auctionMapper.deleteAuctionReview(auctionReview.getAuction_Id());
+        deleteAuctionReviewImage(review_img_name);
+
+        auctionMapper.minusConsumerPachiPoint(auction_Id);
+        return auctionMapper.deleteAuctionReview(auction_Id);
     }
 
     @Override
@@ -306,14 +315,16 @@ public class AuctionServiceImpl implements AuctionService{
             // checkUser와 id를 이용해서 Alert 데이터 가져와서 emitter에 저장하기
             if (checkUser.equals("consumer")){
                 List<Map<String, Object>> alertDTOs = auctionMapper.getConsumerAlert(id, ALERT_INIT_START_LIMIT);
-
+                if(consumerEmitters.get(id) != null) consumerEmitters.remove(id);                    // 존재하면 삭제 후 다시 만들기
+                // emitter.onCompletion(() -> consumerEmitters.remove(id));
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
-                emitter.onCompletion(() -> consumerEmitters.remove(id));
+                
                 consumerEmitters.put(id, emitter);
             } else {
                 List<Map<String, Object>> alertDTOs = auctionMapper.getFarmAlert(id, ALERT_INIT_START_LIMIT);
+                if(farmEmitters.get(id) != null) farmEmitters.remove(id); 
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
-                emitter.onCompletion(() -> farmEmitters.remove(id));
+                // emitter.onCompletion(() -> farmEmitters.remove(id));
                 farmEmitters.put(id, emitter);
             }
         } catch (IOException e) {

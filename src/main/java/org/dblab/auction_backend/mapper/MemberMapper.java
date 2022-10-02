@@ -25,13 +25,14 @@ public interface MemberMapper {
 
     public Integer updateConsumerMemberProfileImage(@Param("consumer_id") Integer consumer_id, @Param("c_profile_img") String c_profile_img);
 
-    public Integer deleteConsumerMember(@Param("consumer_id") Integer consumer_id);
-
     public Integer setConsumerToken(@Param("c_email") String c_email, @Param("token") String token);
 
     public Integer setNullConsumerToken(@Param("c_email") String c_email);
 
+    public Integer deleteConsumerMemberWish(@Param("consumer_id") Integer consumer_id);
 
+    public Integer deleteConsumerMember(@Param("consumer_id") Integer consumer_id, @Param("withdrawal_member") String withdrawal_member);
+    
     // #################################################### 농가 CRUD ####################################################
     
     public FarmMemberDTO signupFarmMember(FarmMemberDTO farmMemberDTO);
@@ -64,7 +65,7 @@ public interface MemberMapper {
 
     // ------------------------
 
-    public Integer deleteFarmMember(@Param("farm_id") Integer farm_id);
+    public Integer deleteFarmMember(@Param("farm_id") Integer farm_id, @Param("withdrawal_member") String withdrawal_member);
 
     public Integer setFarmToken(@Param("f_email") String f_email, @Param("token") String token);
 
@@ -78,11 +79,13 @@ public interface MemberMapper {
 
     public Integer findConsumerId(@Param("c_name") String c_name,  @Param("c_email") String c_email, @Param("c_phonenum") String c_phonenum);
 
-    // #################################################### 로그인, 이메일 중복 확인 #################################################### 
+    // #################################################### 로그인, 이메일 중복 확인, 현재 경매 참여 중 여부 #################################################### 
 
     public ConsumerMemberDTO loginConsumerMember(@Param("email") String email, @Param("password") String password);
 
     public FarmMemberDTO loginFarmMember(@Param("email") String email, @Param("password") String password);
 
     public Integer existEmail(@Param("email") String email);
+
+    public Integer existAuctionBiddingUser(@Param("consumer_id") Integer consumer_id, @Param("farm_id") Integer farm_id);
 }

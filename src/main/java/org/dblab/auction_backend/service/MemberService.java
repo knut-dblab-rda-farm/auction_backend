@@ -23,7 +23,7 @@ public interface MemberService {
 
     public String updateMemberProfileImage(MemberProfileDTO userProfileDTO);
 
-    public Integer deleteMember(String checkUser, Integer id);
+    public Integer deleteMember(String checkUser, Integer id, String email, String password);
 
     // #################################################### 소비자 C ####################################################
 

@@ -92,10 +92,10 @@ public class AuctionController {
         return auctionService.updateAuctionReview(auctionReviewDTO);
     }
 
-    @DeleteMapping(value = "/AuctionReview")
-    public Integer deleteAuctionReview(@RequestBody AuctionReviewDTO auctionReviewDTO) {
+    @DeleteMapping(value = "/auctionReview/{auction_Id}/{consumer_id}/{review_img_name}")
+    public Integer deleteAuctionReview(@PathVariable("auction_Id") Integer auction_Id, @PathVariable("consumer_id") Integer consumer_id, String review_img_name) {
 
-        return auctionService.deleteAuctionReview(auctionReviewDTO);
+        return auctionService.deleteAuctionReview(auction_Id, consumer_id, review_img_name);
     }
 
     @GetMapping(value = "/ProductInfo/{product_id}")

@@ -48,9 +48,25 @@
 		WHERE consumer_id = #{consumer_id}
 	</update>
 
-    <delete id="deleteConsumerMember">
-		DELETE FROM consumer_member WHERE consumer_id = #{consumer_id}
+	<delete id="deleteConsumerMemberWish">
+		DELETE FROM wish WHERE consumer_id = #{consumer_id}
 	</delete>
+
+	<update id="deleteConsumerMember">
+		UPDATE consumer_member
+		SET c_name = #{withdrawal_member},
+		c_email = #{withdrawal_member},
+		c_passwd = NULL,
+		c_phonenum = NULL,
+		c_zipcode = NULL,
+		c_location = NULL,
+		c_detail_location = NULL,
+		c_profile_img = NULL,
+		token = NULL,
+		pachi_point = 0,
+		count_auction = 0
+		WHERE consumer_id = #{consumer_id}
+	</update>
 
 
     <!--  #################################################### 농가 CRUD ####################################################  --> 
@@ -113,8 +129,8 @@
 		UPDATE farm_member
 		SET f_bank = #{f_bank},
         f_bank_name = #{f_bank_name},
-        f_bank_num = #{f_bank_num}
-		<!-- f_bank_img = #{f_bank_img} -->
+        f_bank_num = #{f_bank_num},
+		f_bank_img = #{f_bank_img}
 		WHERE farm_id = #{farm_id}
 	</update>
 
@@ -148,9 +164,31 @@
 		WHERE farm_id = #{farm_id}
 	</update>
 
-    <delete id="deleteFarmMember">
-		DELETE FROM farm_member WHERE farm_id = #{farm_id}
-	</delete>
+	<update id="deleteFarmMember">
+		UPDATE farm_member
+		SET f_name = #{withdrawal_member},
+		f_email = #{withdrawal_member},
+		f_passwd = NULL,
+		f_phonenum = NULL,
+		f_RRN = NULL,
+		f_BRN = NULL,
+		f_zipcode = NULL,
+		f_location = NULL,
+		f_farm_name = NULL,
+		f_num = NULL,
+		f_explanation = NULL,
+		f_major_crop = NULL,
+		f_profile_img = NULL,
+		f_img = NULL,
+		f_bank = NULL,
+		f_bank_name = NULL,
+		f_bank_num = NULL,
+		f_bank_img = NULL,
+		token = NULL,
+		pachi_point = 0,
+		count_auction = 0
+		WHERE farm_id = #{farm_id}
+	</update>
 
     <!-- #################################################### 농가, 소비자 아이디 비번 찾기 ####################################################-->
     
@@ -217,5 +255,9 @@
 
     <select id="existEmail" resultType="int">
         SELECT EXISTS (SELECT * FROM consumer_member CROSS JOIN farm_member WHERE c_email = #{email} OR f_email = #{email})
+    </select>
+
+	<select id="existAuctionBiddingUser" resultType="Integer">
+        SELECT EXISTS (SELECT * FROM auction WHERE bid_status = 1 AND consumer_id = #{consumer_id} OR farm_id = #{farm_id})
     </select>
 </mapper>

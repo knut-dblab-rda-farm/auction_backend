@@ -16,14 +16,14 @@ public class FarmMemberDTO implements UserDetails {
     private Integer farm_id;
     private String f_passwd;
     private String f_email;
-    private Integer f_phonenum;
+    private String f_phonenum;
     private String f_name;
     private String f_RRN;
     private String f_BRN;
     private Integer f_zipcode;
     private String f_location;
     private String f_farm_name;
-    private Integer f_num;
+    private String f_num;
     private String f_explanation;
     private String f_major_crop;
     private String f_profile_img;

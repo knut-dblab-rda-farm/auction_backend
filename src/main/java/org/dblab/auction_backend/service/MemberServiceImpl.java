@@ -1,6 +1,7 @@
 package org.dblab.auction_backend.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ProcessHandle.Info;
 import java.time.LocalDateTime;
@@ -36,6 +37,10 @@ public class MemberServiceImpl implements MemberService{
     String MEMBER_PROFILE_IMAGES_FOLDER_PATH= "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/member_profile_images/";
     String BANK_IMAGES_FOLDER_PATH= "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/bank_images/";
     String FARM_IMAGES_FOLDER_PATH= "/home/webapp_farm_auction/rda_farm/auction_backend/src/main/resources/static/farm_images/";
+    private Integer PARTICIPATING_IN_THE_AUCTION = -1;
+    private Integer ID_PASSWORD_FAILED = -2;
+    private Integer SUCCESSFUL_WITHDRAWA = 1;
+    private WithdrawalMember withdrawalMember = new WithdrawalMember();
     
     private Logger log = LoggerFactory.getLogger(MemberServiceImpl.class);
 
@@ -83,25 +88,25 @@ public class MemberServiceImpl implements MemberService{
         }
     }
 
-    public String updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
-        log.info("updateMemberPassword..........");
-
-        String profile_img = null;
-        
-        // 이전 이미지 삭제
-        File profileImageFile = new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + memberProfileDTO.getProfile_img() + ".png");
-        log.info("updateMemberPassword..........");
+    public void deleteMemberProfileImage(String memberProfile_img_name){
+        File profileImageFile = new File(MEMBER_PROFILE_IMAGES_FOLDER_PATH + memberProfile_img_name + ".png");
         if (profileImageFile.exists()){
             if (profileImageFile.delete()){
-                log.info(memberProfileDTO.getProfile_img() + " 프로필 이미지 삭제 성공");
+                log.info(memberProfile_img_name + " 프로필 이미지 삭제 성공");
             } else {
-                log.info(memberProfileDTO.getProfile_img() + "프로필 이미지 삭제 실패...");
+                log.info(memberProfile_img_name + "프로필 이미지 삭제 실패...");
             }
-            
         } else{
     		log.info("회원 프로필 파일이 존재하지 않습니다.");
     	}
 
+    }
+
+    public String updateMemberProfileImage(MemberProfileDTO memberProfileDTO) {
+        log.info("updateMemberProfileImage..........");
+        deleteMemberProfileImage(memberProfileDTO.getProfile_img());
+
+        String profile_img = null;
         if(memberProfileDTO.getNew_profile_img() != null){
             // 새로운 프로필 이미지 생성
             profile_img = memberProfileDTO.getCheckUser() + "_" +memberProfileDTO.getId();
@@ -125,9 +130,45 @@ public class MemberServiceImpl implements MemberService{
         return profile_img;
     }
 
-    public Integer deleteMember(String checkUser, Integer id){
-        // 관련 경매 및 프로필 삭제 코드
-        return checkUser.equals("consumer") ?  memberMapper.deleteConsumerMember(id) : memberMapper.deleteFarmMember(id);
+    public Integer deleteMember(String checkUser, Integer id, String email, String password){
+        log.info("deleteMember....." + checkUser + "    " + id);
+        log.info(withdrawalMember.getWithdrawalMember());
+        // 진행 중인 경매 참여 중인지
+        Integer consumer_id = null;
+        Integer farm_id = null;
+        if(checkUser.equals("consumer_id")){
+            consumer_id = id;
+        } else{
+            farm_id = id;
+        }
+        if(memberMapper.existAuctionBiddingUser(consumer_id, farm_id) == 1) return PARTICIPATING_IN_THE_AUCTION;
+
+        // 이메일 검사
+        ConsumerMemberDTO consumerMemberDTO = null;
+        FarmMemberDTO farmMemberDTO = null;
+        if (checkUser.equals("consumer")){
+            consumerMemberDTO = memberMapper.getConsumerMember(email);
+            if(consumerMemberDTO == null || !passwordEncoder.matches(password, consumerMemberDTO.getC_passwd())) {
+                log.info("소비자 아이디, 비밀번호가 틀렸습니다.");
+                return ID_PASSWORD_FAILED;
+            }
+            deleteMemberProfileImage(consumerMemberDTO.getC_profile_img());
+            memberMapper.deleteConsumerMemberWish(consumerMemberDTO.getConsumer_id());
+            memberMapper.deleteConsumerMember(consumerMemberDTO.getConsumer_id(), withdrawalMember.getWithdrawalMember());
+        } else {
+            farmMemberDTO = memberMapper.getFarmMemberAuth(email);
+            if(farmMemberDTO == null || !passwordEncoder.matches(password, farmMemberDTO.getF_passwd())) {
+                log.info("농가 아이디, 비밀번호가 틀렸습니다.");
+                return ID_PASSWORD_FAILED;
+            }
+            deleteMemberProfileImage(farmMemberDTO.getF_profile_img());
+            deleteFarmImages(farmMemberDTO.getF_img());
+            deleteFarmBankImage(farmMemberDTO.getF_bank_img());
+            memberMapper.deleteFarmMember(farmMemberDTO.getFarm_id(), withdrawalMember.getWithdrawalMember());
+        }
+        withdrawalMember.setWithdrawalMember();
+        log.info(withdrawalMember.getWithdrawalMember());
+        return SUCCESSFUL_WITHDRAWA;
     }
 
     // #################################################### 소비자 C ####################################################
@@ -156,24 +197,28 @@ public class MemberServiceImpl implements MemberService{
         return memberMapper.getFarmMember(farm_id);
     }
     
-    public String updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
-        log.info("updateFarmMemberBank..........");
-
+    public void deleteFarmBankImage(String f_bank_img_name){
         // 이전 통장사본 이미지 삭제
-        File farmBankImageFile = new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img()+ ".png");
+        File farmBankImageFile = new File(BANK_IMAGES_FOLDER_PATH + f_bank_img_name+ ".png");
 
         if (farmBankImageFile.exists()){
             if (farmBankImageFile.delete()){
-                log.info(farmMemberDTO.getF_bank_img() + " 통장사본 이미지 삭제 성공");
+                log.info(f_bank_img_name + " 통장사본 이미지 삭제 성공");
             } else {
-                log.info(farmMemberDTO.getF_bank_img() + " 통장사본 이미지 삭제 실패...");
+                log.info(f_bank_img_name + " 통장사본 이미지 삭제 실패...");
             }
         } else{
-    		log.info("회원 프로필 파일이 존재하지 않습니다.");
+    		log.info("통장사본 이미지 파일이 존재하지 않습니다.");
     	}
+    }
+
+    public String updateFarmMemberBank(FarmMemberDTO farmMemberDTO) {
+        log.info("updateFarmMemberBank..........");
+
+        deleteFarmBankImage(farmMemberDTO.getF_bank_img());
         
         // 새로운 통장사본 이미지 생성
-        farmMemberDTO.setF_bank_img(farmMemberDTO.getFarm_id() + "_" + farmMemberDTO.getF_bank_name());
+        farmMemberDTO.setF_bank_img(farmMemberDTO.getFarm_id() + "_" + farmMemberDTO.getF_bank());
         try {
             farmMemberDTO.getNew_bank_img().transferTo(new File(BANK_IMAGES_FOLDER_PATH + farmMemberDTO.getF_bank_img() + ".png"));
             log.info(farmMemberDTO.getF_bank_img() + " 새로운 통장사본 이미지 저장 완료");
@@ -188,11 +233,8 @@ public class MemberServiceImpl implements MemberService{
         return farmMemberDTO.getF_bank_img();
     }
 
-    public String updateFarmImages(FarmMemberDTO farmMemberDTO) {
-        log.info("updateFarmImages..........");
-
+    public void deleteFarmImages(String f_img){
         // 이전 농가 이미지 삭제
-        String f_img = farmMemberDTO.getF_img();
         if(f_img != null){
             try {
                 Integer f_img_length = Integer.parseInt(f_img.substring(f_img.indexOf(")")+1));
@@ -203,20 +245,27 @@ public class MemberServiceImpl implements MemberService{
                     log.info(farmImageFile.toString());
                     if (farmImageFile.exists()){
                         if (farmImageFile.delete()){
-                            log.info(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 성공");
+                            log.info(f_img + " 농가 이미지 삭제 성공");
                         } else {
-                            log.info(farmMemberDTO.getF_img() + " 농가업체 이미지 삭제 실패...");
+                            log.info(f_img + " 농가 이미지 삭제 실패...");
                         }
                     }else{
-                        log.info("농가업체 이미지 파일이 존재하지 않습니다.");
+                        log.info("농가 이미지 파일이 존재하지 않습니다.");
                     }
                 } 
             } catch (Exception e) {
                 log.info(e.toString());
                 log.info("잘못된 이미지 이름입니다!");
             }
-            
         }
+
+    }
+
+    public String updateFarmImages(FarmMemberDTO farmMemberDTO) {
+        log.info("updateFarmImages..........");
+
+        deleteFarmImages(farmMemberDTO.getF_img());
+        
         
         //새로 업데이트하는 농가사진 추가
         int numberOfFarmImg = farmMemberDTO.getFarm_img_files().size();
@@ -290,8 +339,6 @@ public class MemberServiceImpl implements MemberService{
 
     public UserDetails login(String checkUser ,String email, String password) {
         log.info("login..........");
-
-        // BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         ConsumerMemberDTO consumerMember = null;
         FarmMemberDTO farmMember = null;
         String token = null;
