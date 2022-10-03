@@ -9,6 +9,9 @@ import org.dblab.auction_backend.domain.AuctionDTO;
 import org.dblab.auction_backend.domain.AuctionReviewDTO;
 import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
+import org.dblab.auction_backend.domain.DeliveryDTO;
+import org.dblab.auction_backend.domain.OrderDTO;
+import org.dblab.auction_backend.domain.PaymentDTO;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.SearchWordDTO;
 import org.dblab.auction_backend.domain.WishDTO;
@@ -135,4 +138,13 @@ public interface AuctionMapper {
     public Integer farmCountAuction(@Param("farm_id") Integer farm_id);
     
     public Integer consumerCountAuction(@Param("consumer_id") Integer consumer_id);
+
+    // #################################################### 결제 및 배송 #####################################################
+    public Integer updatePaymentStatus(@Param("auction_Id") Integer auction_Id);
+
+    public PaymentDTO registPayment(PaymentDTO paymentDTO);
+
+    public DeliveryDTO registDelivery(DeliveryDTO deliveryDTO);
+
+    // public OrderDTO getOrder(@Param("auction_Id") Integer auction_Id);
 }

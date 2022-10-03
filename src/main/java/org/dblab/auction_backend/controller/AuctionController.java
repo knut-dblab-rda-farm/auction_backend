@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.dblab.auction_backend.domain.AuctionDTO;
 import org.dblab.auction_backend.domain.AuctionReviewDTO;
+import org.dblab.auction_backend.domain.OrderDTO;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.WishDTO;
 import org.dblab.auction_backend.service.AuctionService;
@@ -37,7 +38,7 @@ public class AuctionController {
         리뷰 테이블 수정되면 바꾸기!!
     */
     private final AuctionService auctionService;
-    private Logger log = LoggerFactory.getLogger(MemberController.class);
+    private Logger log = LoggerFactory.getLogger(AuctionController.class);
 
     // #################################################### 경매 CURD #####################################################
 
@@ -183,4 +184,10 @@ public class AuctionController {
         return auctionService.farmCountAuction(farm_id);
     }
 
+    // #################################################### 결제 및 배송 #####################################################
+    @PostMapping(value = "/payment")
+    public OrderDTO registAuction(@RequestBody OrderDTO orderDTO) {
+        log.info(orderDTO.toString());
+        return auctionService.registOrder(orderDTO);
+    }
 }

@@ -38,6 +38,7 @@
         <id property="product_id" column="product_id" />
         <id property="consumer_id" column="consumer_id" />
         <id property="c_name" column="c_name" />
+        <id property="payment_status" column="payment_status" />
         <id property="farm_id" column="farm_id" />
         <id property="f_farm_name" column="f_farm_name" />
         <id property="f_phonenum" column="f_phonenum" />
@@ -135,7 +136,7 @@
     
 
     <select id="getConsumerAuctionReview" resultType="map">
-        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_name, f.f_phonenum, a.farm_id, a.consumer_id, a_r.review_img_name
+        SELECT a.auction_Id, a.auction_name, p.product_img_name, a_r.grade_point, a_r.consumer_review, a_r.farm_review, f.f_farm_name, f.f_phonenum, a.farm_id, a.consumer_id, a_r.review_img_name
         FROM auction_review a_r, auction a, product p, farm_member f
         WHERE a_r.auction_Id =  a.auction_Id and a.product_id = p.product_id and a.farm_id = f.farm_id and a.consumer_id = #{consumer_id}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
@@ -226,7 +227,7 @@
         SELECT * FROM auction a, product p, farm_member f 
         WHERE a.product_id = p.product_id and a.farm_id = f.farm_id and a.auction_name LIKE #{keyword}
         ORDER BY ABS(DATEDIFF(NOW(), deadline_date))
-        LIMIT #{startLimit}, 4
+        LIMIT #{startLimit}, 5
     </select>
 
     <!-- 검색어 추가 -->
@@ -412,12 +413,67 @@
         WHERE farm_id=#{farm_id}
     </select>
 
+    <!-- #################################################### 결제 및 배송 ##################################################### !-->
+    <select id="registPayment" parameterType="org.dblab.auction_backend.domain.PaymentDTO" resultType="org.dblab.auction_backend.domain.PaymentDTO">  
+        INSERT INTO payment
+        (auction_Id, payment_amount, pay_method) 
+        values
+        (#{auction_Id}, #{payment_amount}, #{pay_method})
+		RETURNING payment_id, auction_Id, payment_amount, pay_method
+    </select>
 
+    <select id="registDelivery" parameterType="org.dblab.auction_backend.domain.DeliveryDTO" resultType="org.dblab.auction_backend.domain.DeliveryDTO">  
+        INSERT INTO delivery
+        (payment_id, destination, zipcode) 
+        values
+        (#{payment_id}, #{destination}, #{zipcode})
+		RETURNING delivery_id, d_status, payment_id, destination, zipcode
+    </select>
 
+    <!-- <resultMap type="org.dblab.auction_backend.domain.PaymentDTO" id="PaymentDTO">
+        <id property="payment_id" column="payment_id" />
+        <id property="auction_Id" column="auction_Id" />
+        <id property="payment_amount" column="payment_amount" />
+        <id property="pay_method" column="pay_method" />
+    </resultMap>
 
+    <resultMap type="org.dblab.auction_backend.domain.DeliveryDTO" id="DeliveryDTO">
+        <id property="delivery_id" column="delivery_id" />
+        <id property="d_status" column="d_status" />
+        <id property="departure_date" column="departure_date" />
+        <id property="arrival_date" column="arrival_date" />
+        <id property="payment_id" column="payment_id" />
+        <id property="zipcode" column="zipcode" />
+        <id property="destination" column="destination" />
+    </resultMap>
 
+    <resultMap type="org.dblab.auction_backend.domain.Bidding" id="Bidding">
+        <id property="auction_Id" column="auction_Id" />
+        <id property="bid_price" column="bid_price" />
+        <id property="farm_id" column="farm_id" />
+        <id property="consumer_id" column="consumer_id" />
+        <id property="auction_name" column="auction_name" />
+        <id property="product_img_name" column="product_img_name" />
+        <id property="f_farm_name" column="f_farm_name" />
+        <id property="c_name" column="c_name" />
+    </resultMap>
 
+    <resultMap type="org.dblab.auction_backend.domain.OrderDTO" id="OrderDTO">
+        <collection property="PaymentDTO" resultMap="PaymentDTO"/>
+        <collection property="DeliveryDTO" resultMap="DeliveryDTO"/>
+        <collection property="Bidding" resultMap="Bidding"/>
+    </resultMap> -->
 
+    <!-- <select id="getOrder" resultMap="OrderDTO">
+        SELECT * FROM auction a, payment p, deliivery d 
+        WHERE a.auction_Id = p.auction_Id AND p.payment_id = d.payment_id AND p.auction_Id = #{auction_Id}
+    </select> -->
+
+    <update id="updatePaymentStatus" >
+        UPDATE auction
+        SET payment_status = 1 
+        WHERE auction_Id= #{auction_Id}
+    </update>
 </mapper>
 
 

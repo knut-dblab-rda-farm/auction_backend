@@ -11,4 +11,7 @@ public class DeliveryDTO {
     private int d_status;
     private Date departure_date;
     private Date arrival_date;
+    private Integer payment_id;
+    private Integer zipcode;
+    private String destination;
 }

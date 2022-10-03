@@ -20,8 +20,9 @@ public class AuctionDTO {
     private Integer farm_id;
     private Integer consumer_id;
     private String c_name;
-
     private String f_farm_name;
+    private Boolean payment_status; 
+
     private String f_name;
     private Integer f_num;
     private String f_location;

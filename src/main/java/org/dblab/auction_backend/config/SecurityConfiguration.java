@@ -47,11 +47,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // jwt token으로 생성하므로 세션은 필요 없으므로 생성 안함.
                 .and()
                     .authorizeRequests() // 다음 리퀘스트에 대한 사용권한 체크
-                        // .antMatchers("/**").permitAll()
-                        .antMatchers("/", "/favicon.ico","/css/**", "/js/**", "/fonts/**", "/product_images/**", "/member_profile_images/**", "/farm_images/**", 
-                                                    "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**", "/api/login/**", "/api/logout/**","/test/**", 
-                                                    "/api/signupConsumer/**", "/api/signupFarmMember/**", "/api/existEmail/**", "/api/findPassword/**", "/socket/**", "/api/subscribeAlert/**", "api/subscribeAlert/**").permitAll()
-                        .anyRequest().hasRole("USER")
+                        .antMatchers("/**").permitAll()
+                        // .antMatchers("/", "/favicon.ico", "/img/**","/css/**", "/js/**", "/fonts/**", "/product_images/**", "/member_profile_images/**", "/farm_images/**", 
+                        //                             "/bank_images/**", "/auciton_review_images/**", "/auciton_slide_images/**", "/api/login/**", "/api/logout/**","/test/**", 
+                        //                             "/api/signupConsumer/**", "/api/signupFarmMember/**", "/api/existEmail/**", "/api/findPassword/**", "/socket/**", "/api/subscribeAlert/**", "api/subscribeAlert/**").permitAll()
+                        // .anyRequest().hasRole("USER")
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                             UsernamePasswordAuthenticationFilter.class);

@@ -12,6 +12,7 @@ import org.dblab.auction_backend.domain.AuctionDTO;
 import org.dblab.auction_backend.domain.AuctionReviewDTO;
 import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
+import org.dblab.auction_backend.domain.OrderDTO;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.SearchWordDTO;
 import org.dblab.auction_backend.domain.WishDTO;
@@ -39,6 +40,7 @@ public class AuctionServiceImpl implements AuctionService{
     private Integer END_AUCTION_ALERT = 3;
     private Integer CONSUMER_REIVEW_ALERT = 4;
     private Integer FARM_REIVEW_ALERT = 5;
+    private Integer PAYMENT_ALERT = 6;
     private Integer ALERT_INIT_START_LIMIT = 0;
 
     // #################################################### 경매 CURD #####################################################
@@ -538,4 +540,28 @@ public class AuctionServiceImpl implements AuctionService{
     public Integer farmCountAuction(Integer farm_id){
         return auctionMapper.farmCountAuction(farm_id);
     }
+
+    // #################################################### 결제 및 배송 #####################################################
+    public OrderDTO registOrder(OrderDTO orderDTO){
+        auctionMapper.updatePaymentStatus(orderDTO.getPaymentDTO().getAuction_Id());
+        orderDTO.setPaymentDTO(auctionMapper.registPayment(orderDTO.getPaymentDTO()));
+        log.info("-----" + orderDTO.getPaymentDTO().toString());
+        orderDTO.getDeliveryDTO().setPayment_id(orderDTO.getPaymentDTO().getPayment_id());
+        log.info("-----" + orderDTO.getDeliveryDTO().toString());
+        orderDTO.setDeliveryDTO(auctionMapper.registDelivery(orderDTO.getDeliveryDTO()));
+        log.info("-----" + orderDTO.getDeliveryDTO().toString());
+
+        registAlert(orderDTO.getBidding(), PAYMENT_ALERT);
+
+        log.info("registAlert 이후:  " + orderDTO.toString());
+        return orderDTO;
+    }
+
+    // public OrderDTO getOrder(Integer auction_Id){
+    //     log.info("getOrder......" + auction_Id);
+    //     OrderDTO orderDTO = auctionMapper.getOrderDTO(auction_Id);
+    //     log.info(orderDTO.toString());
+    //     return orderDTO
+    // }
+
 }

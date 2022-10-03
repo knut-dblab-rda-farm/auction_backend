@@ -7,6 +7,7 @@ import org.dblab.auction_backend.domain.AuctionDTO;
 import org.dblab.auction_backend.domain.AuctionReviewDTO;
 import org.dblab.auction_backend.domain.BidClosingDTO;
 import org.dblab.auction_backend.domain.Bidding;
+import org.dblab.auction_backend.domain.OrderDTO;
 import org.dblab.auction_backend.domain.ProductDTO;
 import org.dblab.auction_backend.domain.WishDTO;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -95,4 +96,10 @@ public interface AuctionService {
     public Integer farmCountAuction(Integer farm_id);
 
     public Integer consumerCountAuction(Integer consumer_id);
+
+    // #################################################### 결제 및 배송 #####################################################
+
+    public OrderDTO registOrder(OrderDTO orderDTO);
+
+    // public OrderDTO getOrder(Integer auction_Id)
 }
