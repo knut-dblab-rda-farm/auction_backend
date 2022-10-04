@@ -63,7 +63,7 @@ public interface MemberMapper {
 
     public Integer updateFarmMemberMajorCrop(@Param("farm_id") Integer farm_id, @Param("f_major_crop") String f_major_crop);
 
-    // ------------------------
+    // -------------------------------------
 
     public Integer deleteFarmMember(@Param("farm_id") Integer farm_id, @Param("withdrawal_member") String withdrawal_member);
 
