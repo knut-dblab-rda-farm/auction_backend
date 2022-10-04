@@ -146,5 +146,5 @@ public interface AuctionMapper {
 
     public DeliveryDTO registDelivery(DeliveryDTO deliveryDTO);
 
-    // public OrderDTO getOrder(@Param("auction_Id") Integer auction_Id);
+    public OrderDTO getOrder(@Param("auction_Id") Integer auction_Id);
 }

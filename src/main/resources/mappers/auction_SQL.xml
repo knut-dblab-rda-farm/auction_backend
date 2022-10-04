@@ -284,17 +284,6 @@
 		WHERE auction_Id = #{auction_Id}
 	</update>
 
-    <resultMap type="org.dblab.auction_backend.domain.Bidding" id="Bidding">
-        <id property="auction_Id" column="auction_Id" />
-        <id property="farm_id" column="farm_id" />
-        <id property="consumer_id" column="consumer_id" />
-        <id property="bid_price" column="bid_price" />
-        <id property="auction_name" column="auction_name" />
-        <id property="product_img_name" column="product_img_name" />
-        <id property="f_farm_name" column="f_farm_name" />
-        <id property="c_name" column="c_name" />
-    </resultMap>
-
     <!-- 마감된 경매 참여자(낙차잘, 농가) 가져오기 -->
     <select id="getClosedBidding" resultType="map">
         SELECT a.auction_Id, a.bid_price, a.farm_id, a.consumer_id, a.auction_name , p.product_img_name, a.f_farm_name, a.c_name
@@ -430,7 +419,7 @@
 		RETURNING delivery_id, d_status, payment_id, destination, zipcode
     </select>
 
-    <!-- <resultMap type="org.dblab.auction_backend.domain.PaymentDTO" id="PaymentDTO">
+    <resultMap type="org.dblab.auction_backend.domain.PaymentDTO" id="PaymentDTO">
         <id property="payment_id" column="payment_id" />
         <id property="auction_Id" column="auction_Id" />
         <id property="payment_amount" column="payment_amount" />
@@ -459,15 +448,15 @@
     </resultMap>
 
     <resultMap type="org.dblab.auction_backend.domain.OrderDTO" id="OrderDTO">
-        <collection property="PaymentDTO" resultMap="PaymentDTO"/>
-        <collection property="DeliveryDTO" resultMap="DeliveryDTO"/>
-        <collection property="Bidding" resultMap="Bidding"/>
-    </resultMap> -->
+        <collection property="paymentDTO" resultMap="PaymentDTO"/>
+        <collection property="deliveryDTO" resultMap="DeliveryDTO"/>
+        <collection property="bidding" resultMap="Bidding"/>
+    </resultMap>
 
-    <!-- <select id="getOrder" resultMap="OrderDTO">
-        SELECT * FROM auction a, payment p, deliivery d 
-        WHERE a.auction_Id = p.auction_Id AND p.payment_id = d.payment_id AND p.auction_Id = #{auction_Id}
-    </select> -->
+    <select id="getOrder" resultMap="OrderDTO">
+        SELECT * FROM auction a, product p, payment pay, delivery d 
+        WHERE a.auction_Id = pay.auction_Id AND a.product_id = p.product_id AND pay.payment_id = d.payment_id AND pay.auction_Id = #{auction_Id}
+    </select>
 
     <update id="updatePaymentStatus" >
         UPDATE auction

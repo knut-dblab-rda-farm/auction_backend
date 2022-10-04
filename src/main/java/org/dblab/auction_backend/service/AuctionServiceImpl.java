@@ -557,11 +557,9 @@ public class AuctionServiceImpl implements AuctionService{
         return orderDTO;
     }
 
-    // public OrderDTO getOrder(Integer auction_Id){
-    //     log.info("getOrder......" + auction_Id);
-    //     OrderDTO orderDTO = auctionMapper.getOrderDTO(auction_Id);
-    //     log.info(orderDTO.toString());
-    //     return orderDTO
-    // }
+    public OrderDTO getOrder(Integer auction_Id){
+        log.info("getOrder......" + auction_Id);
+        return auctionMapper.getOrder(auction_Id);
+    }
 
 }

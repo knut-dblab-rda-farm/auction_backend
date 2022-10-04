@@ -190,4 +190,10 @@ public class AuctionController {
         log.info(orderDTO.toString());
         return auctionService.registOrder(orderDTO);
     }
+
+    @GetMapping(value = "/order/{auction_Id}")
+    public OrderDTO getOrder(@PathVariable("auction_Id") Integer auction_Id){
+        log.info("/order/" + auction_Id);
+        return auctionService.getOrder(auction_Id);
+    }
 }

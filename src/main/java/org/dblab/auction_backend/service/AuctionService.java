@@ -101,5 +101,5 @@ public interface AuctionService {
 
     public OrderDTO registOrder(OrderDTO orderDTO);
 
-    // public OrderDTO getOrder(Integer auction_Id)
+    public OrderDTO getOrder(Integer auction_Id);
 }
