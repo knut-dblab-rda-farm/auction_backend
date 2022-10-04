@@ -374,7 +374,6 @@ public class MemberServiceImpl implements MemberService{
         }
 
         farmMember = memberMapper.getFarmMemberAuth(email);
-        log.info(farmMember.toString());
         if(farmMember == null || !passwordEncoder.matches(password, farmMember.getF_passwd())) {
             log.info("널입니다!");
             return null;

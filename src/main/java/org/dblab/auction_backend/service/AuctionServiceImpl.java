@@ -317,14 +317,13 @@ public class AuctionServiceImpl implements AuctionService{
             // checkUser와 id를 이용해서 Alert 데이터 가져와서 emitter에 저장하기
             if (checkUser.equals("consumer")){
                 List<Map<String, Object>> alertDTOs = auctionMapper.getConsumerAlert(id, ALERT_INIT_START_LIMIT);
-                if(consumerEmitters.get(id) != null) consumerEmitters.remove(id);                    // 존재하면 삭제 후 다시 만들기
-                // emitter.onCompletion(() -> consumerEmitters.remove(id));
+                if(consumerEmitters.get(id) == null) consumerEmitters.remove(id);                    // 존재하면 삭제 후 다시 만들기
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
-                
+                // emitter.onCompletion(() -> consumerEmitters.remove(id));
                 consumerEmitters.put(id, emitter);
             } else {
                 List<Map<String, Object>> alertDTOs = auctionMapper.getFarmAlert(id, ALERT_INIT_START_LIMIT);
-                if(farmEmitters.get(id) != null) farmEmitters.remove(id); 
+                if(farmEmitters.get(id) == null) farmEmitters.remove(id); 
                 emitter.send(SseEmitter.event().name("init").data(alertDTOs));
                 // emitter.onCompletion(() -> farmEmitters.remove(id));
                 farmEmitters.put(id, emitter);
@@ -352,11 +351,7 @@ public class AuctionServiceImpl implements AuctionService{
 
         SseEmitter farmEmitter = farmEmitters.get(bidding.getFarm_id());
         SseEmitter consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
-        // SseEmitter consumerEmitter = null;
         log.info("registAlert.........." + alertDto.toString());
-        // log.info("registAlert.........." + farmEmitter.toString());
-        // log.info("registAlert.........." + consumerEmitter.toString());
-        // if (bidding.getConsumer_id() != null) consumerEmitter = consumerEmitters.get(bidding.getConsumer_id());
 
         alertDto.setAlert_id(auctionMapper.registAlert(alertDto));
 
@@ -365,12 +360,13 @@ public class AuctionServiceImpl implements AuctionService{
         log.info("---------------");
         log.info(alertDto.toString());
 
-        if (bidding.getAuction_consumer_id() != null) {                             // 이전 입찰자가 있는 경우
-            SseEmitter auctionConsumerEmitter = consumerEmitters.get(bidding.getAuction_consumer_id());
+        if (alertDto.getPre_consumer_id() != null) {                             // 이전 입찰자가 있는 경우
+            SseEmitter auctionConsumerEmitter = consumerEmitters.get(alertDto.getPre_consumer_id());
+            log.info("auctionConsumerEmitter: " + auctionConsumerEmitter.toString());
             if(auctionConsumerEmitter != null){
                 // 이전 입찰자에게 알림
                 log.info("auctionConsumerEmitter: " + alertDto.toString());
-                snedEvent(auctionConsumerEmitter, alertDto, "consumer", bidding.getAuction_consumer_id());
+                snedEvent(auctionConsumerEmitter, alertDto, "consumer", alertDto.getPre_consumer_id());
             }
         }
         if(consumerEmitter != null){
@@ -388,6 +384,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     public void snedEvent(SseEmitter emitter, AlertDTO alertDto, String checkUser, Integer id){
         try {
+            log.info("snedEvent: " + emitter.toString());
             emitter.send(SseEmitter.event().name("alert").data(alertDto));
         } catch (IOException e) {
             if (checkUser.equals("consumer")){
