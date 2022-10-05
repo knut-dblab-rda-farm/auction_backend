@@ -18,9 +18,9 @@ public class BidDeadlineTimer extends Thread {
     private static List<BidClosingDTO> bidClosingDTOs = null;
     private static long DEADLINE_STANDARD_TIME = 1000 * 60 * 60 * 3;             // 현재시간으로부터 마감경매를 찾는 기준 시간, 3시간(=10800000ms, 1000 * 60 * 60 * 3)
     private static long sleepTime = DEADLINE_STANDARD_TIME;
-    private static Date latestTime = null;
-    private static Boolean mustSleep = false;
-    private final AuctionService auctionService;
+    private static Date latestTime = null; 
+    private static Boolean mustSleep = false; 
+    private final AuctionService auctionService; 
 
     @Override
     public void run() {
